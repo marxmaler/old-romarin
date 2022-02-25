@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use(express.static(buildAddress));
 
-app.get("/", (req: Request, res: Response) => {
+app.get("*", (req: Request, res: Response) => {
   return res.sendFile(buildAddress + "index.html");
 });
 
