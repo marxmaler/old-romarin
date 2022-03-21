@@ -1,6 +1,6 @@
-import React from "react";
 import Router from "./Router";
 import { createGlobalStyle } from "styled-components";
+import HeaderMenu from "./components/HeaderMenu";
 
 const GlobalStyle = createGlobalStyle`html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -53,7 +53,6 @@ body {
   min-height:100vh;
   display: flex;
   align-items: center;
-  background-color: rgba(186, 220, 88, 1);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 

@@ -3,8 +3,11 @@ import "./db";
 import "./models/Word";
 import "./models/User";
 import express, { Request, Response } from "express";
+import session from "express-session";
+import MongoStore from "connect-mongo";
 import morgan from "morgan";
 import path from "path";
+import apiRouter from "./router/apiRouter";
 
 const app = express();
 const buildAddress = path.join(__dirname, "..", "client/build/");
@@ -13,6 +16,17 @@ const buildAddress = path.join(__dirname, "..", "client/build/");
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET + "",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
+  })
+);
+
+app.use("/api", apiRouter);
 
 app.use(express.static(buildAddress));
 

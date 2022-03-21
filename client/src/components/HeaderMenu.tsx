@@ -9,14 +9,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import TitleBlock from "./TitleBlock";
+import { useRecoilValue } from "recoil";
+import { loginState } from "../atoms";
 
 const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
   border: 1px solid rgba(30, 39, 46, 0.2);
-  padding: 50px 50px 60px 50px;
+  padding: 50px 30px 30px 30px;
   overflow: hidden;
-  color: rgba(194, 54, 22, 1);
+  position: relative;
+  align-items: center;
   svg {
     font-size: 30px;
     cursor: pointer;
@@ -24,20 +27,16 @@ const HeaderContainer = styled.header`
     &.profile {
       font-size: 24px;
       border: 0.5px solid rgba(138, 144, 45, 0.5);
-      background-color: rgba(246, 229, 141, 1);
       padding: 5px;
       border-radius: 7px;
-    }
-    &:hover,
-    &:active,
-    &:focus {
-      opacity: 0.7;
     }
   }
 
   ul {
+    /* background-color: red; */
     display: flex;
     align-items: flex-end;
+    padding-top: 30px;
     li {
       display: flex;
       align-items: center;
@@ -62,7 +61,7 @@ const HeaderContainer = styled.header`
           left: 0;
           width: 100%;
           height: 0.08em;
-          background-color: rgba(232, 65, 24, 0.5);
+          background-color: rgba(149, 165, 166, 0.5);
           transition: opacity 300ms, transform 300ms;
           opacity: 1;
           transform: translate3d(-100%, 0, 0);
@@ -75,7 +74,6 @@ const HeaderContainer = styled.header`
         }
 
         svg {
-          color: rgba(232, 65, 24, 0.8);
           margin-left: 2px;
           font-size: 20px;
           cursor: pointer;
@@ -106,6 +104,7 @@ const MenuItem = styled.span`
 `;
 
 function HeaderMenu() {
+  const login = useRecoilValue(loginState);
   const PCMode = useMediaQuery({
     query: "(min-width:1024px)",
   });
@@ -117,7 +116,7 @@ function HeaderMenu() {
           <>
             <li>
               <MenuItem>
-                <Link to={"/"}>홈</Link>
+                <Link to={"/"}>복습</Link>
               </MenuItem>
             </li>
             <li>
@@ -130,7 +129,7 @@ function HeaderMenu() {
             </li>
             <li>
               <MenuItem>
-                <Link to={"/"}>
+                <Link to={"/word/search"}>
                   검색
                   <FontAwesomeIcon
                     icon={faMagnifyingGlass}
@@ -154,17 +153,20 @@ function HeaderMenu() {
           <>
             <li>
               <MenuItem>
-                <Link to={"/"}>메뉴</Link>
+                {login.loggedIn ? (
+                  <Link to={"/user/profile"}>프로필</Link>
+                ) : (
+                  <Link to={"/join"}>가입</Link>
+                )}
               </MenuItem>
             </li>
             <li>
               <MenuItem>
-                <Link to={"/"}>메뉴</Link>
-              </MenuItem>
-            </li>
-            <li>
-              <MenuItem>
-                <Link to={"/"}>메뉴</Link>
+                {login.loggedIn ? (
+                  <Link to={"/logout"}>로그아웃</Link>
+                ) : (
+                  <Link to={"/login"}>로그인</Link>
+                )}
               </MenuItem>
             </li>
           </>
