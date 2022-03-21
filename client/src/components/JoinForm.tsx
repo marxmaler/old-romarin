@@ -116,7 +116,7 @@ function JoinForm() {
         if (status === 400) {
           setError("email", { message: "이미 가입된 이메일입니다." });
         } else {
-          navigate("/");
+          navigate("/login");
         }
       });
     }

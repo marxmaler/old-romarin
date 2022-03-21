@@ -74,7 +74,7 @@ interface IForm {
 }
 
 function AddWordForm() {
-  const { register, handleSubmit, setValue, formState } = useForm<IForm>();
+  const { register, handleSubmit, setValue } = useForm<IForm>();
   const onValid = (data: IForm) => {
     const today = new Date();
     fetch("/api/word/add", {

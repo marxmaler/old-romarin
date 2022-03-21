@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import TitleBlock from "./TitleBlock";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { loginState } from "../atoms";
 
 const HeaderContainer = styled.header`
@@ -104,10 +104,15 @@ const MenuItem = styled.span`
 `;
 
 function HeaderMenu() {
-  const login = useRecoilValue(loginState);
+  const [login, setLogin] = useRecoilState(loginState);
   const PCMode = useMediaQuery({
     query: "(min-width:1024px)",
   });
+
+  const logout = () => {
+    fetch("/api/user/logout");
+    setLogin({ loggedIn: false, user: null });
+  };
 
   return (
     <HeaderContainer>
@@ -163,7 +168,9 @@ function HeaderMenu() {
             <li>
               <MenuItem>
                 {login.loggedIn ? (
-                  <Link to={"/logout"}>로그아웃</Link>
+                  <Link to={"/login"} onClick={logout}>
+                    로그아웃
+                  </Link>
                 ) : (
                   <Link to={"/login"}>로그인</Link>
                 )}

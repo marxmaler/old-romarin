@@ -22,6 +22,13 @@ export const postLogin = async (req: Request, res: Response) => {
   return res.status(200).send({ user });
 };
 
+export const getLogout = async (req: Request, res: Response) => {
+  req.session.destroy(() => {
+    console.log(req.session);
+    return res.sendStatus(200);
+  });
+};
+
 export const postJoin = async (req: Request, res: Response) => {
   const {
     data: { email, password, name },
