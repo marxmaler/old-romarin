@@ -24,7 +24,6 @@ export const postLogin = async (req: Request, res: Response) => {
 
 export const getLogout = async (req: Request, res: Response) => {
   req.session.destroy(() => {
-    console.log(req.session);
     return res.sendStatus(200);
   });
 };

@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { loginState } from "../atoms";
 
 const FormContainer = styled.div`
   display: flex;
@@ -92,6 +94,16 @@ function JoinForm() {
     setError,
   } = useForm<IForm>();
   const navigate = useNavigate();
+
+  const [login, setLogin] = useRecoilState(loginState);
+  if (login.loggedIn) {
+    fetch("/api/users/logout");
+    setLogin({
+      loggedIn: false,
+      user: null,
+    });
+  }
+
   const onValid = (data: IForm) => {
     if (
       !validator.isStrongPassword(data.password, {
@@ -107,7 +119,7 @@ function JoinForm() {
     } else if (!validator.isEmail(data.email)) {
       setError("email", { message: "이메일 주소를 확인해주세요." });
     } else {
-      fetch("/api/user/join", {
+      fetch("/api/users/join", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data }),

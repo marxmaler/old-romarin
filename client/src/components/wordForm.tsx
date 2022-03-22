@@ -73,11 +73,11 @@ interface IForm {
   ant?: string;
 }
 
-function AddWordForm() {
+function WordForm() {
   const { register, handleSubmit, setValue } = useForm<IForm>();
   const onValid = (data: IForm) => {
     const today = new Date();
-    fetch("/api/word/add", {
+    fetch("/api/words", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ data, today }),
@@ -132,4 +132,4 @@ function AddWordForm() {
   );
 }
 
-export default AddWordForm;
+export default WordForm;

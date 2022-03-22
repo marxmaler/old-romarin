@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./routes/Home";
-import AddWord from "./routes/AddWord";
+import Word from "./routes/Word";
 import Join from "./routes/Join";
 import Login from "./routes/Login";
 import { useRecoilValue } from "recoil";
@@ -13,11 +13,11 @@ function Router() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={login.loggedIn ? <Home /> : <Login />}></Route>
-        <Route path="/join" element={<Join />}></Route>
-        <Route path="/login" element={<Login />}></Route>
+        <Route path="/join" element={!login.loggedIn && <Join />}></Route>
+        <Route path="/login" element={!login.loggedIn && <Login />}></Route>
         <Route
-          path="/word/add"
-          element={login.loggedIn ? <AddWord /> : <Login />}
+          path="/words"
+          element={login.loggedIn ? <Word /> : <Login />}
         ></Route>
       </Routes>
     </BrowserRouter>

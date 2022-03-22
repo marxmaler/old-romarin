@@ -4,7 +4,7 @@ export const mustLogin = (req: Request, res: Response, next: NextFunction) => {
   if (req.session.loggedIn) {
     return next();
   } else {
-    return res.sendStatus(400);
+    return res.sendStatus(401);
   }
 };
 
@@ -16,6 +16,6 @@ export const mustNotLogin = (
   if (!req.session.loggedIn) {
     return next();
   } else {
-    return res.sendStatus(400);
+    return res.status(401).send({ user: req.session.user }); //Unauthorized
   }
 };

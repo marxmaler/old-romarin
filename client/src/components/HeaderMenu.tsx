@@ -110,7 +110,7 @@ function HeaderMenu() {
   });
 
   const logout = () => {
-    fetch("/api/user/logout");
+    fetch("/api/users/logout");
     setLogin({ loggedIn: false, user: null });
   };
 
@@ -126,7 +126,7 @@ function HeaderMenu() {
             </li>
             <li>
               <MenuItem>
-                <Link to={"/word/add"}>
+                <Link to={"/words"}>
                   새 단어
                   <FontAwesomeIcon icon={faPlus} />
                 </Link>
@@ -134,7 +134,7 @@ function HeaderMenu() {
             </li>
             <li>
               <MenuItem>
-                <Link to={"/word/search"}>
+                <Link to={"/words/search"}>
                   검색
                   <FontAwesomeIcon
                     icon={faMagnifyingGlass}
@@ -159,7 +159,7 @@ function HeaderMenu() {
             <li>
               <MenuItem>
                 {login.loggedIn ? (
-                  <Link to={"/user/profile"}>프로필</Link>
+                  <Link to={"/users/profile"}>프로필</Link>
                 ) : (
                   <Link to={"/join"}>가입</Link>
                 )}

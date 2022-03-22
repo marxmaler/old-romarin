@@ -2,6 +2,7 @@ import { Types, Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 
 interface User {
+  _id: Types.ObjectId[];
   email: string;
   name: string;
   password: string;

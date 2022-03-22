@@ -81,8 +81,9 @@ function LoginForm() {
   } = useForm<IForm>();
   const navigate = useNavigate();
   const setLogin = useSetRecoilState(loginState);
+
   const onValid = async (data: IForm) => {
-    const response = await fetch("/api/user/login", {
+    const response = await fetch("/api/users/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ data }),
@@ -91,6 +92,33 @@ function LoginForm() {
       setError("email", { message: "등록되지 않은 이메일입니다." });
     } else if (response.status === 400) {
       setError("password", { message: "비밀번호가 일치하지 않습니다." });
+    } else if (response.status === 401) {
+      const { user } = await response.json();
+      if (user.email === data.email) {
+        setLogin({
+          loggedIn: true,
+          user,
+        });
+
+        navigate("/");
+      } else {
+        await fetch("/api/users/logout");
+        setLogin({ loggedIn: false, user: null });
+        const { user } = await (
+          await fetch("/api/users/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ data }),
+          })
+        ).json();
+
+        setLogin({
+          loggedIn: true,
+          user,
+        });
+
+        navigate("/");
+      }
     } else {
       const { user } = await response.json();
       setLogin({

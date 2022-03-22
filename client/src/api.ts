@@ -1,6 +1,5 @@
 import { yyyymmdd } from "./functions/time";
-import axios from "axios";
 
-export const fetchWords = () => {
-  return axios.get(`/api/word/review/${yyyymmdd(new Date())}`);
+export const fetchWords = async () => {
+  return await (await fetch(`/api/words/${yyyymmdd(new Date())}`)).json();
 };

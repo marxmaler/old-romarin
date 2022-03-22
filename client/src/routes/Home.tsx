@@ -4,6 +4,8 @@ import { fetchWords } from "../api";
 import { useQuery } from "react-query";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { wordState } from "../atoms";
 
 const ContentSection = styled.div`
   background-color: white;
@@ -49,13 +51,18 @@ const Noti = styled.h3`
 
 function Home() {
   const { isLoading, data } = useQuery("fetchWords", fetchWords);
-  const words = data?.data.words;
+  const [words, setWords] = useRecoilState(wordState);
+  setWords(data?.words);
 
   return (
     <>
       <HeaderMenu />
       <ContentSection>
-        <Noti>오늘 복습할 단어: {words?.length}개</Noti>
+        <Noti>
+          {isLoading
+            ? "복습할 단어 가져오는 중"
+            : `오늘 복습할 단어: ${words?.length}개`}
+        </Noti>
         <div>
           <ul>
             <motion.li
