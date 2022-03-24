@@ -4,14 +4,21 @@ import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
 
-interface IWord {
+export interface IWord {
+  _id: Types.ObjectId;
   user: Types.ObjectId;
+  lang: string;
   spelling: string;
+  pronunciation: string;
   meaning: string;
-  regRev?: Date[]; //정규 복습 스케쥴
-  wrong: boolean;
+  collocation?: string[];
+  association?: string;
+  ex?: string;
   syn?: string[];
   ant?: string[];
+  regRev?: Date[]; //정규 복습 스케쥴
+  wrong: boolean;
+  ltmsPoint: number;
 }
 
 export const wordState = atom<IWord[]>({
@@ -21,11 +28,62 @@ export const wordState = atom<IWord[]>({
 });
 
 interface User {
+  _id: Types.ObjectId;
   email: string;
   name: string;
   password: string;
   socialOnly: boolean;
-  words?: Types.ObjectId[];
+  stat: {
+    En: {
+      total: number;
+      once: number;
+      twice: number;
+      threeTimes: number;
+      fourTimes: number;
+    };
+    Es: {
+      total: number;
+      once: number;
+      twice: number;
+      threeTimes: number;
+      fourTimes: number;
+    };
+    Fr: {
+      total: number;
+      once: number;
+      twice: number;
+      threeTimes: number;
+      fourTimes: number;
+    };
+    De: {
+      total: number;
+      once: number;
+      twice: number;
+      threeTimes: number;
+      fourTimes: number;
+    };
+    Jp: {
+      total: number;
+      once: number;
+      twice: number;
+      threeTimes: number;
+      fourTimes: number;
+    };
+    Ch: {
+      total: number;
+      once: number;
+      twice: number;
+      threeTimes: number;
+      fourTimes: number;
+    };
+    Ru: {
+      total: number;
+      once: number;
+      twice: number;
+      threeTimes: number;
+      fourTimes: number;
+    };
+  };
 }
 
 interface ILogIn {

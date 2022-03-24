@@ -19,6 +19,7 @@ export const postLogin = async (req: Request, res: Response) => {
 
   req.session.loggedIn = true;
   req.session.user = user;
+
   return res.status(200).send({ user });
 };
 

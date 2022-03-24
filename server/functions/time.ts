@@ -36,18 +36,11 @@ export function getAMonthLater(dateObj: Date) {
   return aMonthLater;
 }
 
-export function getThreeMonthLater(dateObj: Date) {
-  const threeMonthLater = new Date(dateObj);
-  threeMonthLater.setDate(threeMonthLater.getDate() + 90);
-  return threeMonthLater;
-}
-
 export function getRegRev(dateObj: Date) {
   const today = getZeroTime(dateObj);
   const tomorrow = getTomorrow(today);
   const nextWeek = getAWeekLater(today);
   const nextMonth = getAMonthLater(today);
-  const threeMonthLater = getThreeMonthLater(today);
-  const regRev = [today, tomorrow, nextWeek, nextMonth, threeMonthLater];
+  const regRev = [today, tomorrow, nextWeek, nextMonth];
   return regRev;
 }

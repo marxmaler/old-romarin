@@ -1,6 +1,6 @@
-import WordForm from "../components/wordForm";
+import WordForm from "../components/WordForm";
 import HeaderMenu from "../components/HeaderMenu";
-function Word() {
+function AddWords() {
   return (
     <>
       <HeaderMenu />
@@ -9,4 +9,4 @@ function Word() {
   );
 }
 
-export default Word;
+export default AddWords;

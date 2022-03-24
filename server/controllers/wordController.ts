@@ -1,44 +1,125 @@
 import { Request, Response, NextFunction } from "express";
 import { getRegRev } from "../functions/time";
+import User from "../models/User";
 import Word from "../models/Word";
 
 export const postWord = async (req: Request, res: Response) => {
   const {
     today,
-    data: { spelling, meaning, syn: rawSyn, ant: rawAnt },
+    lang,
+    data: {
+      spelling: rawSpelling,
+      pronunciation: rawPronunciation,
+      meaning: rawMeaning,
+      collocation: rawCol,
+      association: rawAss,
+      ex: rawEx,
+      syn: rawSyn,
+      ant: rawAnt,
+    },
   } = req.body;
 
   const userId = req.session.user?._id;
 
-  const syn = String(rawSyn)
-    .split(",")
-    .map((syn) => syn.trim());
-  const ant = String(rawAnt)
-    .split(",")
-    .map((ant) => ant.trim());
+  const collocation =
+    rawCol !== ""
+      ? String(rawCol)
+          .split(",")
+          .map((col) => {
+            const trimmedWord = col.trim();
+            if (trimmedWord.length > 0) {
+              return trimmedWord;
+            }
+          })
+      : [];
+  const syn =
+    rawSyn !== ""
+      ? String(rawSyn)
+          .split(",")
+          .map((syn) => {
+            const trimmedWord = syn.trim();
+            if (trimmedWord.length > 0) {
+              return trimmedWord;
+            }
+          })
+      : [];
+  const ant =
+    rawAnt !== ""
+      ? String(rawAnt)
+          .split(",")
+          .map((ant) => {
+            const trimmedWord = ant.trim();
+            if (trimmedWord.length > 0) {
+              return trimmedWord;
+            }
+          })
+      : [];
+
+  const spelling = rawSpelling.trim();
+  const pronunciation = rawPronunciation.trim();
+  const meaning = rawMeaning.trim();
+  const association = rawAss.trim();
+  const ex = rawEx.trim();
+
+  let ltmsPoint = 0;
+  ltmsPoint += collocation.length > 0 ? 10 : 0;
+  ltmsPoint += association !== "" ? 50 : 0;
+  ltmsPoint += ex !== "" ? 20 : 0;
+  ltmsPoint += syn.length > 0 ? 10 : 0;
+  ltmsPoint += ant.length > 0 ? 10 : 0;
 
   const regRev = getRegRev(new Date(today));
   const newWord = await Word.create({
     user: userId,
+    lang,
     spelling,
+    pronunciation,
     meaning,
+    collocation,
+    association,
+    ex,
     syn,
     ant,
     regRev,
+    ltmsPoint,
   });
+  const user = await User.findById(userId);
+  if (user) {
+    lang === "English"
+      ? (user.stat.En.total += 1)
+      : lang === "Español"
+      ? (user.stat.Es.total += 1)
+      : lang === "Français"
+      ? (user.stat.Fr.total += 1)
+      : lang === "Deutsch"
+      ? (user.stat.De.total += 1)
+      : lang === "日本語"
+      ? (user.stat.Jp.total += 1)
+      : lang === "中文"
+      ? (user.stat.Ch.total += 1)
+      : (user.stat.Ru.total += 1);
+  }
+  user?.save();
+
   console.log(newWord);
+  console.log(user);
   return res.sendStatus(200);
 };
 
 export const getWords = async (req: Request, res: Response) => {
   const today = new Date(req.params.date);
-  const words = await Word.find({
-    $or: [
-      {
-        regRev: { $lte: today },
-      },
-      { wrong: true },
-    ],
-  });
+  const userId = req.params.userId;
+
+  const words = userId
+    ? await Word.find({
+        user: userId,
+        $or: [
+          {
+            regRev: { $lte: today },
+          },
+          { wrong: true },
+        ],
+      })
+    : [];
   return res.status(200).send({ words });
 };
