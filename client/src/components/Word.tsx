@@ -38,7 +38,6 @@ const wordVar = {
     opacity: 0,
     y: 0,
     transition: {
-      //   ease: [0.78, 0.14, 0.15, 0.86],
       duration: 0.7,
     },
   },
@@ -46,18 +45,9 @@ const wordVar = {
     opacity: 1,
     y: 10,
     transition: {
-      //   ease: [0.78, 0.14, 0.15, 0.86],
       duration: 0.7,
     },
   },
-  //   hide: {
-  //     opacity: 0,
-  //     y: -30,
-  //     transition: {
-  //       //   ease: [0.78, 0.14, 0.15, 0.86],
-  //       duration: 0.7,
-  //     },
-  //   },
 };
 
 const Word = ({ word }: IProps) => {
@@ -65,11 +55,7 @@ const Word = ({ word }: IProps) => {
   const [ref, inView] = useInView();
 
   useEffect(() => {
-    if (inView) {
-      controls.start("show");
-    } else {
-      //   controls.start("hide");
-    }
+    inView && controls.start("show");
   }, [controls, inView]);
 
   return (
@@ -94,19 +80,22 @@ const Word = ({ word }: IProps) => {
       )}
       {word.ex && word.ex?.length > 0 && (
         <span>
-          예문 :{" "}
-          {word.ex.split("\n").length > 1
-            ? word.ex
-                .split("\n")
-                .map((line, index) => (
-                  <span key={String(word._id) + `_ex${index}`}>{line}</span>
-                ))
-            : word.ex}
+          예문
+          <br />
+          {word.ex.split("\n").length > 1 ? (
+            word.ex
+              .split("\n")
+              .map((line, index) => (
+                <span key={String(word._id) + `_ex${index}`}>{line}</span>
+              ))
+          ) : (
+            <span>{word.ex}</span>
+          )}
         </span>
       )}
       {word.syn && word.syn?.length > 0 && (
         <span>
-          동의어 :{" "}
+          유의어 :{" "}
           {word.syn.map((syn, index) =>
             word.syn && index < word.syn.length - 1 ? syn + ", " : syn
           )}

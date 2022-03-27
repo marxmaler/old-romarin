@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
 import { Types } from "mongoose";
 import { recoilPersist } from "recoil-persist";
 
@@ -19,11 +19,87 @@ export interface IWord {
   regRev?: Date[]; //정규 복습 스케쥴
   wrong: boolean;
   ltmsPoint: number;
+  addedAt: Date;
 }
 
-export const wordState = atom<IWord[]>({
+export const wordsState = atom<IWord[]>({
   key: "words",
   default: [],
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const wordsSelector = selector({
+  key: "wordsSelector",
+  get: ({ get }) => {
+    const words = get(wordsState);
+    const lang = get(languageState);
+    return words.filter((word) => lang === "All" || word.lang === lang);
+  },
+});
+
+export const synSelector = selector({
+  key: "synSelector",
+  get: ({ get }) => {
+    const words = get(wordsState);
+    const lang = get(languageState);
+    const wordsWithSyn = words
+      .filter((word) => word.lang === lang && word.syn && word.syn.length > 0)
+      .map((word) => word);
+
+    let syn: string[] = [];
+    if (wordsWithSyn.length > 0) {
+      wordsWithSyn.forEach((word) => {
+        if (word.syn) syn = [...syn, ...word.syn];
+      });
+    }
+    return syn;
+  },
+});
+
+export const antSelector = selector({
+  key: "antSelector",
+  get: ({ get }) => {
+    const words = get(wordsState);
+    const lang = get(languageState);
+    const wordsWithAnt = words
+      .filter((word) => word.lang === lang && word.ant && word.ant.length > 0)
+      .map((word) => word);
+
+    let ant: string[] = [];
+    if (wordsWithAnt.length > 0) {
+      wordsWithAnt.forEach((word) => {
+        if (word.ant) ant = [...ant, ...word.ant];
+      });
+    }
+    return ant;
+  },
+});
+
+export const colSelector = selector({
+  key: "colSelector",
+  get: ({ get }) => {
+    const words = get(wordsState);
+    const lang = get(languageState);
+    const wordsWithCol = words
+      .filter(
+        (word) =>
+          word.lang === lang && word.collocation && word.collocation.length > 0
+      )
+      .map((word) => word);
+
+    let col: string[] = [];
+    if (wordsWithCol.length > 0) {
+      wordsWithCol.forEach((word) => {
+        if (word.collocation) col = [...col, ...word.collocation];
+      });
+    }
+    return col;
+  },
+});
+
+export const languageState = atom<string>({
+  key: "languages",
+  default: "English",
   effects_UNSTABLE: [persistAtom],
 });
 
@@ -96,6 +172,20 @@ export const loginState = atom<ILogIn>({
   default: {
     loggedIn: false,
     user: null,
+  },
+  effects_UNSTABLE: [persistAtom],
+});
+
+export interface ITestSetting {
+  numQ: number;
+  selectedWords: IWord[];
+}
+
+export const testSettingState = atom<ITestSetting>({
+  key: "question",
+  default: {
+    numQ: 0,
+    selectedWords: [],
   },
   effects_UNSTABLE: [persistAtom],
 });

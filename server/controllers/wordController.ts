@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { getRegRev } from "../functions/time";
+import { getRegRev, getZeroTime } from "../functions/time";
 import User from "../models/User";
 import Word from "../models/Word";
 
@@ -69,6 +69,7 @@ export const postWord = async (req: Request, res: Response) => {
   ltmsPoint += ant.length > 0 ? 10 : 0;
 
   const regRev = getRegRev(new Date(today));
+  const addedAt = getZeroTime(new Date(today));
   const newWord = await Word.create({
     user: userId,
     lang,
@@ -82,6 +83,7 @@ export const postWord = async (req: Request, res: Response) => {
     ant,
     regRev,
     ltmsPoint,
+    addedAt,
   });
   const user = await User.findById(userId);
   if (user) {
@@ -102,7 +104,6 @@ export const postWord = async (req: Request, res: Response) => {
   user?.save();
 
   console.log(newWord);
-  console.log(user);
   return res.sendStatus(200);
 };
 
@@ -122,4 +123,25 @@ export const getWords = async (req: Request, res: Response) => {
       })
     : [];
   return res.status(200).send({ words });
+};
+
+interface IGradedWord {
+  wordId: string;
+  wrong: boolean;
+}
+
+export const patchGradedWords = (req: Request, res: Response) => {
+  const gradedWords: IGradedWord[] = req.body;
+  gradedWords.forEach(async (gradedWord) => {
+    const { wordId, wrong } = gradedWord;
+    const word = await Word.findById(wordId);
+    if (word && wrong) {
+      word.wrong = wrong;
+    } else if (word && !wrong) {
+      word.wrong ? (word.wrong = wrong) : word.regRev?.splice(0, 1);
+    }
+    word?.save();
+    console.log(word);
+  });
+  return res.sendStatus(200);
 };

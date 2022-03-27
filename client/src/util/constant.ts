@@ -1,4 +1,4 @@
-export const lang = [
+export const languages = [
   "English",
   "Español",
   "Français",

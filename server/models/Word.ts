@@ -15,6 +15,7 @@ interface IWord {
   regRev?: Date[]; //정규 복습 스케쥴
   wrong: boolean;
   ltmsPoint: number;
+  addedAt: Date;
 }
 
 const wordSchema = new Schema<IWord>({
@@ -31,6 +32,7 @@ const wordSchema = new Schema<IWord>({
   regRev: [{ type: Date }],
   wrong: { type: Boolean, default: false, required: true },
   ltmsPoint: { type: Number, default: 0, required: true },
+  addedAt: { type: Date, required: true },
 });
 
 const Word = model<IWord>("Word", wordSchema);
