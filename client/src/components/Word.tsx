@@ -15,18 +15,7 @@ const Li = styled(motion.li)`
     max-width: 50vw;
     display: block;
     margin: 0.5em;
-    meter {
-      margin-left: 1em;
-      &::-webkit-meter-even-less-good-value {
-        background-color: rgba(192, 57, 43, 1);
-      }
-      &::-webkit-meter-optimum-value {
-        background-color: rgba(241, 196, 15, 1);
-      }
-      &::-webkit-meter-suboptimum-value {
-        background-color: rgba(46, 204, 113, 1);
-      }
-    }
+
     input {
       width: 40em;
       &::placeholder {
@@ -41,6 +30,26 @@ const Li = styled(motion.li)`
         text-align: center;
       }
     }
+  }
+`;
+
+const Meter = styled.meter<{ point: number }>`
+  margin-left: 1em;
+
+  &::-webkit-meter-bar {
+    background: none; /* Required to get rid of the default background property */
+    background-color: whiteSmoke;
+    box-shadow: 0 5px 5px -5px #333 inset;
+  }
+
+  &::-webkit-meter-optimum-value {
+    box-shadow: 0 5px 5px -5px #999 inset;
+    background-color: ${(props) =>
+      props.point <= 33
+        ? "rgba(231, 76, 60,1.0)"
+        : props.point <= 66
+        ? "rgba(241, 196, 15,1.0)"
+        : "rgba(39, 174, 96,1.0)"};
   }
 `;
 
@@ -259,13 +268,13 @@ const Word = ({ word }: IProps) => {
               : word.ltmsPoint <= 66
               ? `중간(${word.ltmsPoint})`
               : `높음(${word.ltmsPoint})`}
-            <meter
+            <Meter
               min={0}
               max={100}
-              low={33}
-              high={67}
+              optimum={word.ltmsPoint}
               value={word.ltmsPoint}
-            ></meter>
+              point={word.ltmsPoint}
+            />
           </span>
           <ButtonContainer>
             <button onClick={editWord}>{"단어 수정"}</button>
