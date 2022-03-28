@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { Types } from "mongoose";
 import { getRegRev, getZeroTime } from "../functions/time";
 import User from "../models/User";
 import Word from "../models/Word";
@@ -125,15 +126,36 @@ export const getWords = async (req: Request, res: Response) => {
   return res.status(200).send({ words });
 };
 
-interface IGradedWord {
+export interface IWord {
+  _id: Types.ObjectId;
+  user: Types.ObjectId;
+  lang: string;
+  spelling: string;
+  pronunciation: string;
+  meaning: string;
+  collocation?: string[];
+  association?: string;
+  ex?: string;
+  syn?: string[];
+  ant?: string[];
+  regRev?: Date[]; //정규 복습 스케쥴
+  wrong: boolean;
+  ltmsPoint: number;
+  addedAt: Date;
+}
+
+export interface ITestResult {
   wordId: string;
   wrong: boolean;
+  wrongAnswer: string;
+  originalWord: IWord;
 }
 
 export const patchGradedWords = (req: Request, res: Response) => {
-  const gradedWords: IGradedWord[] = req.body;
-  gradedWords.forEach(async (gradedWord) => {
-    const { wordId, wrong } = gradedWord;
+  const testResults: ITestResult[] = req.body;
+  console.log(testResults);
+  testResults.forEach(async (testResult) => {
+    const { wordId, wrong } = testResult;
     const word = await Word.findById(wordId);
     if (word && wrong) {
       word.wrong = wrong;

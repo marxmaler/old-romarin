@@ -182,10 +182,23 @@ export interface ITestSetting {
 }
 
 export const testSettingState = atom<ITestSetting>({
-  key: "question",
+  key: "testSetting",
   default: {
     numQ: 0,
     selectedWords: [],
   },
+  effects_UNSTABLE: [persistAtom],
+});
+
+export interface ITestResult {
+  wordId: string;
+  wrong: boolean;
+  myAnswer: string;
+  originalWord: IWord;
+}
+
+export const testResultsState = atom<ITestResult[]>({
+  key: "testResults",
+  default: [],
   effects_UNSTABLE: [persistAtom],
 });

@@ -4,8 +4,9 @@ import { fetchWords } from "../api";
 import { useQuery } from "react-query";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { loginState, wordsState } from "../atoms";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { loginState, testResultsState, wordsState } from "../atoms";
+import { useEffect } from "react";
 
 const ContentSection = styled.div`
   background-color: white;
@@ -55,7 +56,11 @@ function Home() {
     fetchWords(user?._id)
   );
   const [words, setWords] = useRecoilState(wordsState);
-  setWords(data?.words);
+  const setTestResults = useSetRecoilState(testResultsState);
+  useEffect(() => {
+    setWords(data?.words);
+    setTestResults([]);
+  }, [data]);
 
   return (
     <>

@@ -46,12 +46,27 @@ const ErrorMessage = styled.span`
 `;
 
 function Question({ word, register, errors }: IProp) {
+  const transLang =
+    word.lang === "English"
+      ? "영어"
+      : word.lang === "Español"
+      ? "스페인어"
+      : word.lang === "Français"
+      ? "프랑스어"
+      : word.lang === "Deutsch"
+      ? "독일어"
+      : word.lang === "日本語"
+      ? "일본어"
+      : word.lang === "中文"
+      ? "중국어"
+      : "러시아어";
   //의미 보고 철자 쓰기 문제
   return (
     <>
       <Li>
         <h3>
-          보기에 제시된 뜻을 가진 단어의 철자를 빈 칸에 써주세요.
+          보기에 제시된 뜻을 가진 {`${transLang}`} 단어의 철자를 빈 칸에
+          써주세요.
           <span>{word.meaning}</span>
         </h3>
         <label htmlFor={String(word._id) + "_answer"}>답: </label>

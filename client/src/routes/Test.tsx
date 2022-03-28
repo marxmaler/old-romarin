@@ -1,12 +1,12 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useRecoilValue } from "recoil";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { IWord, testSettingState } from "../atoms";
+import { ITestResult, testResultsState, testSettingState } from "../atoms";
 import HeaderMenu from "../components/HeaderMenu";
 import Question from "../components/Question";
-import TestResult from "../components/TestResult";
 
 const TestSheet = styled.div`
   min-height: 50vh;
@@ -65,23 +65,19 @@ interface IForm {
   [key: string]: string;
 }
 
-export interface IGradedWord {
-  wordId: string;
-  wrong: boolean;
-  wrongAnswer: string;
-  originalWord: IWord;
-}
-
 function Test() {
-  const { numQ, selectedWords } = useRecoilValue(testSettingState);
+  const { selectedWords } = useRecoilValue(testSettingState);
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitted },
+    formState: { errors },
   } = useForm();
 
-  const [gradedWords, setGradedWords] = useState<IGradedWord[]>([]);
+  const [testResults, setTestResults] = useRecoilState(testResultsState);
+  const tempTestResults: ITestResult[] = [];
   const onValid = (data: IForm) => {
     const wordIds = Object.keys(data);
     wordIds.forEach((id) => {
@@ -89,71 +85,66 @@ function Test() {
         .filter((word) => String(word._id) === id)
         .map((word) => word)
         .pop();
-      if (word)
-        word?.spelling === data[id]
-          ? setGradedWords((prev) => [
-              {
-                wordId: id,
-                wrong: false,
-                originalWord: word,
-                wrongAnswer: data[id],
-              },
-              ...prev,
-            ])
-          : setGradedWords((prev) => [
-              {
-                wordId: id,
-                wrong: true,
-                originalWord: word,
-                wrongAnswer: data[id],
-              },
-              ...prev,
-            ]);
+
+      if (word) {
+        console.log("word:", word);
+        word.spelling === data[id]
+          ? tempTestResults.push({
+              wordId: id,
+              wrong: false,
+              myAnswer: data[id],
+              originalWord: word,
+            })
+          : tempTestResults.push({
+              wordId: id,
+              wrong: true,
+              myAnswer: data[id],
+              originalWord: word,
+            });
+      }
     });
-    // console.log(gradedWords);
+    setTestResults(tempTestResults);
     fetch("/api/words", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(gradedWords),
+      body: JSON.stringify(tempTestResults),
     });
 
     wordIds.forEach((key) => setValue(key, ""));
+    navigate("/words/test/result");
   };
+
+  useEffect(() => {
+    if (selectedWords.length === 0) {
+      navigate("/words/test/setting");
+    }
+  }, [selectedWords, testResults]);
+
   return (
     <>
       <HeaderMenu />
       <TestSheet>
-        <AnimatePresence exitBeforeEnter>
-          {isSubmitted ? (
-            <TestResult
-              key={"testResult"}
-              isSubmitted={isSubmitted}
-              gradedWords={gradedWords}
-            ></TestResult>
-          ) : (
-            <Form
-              key={"testSheet"}
-              variants={testSheetVar}
-              initial="hidden"
-              animate="show"
-              exit="exit"
-              onSubmit={handleSubmit(onValid)}
-            >
-              <h1>단어 시험</h1>
-              <ul>
-                {selectedWords.map((word, index) => (
-                  <Question
-                    key={`question${index}`}
-                    word={word}
-                    register={register}
-                    errors={errors}
-                  />
-                ))}
-              </ul>
-              <button>답안 제출하기</button>
-            </Form>
-          )}
-        </AnimatePresence>
+        <Form
+          key={"testSheet"}
+          variants={testSheetVar}
+          initial="hidden"
+          animate="show"
+          exit="exit"
+          onSubmit={handleSubmit(onValid)}
+        >
+          <h1>단어 시험</h1>
+          <ul>
+            {selectedWords.map((word, index) => (
+              <Question
+                key={`question${index}`}
+                word={word}
+                register={register}
+                errors={errors}
+              />
+            ))}
+          </ul>
+          <button>답안 제출하기</button>
+        </Form>
       </TestSheet>
     </>
   );

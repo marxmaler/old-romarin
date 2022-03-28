@@ -8,6 +8,7 @@ import { loginState } from "./atoms";
 import Review from "./routes/Review";
 import TestSetting from "./routes/TestSetting";
 import Test from "./routes/Test";
+import TestResult from "./routes/TestResult";
 
 function Router() {
   const login = useRecoilValue(loginState);
@@ -33,6 +34,10 @@ function Router() {
         <Route
           path="/words/test/setting"
           element={login.loggedIn ? <TestSetting /> : <Login />}
+        ></Route>
+        <Route
+          path="/words/test/result"
+          element={login.loggedIn ? <TestResult /> : <Login />}
         ></Route>
       </Routes>
     </BrowserRouter>
