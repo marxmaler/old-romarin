@@ -11,11 +11,11 @@ export interface IWord {
   spelling: string;
   pronunciation: string;
   meaning: string;
-  collocation?: string[];
-  association?: string;
-  ex?: string;
-  syn?: string[];
-  ant?: string[];
+  collocation: string[];
+  association: string;
+  ex: string;
+  syn: string[];
+  ant: string[];
   regRev?: Date[]; //정규 복습 스케쥴
   wrong: boolean;
   ltmsPoint: number;

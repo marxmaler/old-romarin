@@ -176,7 +176,7 @@ function WordForm() {
               </label>
               <input
                 {...register("association")}
-                placeholder="optional(,로 구분)"
+                placeholder="optional"
               ></input>
             </li>
             <li>

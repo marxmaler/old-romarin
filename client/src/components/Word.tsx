@@ -1,5 +1,6 @@
 import { motion, useAnimation } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
 import { IWord } from "../atoms";
@@ -26,6 +27,27 @@ const Li = styled(motion.li)`
         background-color: rgba(46, 204, 113, 1);
       }
     }
+    input {
+      width: 40em;
+      &::placeholder {
+        text-align: center;
+      }
+    }
+    textarea {
+      width: 40em;
+      font-family: inherit;
+      resize: none;
+      &::placeholder {
+        text-align: center;
+      }
+    }
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  button {
   }
 `;
 
@@ -53,78 +75,204 @@ const wordVar = {
 const Word = ({ word }: IProps) => {
   const controls = useAnimation();
   const [ref, inView] = useInView();
+  const [isEditting, setIsEditting] = useState(false);
+  let stringifiedCol = "";
+  let stringifiedSyn = "";
+  let stringifiedAnt = "";
+  word.collocation.length > 0 &&
+    word.collocation.forEach((col, index) => {
+      index !== word.collocation.length - 1
+        ? (stringifiedCol += col + ", ")
+        : (stringifiedCol += col);
+    });
+  word.syn.length > 0 &&
+    word.syn.forEach((syn, index) => {
+      index !== word.syn.length - 1
+        ? (stringifiedSyn += syn + ", ")
+        : (stringifiedSyn += syn);
+    });
+  word.ant.length > 0 &&
+    word.ant.forEach((ant, index) => {
+      index !== word.ant.length - 1
+        ? (stringifiedAnt += ant + ", ")
+        : (stringifiedAnt += ant);
+    });
+
+  const { register, handleSubmit } = useForm();
 
   useEffect(() => {
     inView && controls.start("show");
   }, [controls, inView]);
 
+  const editWord = () => {
+    setIsEditting((prev) => !prev);
+  };
+
+  const onValid = (data: any) => {
+    console.log(data);
+  };
+
   return (
-    <Li variants={wordVar} initial="hidden" animate={controls} ref={ref}>
-      <span>철자 : {word.spelling}</span>
-      {word.pronunciation && word.pronunciation !== "" && (
-        <span>발음 : {word.pronunciation}</span>
-      )}
-      <span>뜻 : {word.meaning}</span>
-      {word.collocation && word.collocation?.length > 0 && (
-        <span>
-          활용 :{" "}
-          {word.collocation.map((col, index) =>
-            word.collocation && index < word.collocation.length - 1
-              ? col + ", "
-              : col
+    <form onSubmit={handleSubmit(onValid)}>
+      {isEditting ? (
+        <Li variants={wordVar} initial="hidden" animate={controls} ref={ref}>
+          <span>
+            철자
+            <br />
+            <input
+              {...register("spelling", {
+                required: true,
+                value: word.spelling,
+              })}
+              placeholder="required"
+            />
+          </span>
+
+          <span>
+            발음
+            <br />
+            <input
+              {...register("pronunciation", { value: word.pronunciation })}
+              placeholder="optional"
+            />
+          </span>
+
+          <span>
+            뜻
+            <br />
+            <input
+              {...register("meaning", {
+                required: true,
+                value: word.meaning,
+              })}
+              placeholder="required"
+            />
+          </span>
+
+          <span>
+            활용
+            <br />
+            <input
+              {...register("collocation", {
+                value: stringifiedCol,
+              })}
+              placeholder="optional(,로 구분)"
+            />
+          </span>
+
+          <span>
+            기억 단서 :{" "}
+            <input
+              {...register("association", {
+                value: word.association,
+              })}
+              placeholder="optional"
+            />
+          </span>
+
+          <span>
+            예문
+            <br />
+            <textarea
+              rows={3}
+              {...register("ex", { value: word.ex })}
+              placeholder="optional"
+            />
+          </span>
+          <span>
+            유의어 :{" "}
+            <input
+              {...register("syn", { value: stringifiedSyn })}
+              placeholder="optional(,로 구분)"
+            />
+          </span>
+          <span>
+            반의어 :{" "}
+            <input
+              {...register("ant", { value: stringifiedAnt })}
+              placeholder="optional(,로 구분)"
+            />
+          </span>
+          <ButtonContainer>
+            <button onClick={editWord}>변경 사항 저장</button>
+          </ButtonContainer>
+        </Li>
+      ) : (
+        <Li variants={wordVar} initial="hidden" animate={controls} ref={ref}>
+          <span>철자 : {word.spelling}</span>
+
+          {word.pronunciation !== "" && (
+            <span>발음 : {word.pronunciation}</span>
           )}
-        </span>
-      )}
-      {word.association && word.association !== "" && (
-        <span>기억 단서 : {word.association}</span>
-      )}
-      {word.ex && word.ex?.length > 0 && (
-        <span>
-          예문
-          <br />
-          {word.ex.split("\n").length > 1 ? (
-            word.ex
-              .split("\n")
-              .map((line, index) => (
-                <span key={String(word._id) + `_ex${index}`}>{line}</span>
-              ))
-          ) : (
-            <span>{word.ex}</span>
+
+          <span>뜻 : {word.meaning}</span>
+
+          {word.collocation?.length > 0 && (
+            <span>
+              활용 :{" "}
+              {word.collocation.map((col, index) =>
+                word.collocation && index < word.collocation.length - 1
+                  ? col + ", "
+                  : col
+              )}
+            </span>
           )}
-        </span>
-      )}
-      {word.syn && word.syn?.length > 0 && (
-        <span>
-          유의어 :{" "}
-          {word.syn.map((syn, index) =>
-            word.syn && index < word.syn.length - 1 ? syn + ", " : syn
+          {word.association !== "" && (
+            <span>기억 단서 : {word.association}</span>
           )}
-        </span>
-      )}
-      {word.ant && word.ant?.length > 0 && (
-        <span>
-          반의어 :{" "}
-          {word.ant.map((ant, index) =>
-            word.ant && index < word.ant.length - 1 ? ant + ", " : ant
+
+          {word.ex?.length > 0 && (
+            <span>
+              예문
+              <br />
+              {word.ex.split("\n").length > 1 ? (
+                word.ex
+                  .split("\n")
+                  .map((line, index) => (
+                    <span key={String(word._id) + `_ex${index}`}>{line}</span>
+                  ))
+              ) : (
+                <span>{word.ex}</span>
+              )}
+            </span>
           )}
-        </span>
+          {word.syn.length > 0 && (
+            <span>
+              유의어 :{" "}
+              {word.syn.map((syn, index) =>
+                word.syn && index < word.syn.length - 1 ? syn + ", " : syn
+              )}
+            </span>
+          )}
+          {word.ant.length > 0 && (
+            <span>
+              반의어 :{" "}
+              {word.ant.map((ant, index) =>
+                word.ant && index < word.ant.length - 1 ? ant + ", " : ant
+              )}
+            </span>
+          )}
+          <span>
+            장기기억 촉진 점수 :{" "}
+            {word.ltmsPoint <= 33
+              ? `낮음(${word.ltmsPoint})`
+              : word.ltmsPoint <= 66
+              ? `중간(${word.ltmsPoint})`
+              : `높음(${word.ltmsPoint})`}
+            <meter
+              min={0}
+              max={100}
+              low={33}
+              high={67}
+              value={word.ltmsPoint}
+            ></meter>
+          </span>
+          <ButtonContainer>
+            <button onClick={editWord}>{"단어 수정"}</button>
+          </ButtonContainer>
+        </Li>
       )}
-      <span>
-        장기기억 촉진 점수 :{" "}
-        {word.ltmsPoint <= 33
-          ? `낮음(${word.ltmsPoint})`
-          : word.ltmsPoint <= 66
-          ? `중간(${word.ltmsPoint})`
-          : `높음(${word.ltmsPoint})`}
-        <meter
-          min={0}
-          max={100}
-          low={33}
-          high={67}
-          value={word.ltmsPoint}
-        ></meter>
-      </span>
-    </Li>
+    </form>
   );
 };
 

@@ -22,6 +22,7 @@ const Li = styled.li`
     font-size: 20px;
     display: block;
     font-weight: 700;
+    line-height: 1.5em;
     span {
       font-weight: 500;
       line-height: 1.5em;
