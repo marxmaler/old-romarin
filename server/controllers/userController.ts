@@ -47,3 +47,17 @@ export const postJoin = async (req: Request, res: Response) => {
   console.log(newUser);
   return res.sendStatus(200);
 };
+
+export const getUser = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.sendStatus(404);
+  }
+
+  req.session.loggedIn = true;
+  req.session.user = user;
+
+  return res.status(200).send({ user });
+};

@@ -71,11 +71,11 @@ export interface IForm {
   spelling: string;
   pronunciation: string;
   meaning: string;
-  collocation?: string;
-  association?: string;
-  ex?: string;
-  syn?: string;
-  ant?: string;
+  collocation: string;
+  association: string;
+  ex: string;
+  syn: string;
+  ant: string;
 }
 
 export type inputNames =
@@ -98,7 +98,7 @@ function WordForm() {
     fetch("/api/words", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lang: languages[langNum], data, today }),
+      body: JSON.stringify({ language: languages[langNum], data, today }),
     });
     Object.keys(data).forEach((key) => setValue(key as inputNames, ""));
     setNumWords((prev) => prev + 1);

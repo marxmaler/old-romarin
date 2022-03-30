@@ -1,5 +1,10 @@
 import express from "express";
-import { postJoin, postLogin, getLogout } from "../controllers/userController";
+import {
+  postJoin,
+  postLogin,
+  getLogout,
+  getUser,
+} from "../controllers/userController";
 import {
   postWord,
   getWords,
@@ -14,16 +19,17 @@ const apiRouter = express.Router();
 apiRouter.route("/users/login").all(mustNotLogin).post(postLogin);
 apiRouter.route("/users/logout").all(mustLogin).get(getLogout);
 apiRouter.route("/users/join").all(mustNotLogin).post(postJoin);
+apiRouter.route("/users/:userId").all(mustLogin).get(getUser);
 apiRouter
   .route("/words")
   .all(mustLogin)
   .post(postWord)
   .put(putWords)
   .patch(patchGradedWords);
+apiRouter.route("/words/:userId/:date").all(mustLogin).get(getWords);
 apiRouter
   .route("/words/:userId/:queryBasis/:query")
   .all(mustLogin)
   .get(getMatchedWords);
-apiRouter.route("/words/:userId/:date").all(mustLogin).get(getWords);
 
 export default apiRouter;

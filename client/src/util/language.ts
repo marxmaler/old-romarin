@@ -8,6 +8,17 @@ export const languages = [
   "Русский",
 ];
 
+export const langs = ["En", "Es", "Fr", "De", "Jp", "Ch", "Ru"];
+export const languagesInKo = [
+  "영어",
+  "스페인어",
+  "프랑스어",
+  "독일어",
+  "일본어",
+  "중국어",
+  "러시아어",
+];
+
 export const abbreviateLanguage = (language: string) => {
   const lang =
     language === "English"

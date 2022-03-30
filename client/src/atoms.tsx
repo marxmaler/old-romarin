@@ -111,6 +111,15 @@ export const languageState = atom<string>({
   effects_UNSTABLE: [persistAtom],
 });
 
+interface ILangStat {
+  [key: string]: number;
+  total: number;
+  once: number;
+  twice: number;
+  threeTimes: number;
+  fourTimes: number;
+}
+
 interface User {
   _id: Types.ObjectId;
   email: string;
@@ -118,6 +127,7 @@ interface User {
   password: string;
   socialOnly: boolean;
   stat: {
+    [key: string]: ILangStat;
     En: {
       total: number;
       once: number;

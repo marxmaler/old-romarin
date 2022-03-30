@@ -5,6 +5,7 @@ import { useRecoilValue, useResetRecoilState } from "recoil";
 import styled from "styled-components";
 import { testResultsState, testSettingState } from "../atoms";
 import HeaderMenu from "../components/HeaderMenu";
+import { getLanguageInKorean } from "../util/language";
 
 const TestSheet = styled.div`
   min-height: 50vh;
@@ -36,7 +37,7 @@ const TestResultBox = styled(motion.div)`
 
 const Li = styled.li`
   min-width: 15em;
-
+  width: 100%;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 10px;
   padding: 20px;
@@ -118,7 +119,9 @@ function TestResult() {
               wrongWords.map((word) => (
                 <Li key={String(word.originalWord._id)}>
                   <h3>
-                    보기에 제시된 뜻을 가진 단어의 철자를 빈 칸에 써주세요.
+                    보기에 제시된 뜻을 가진{" "}
+                    {getLanguageInKorean(word.originalWord.language)} 단어의
+                    철자를 빈 칸에 써주세요.
                     <span>{word.originalWord.meaning}</span>
                   </h3>
                   <Answers>

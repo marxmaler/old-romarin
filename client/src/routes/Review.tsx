@@ -51,7 +51,6 @@ function Review() {
   const [langNum, setLangNum] = useState(0);
   const language = useRecoilValue(languageState);
   const words = useRecoilValue(wordsSelector);
-  console.log(words);
 
   return (
     <>
