@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-import { Types } from "mongoose";
+
 import { getRegRev, getZeroTime } from "../functions/time";
+import {
+  getLtmsPoint,
+  getNthRev,
+  getStatLang,
+  stringToArray,
+} from "../functions/word";
+import { ITestResult } from "../interfaces/interfaces";
 import User from "../models/User";
 import Word from "../models/Word";
 
@@ -22,52 +29,19 @@ export const postWord = async (req: Request, res: Response) => {
 
   const userId = req.session.user?._id;
 
-  const collocation =
-    rawCol !== ""
-      ? String(rawCol)
-          .split(",")
-          .map((col) => {
-            const trimmedWord = col.trim();
-            if (trimmedWord.length > 0) {
-              return trimmedWord;
-            }
-          })
-      : [];
-  const syn =
-    rawSyn !== ""
-      ? String(rawSyn)
-          .split(",")
-          .map((syn) => {
-            const trimmedWord = syn.trim();
-            if (trimmedWord.length > 0) {
-              return trimmedWord;
-            }
-          })
-      : [];
-  const ant =
-    rawAnt !== ""
-      ? String(rawAnt)
-          .split(",")
-          .map((ant) => {
-            const trimmedWord = ant.trim();
-            if (trimmedWord.length > 0) {
-              return trimmedWord;
-            }
-          })
-      : [];
+  const [collocation, syn, ant] = [rawCol, rawSyn, rawAnt].map((raw) =>
+    stringToArray(raw)
+  );
 
-  const spelling = rawSpelling.trim();
-  const pronunciation = rawPronunciation.trim();
-  const meaning = rawMeaning.trim();
-  const association = rawAss.trim();
-  const ex = rawEx.trim();
+  const [spelling, pronunciation, meaning, association, ex] = [
+    rawSpelling,
+    rawPronunciation,
+    rawMeaning,
+    rawAss,
+    rawEx,
+  ].map((raw) => raw.trim());
 
-  let ltmsPoint = 0;
-  ltmsPoint += collocation.length > 0 ? 10 : 0;
-  ltmsPoint += association !== "" ? 50 : 0;
-  ltmsPoint += ex !== "" ? 20 : 0;
-  ltmsPoint += syn.length > 0 ? 10 : 0;
-  ltmsPoint += ant.length > 0 ? 10 : 0;
+  const ltmsPoint = getLtmsPoint({ collocation, association, ex, syn, ant });
 
   const regRev = getRegRev(new Date(today));
   const addedAt = getZeroTime(new Date(today));
@@ -88,19 +62,8 @@ export const postWord = async (req: Request, res: Response) => {
   });
   const user = await User.findById(userId);
   if (user) {
-    lang === "English"
-      ? (user.stat.En.total += 1)
-      : lang === "Español"
-      ? (user.stat.Es.total += 1)
-      : lang === "Français"
-      ? (user.stat.Fr.total += 1)
-      : lang === "Deutsch"
-      ? (user.stat.De.total += 1)
-      : lang === "日本語"
-      ? (user.stat.Jp.total += 1)
-      : lang === "中文"
-      ? (user.stat.Ch.total += 1)
-      : (user.stat.Ru.total += 1);
+    const statLang = getStatLang(lang);
+    user.stat[statLang].total += 1;
   }
   user?.save();
 
@@ -126,44 +89,139 @@ export const getWords = async (req: Request, res: Response) => {
   return res.status(200).send({ words });
 };
 
-export interface IWord {
-  _id: Types.ObjectId;
-  user: Types.ObjectId;
-  lang: string;
-  spelling: string;
-  pronunciation: string;
-  meaning: string;
-  collocation?: string[];
-  association?: string;
-  ex?: string;
-  syn?: string[];
-  ant?: string[];
-  regRev?: Date[]; //정규 복습 스케쥴
-  wrong: boolean;
-  ltmsPoint: number;
-  addedAt: Date;
-}
+export const getMatchedWords = async (req: Request, res: Response) => {
+  const { userId, query, queryBasis } = req.params;
 
-export interface ITestResult {
-  wordId: string;
-  wrong: boolean;
-  wrongAnswer: string;
-  originalWord: IWord;
-}
+  const words = userId
+    ? await Word.find({
+        user: userId,
+        $or: [
+          {
+            [queryBasis]: { $regex: query },
+          },
+        ],
+      })
+    : [];
+  return res.status(200).send({ words });
+};
 
 export const patchGradedWords = (req: Request, res: Response) => {
   const testResults: ITestResult[] = req.body;
-  console.log(testResults);
+
   testResults.forEach(async (testResult) => {
     const { wordId, wrong } = testResult;
     const word = await Word.findById(wordId);
     if (word && wrong) {
+      //문제를 틀렸음
       word.wrong = wrong;
     } else if (word && !wrong) {
-      word.wrong ? (word.wrong = wrong) : word.regRev?.splice(0, 1);
+      //문제를 맞췄음
+      if (word.wrong) {
+        //이미 틀린 적 있는 단어일 때
+        word.wrong = wrong;
+      } else {
+        word.regRev?.splice(0, 1);
+        const nthRev = getNthRev(word.regRev);
+        const statLang = getStatLang(word.lang);
+        const user = await User.findById(word.user);
+
+        if (user) {
+          nthRev === "twice"
+            ? (user.stat[statLang].once -= 1)
+            : nthRev === "threeTimes"
+            ? (user.stat[statLang].twice -= 1)
+            : nthRev === "fourTimes"
+            ? (user.stat[statLang].threeTimes -= 1)
+            : null;
+          user.stat[statLang][nthRev] += 1;
+        }
+
+        console.log(user);
+      }
     }
     word?.save();
-    console.log(word);
+    if (word?.regRev?.length === 0) {
+      await Word.deleteOne({ _id: word._id });
+    }
+
+    // console.log(word);
   });
   return res.sendStatus(200);
+};
+
+export const putWords = async (req: Request, res: Response) => {
+  const {
+    data: {
+      lang,
+      spelling: rawSpelling,
+      pronunciation: rawPronunciation,
+      meaning: rawMeaning,
+      collocation: rawCol,
+      association: rawAss,
+      ex: rawEx,
+      syn: rawSyn,
+      ant: rawAnt,
+    },
+    wordId,
+  } = req.body;
+
+  const [collocation, syn, ant] = [rawCol, rawSyn, rawAnt].map((raw) =>
+    stringToArray(raw)
+  );
+
+  const [spelling, pronunciation, meaning, association, ex] = [
+    rawSpelling,
+    rawPronunciation,
+    rawMeaning,
+    rawAss,
+    rawEx,
+  ].map((raw) => raw.trim());
+
+  const ltmsPoint = getLtmsPoint({ collocation, association, ex, syn, ant });
+
+  const oldWord = await Word.findById(wordId);
+  const oldLang = oldWord?.lang;
+
+  const updatedWord = await Word.findByIdAndUpdate(
+    wordId,
+    {
+      lang,
+      spelling,
+      pronunciation,
+      meaning,
+      collocation,
+      association,
+      ex,
+      syn,
+      ant,
+      ltmsPoint,
+    },
+    { new: true }
+  );
+
+  if (updatedWord && oldLang && oldLang !== lang) {
+    const user = await User.findById(updatedWord?.user);
+    const nthRev = getNthRev(updatedWord.regRev);
+
+    const oldStatLang = getStatLang(oldLang);
+    const newStatLang = getStatLang(updatedWord.lang);
+
+    if (user) {
+      nthRev === "once"
+        ? (user.stat[oldStatLang].once -= 1)
+        : nthRev === "twice"
+        ? (user.stat[oldStatLang].twice -= 1)
+        : nthRev === "threeTimes"
+        ? (user.stat[oldStatLang].threeTimes -= 1)
+        : null;
+      user.stat[newStatLang][nthRev] += 1;
+
+      user.stat[oldStatLang].total -= 1;
+      user.stat[newStatLang].total += 1;
+    }
+    user?.save();
+  }
+
+  console.log(updatedWord);
+  return res.status(200).send({ word: updatedWord });
 };

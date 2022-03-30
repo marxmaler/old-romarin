@@ -6,3 +6,7 @@ export const fetchWords = async (userId: Types.ObjectId | undefined) => {
     await fetch(`/api/words/${String(userId)}/${yyyymmdd(new Date())}`)
   ).json();
 };
+
+export const fetchMatchedWords = async (query: string) => {
+  return await (await fetch(`/api/words/${query}`)).json();
+};

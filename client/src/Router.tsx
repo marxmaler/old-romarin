@@ -9,6 +9,8 @@ import Review from "./routes/Review";
 import TestSetting from "./routes/TestSetting";
 import Test from "./routes/Test";
 import TestResult from "./routes/TestResult";
+import Search from "./routes/Search";
+import Statistics from "./routes/Statistics";
 
 function Router() {
   const login = useRecoilValue(loginState);
@@ -38,6 +40,14 @@ function Router() {
         <Route
           path="/words/test/result"
           element={login.loggedIn ? <TestResult /> : <Login />}
+        ></Route>
+        <Route
+          path="/words/search"
+          element={login.loggedIn ? <Search /> : <Login />}
+        ></Route>
+        <Route
+          path="/words/statistics"
+          element={login.loggedIn ? <Statistics /> : <Login />}
         ></Route>
       </Routes>
     </BrowserRouter>

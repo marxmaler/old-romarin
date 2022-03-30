@@ -1,9 +1,13 @@
 import { motion, useAnimation } from "framer-motion";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useInView } from "react-intersection-observer";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { IWord } from "../atoms";
+import { IWord, wordsState } from "../atoms";
+import { languages } from "../util/constant";
+
+const Form = styled.form``;
 
 const Li = styled(motion.li)`
   list-style: none;
@@ -28,6 +32,17 @@ const Li = styled(motion.li)`
       resize: none;
       &::placeholder {
         text-align: center;
+      }
+    }
+
+    ul {
+      padding: 0px 30px;
+      li {
+        list-style: square;
+        margin-top: 5px;
+        &:last-child {
+          margin-bottom: 10px;
+        }
       }
     }
   }
@@ -81,10 +96,7 @@ const wordVar = {
   },
 };
 
-const Word = ({ word }: IProps) => {
-  const controls = useAnimation();
-  const [ref, inView] = useInView();
-  const [isEditting, setIsEditting] = useState(false);
+const getStringifiedArrayProps = (word: IWord) => {
   let stringifiedCol = "";
   let stringifiedSyn = "";
   let stringifiedAnt = "";
@@ -107,18 +119,41 @@ const Word = ({ word }: IProps) => {
         : (stringifiedAnt += ant);
     });
 
+  return { stringifiedCol, stringifiedSyn, stringifiedAnt };
+};
+
+const Word = ({ word }: IProps) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView();
+  const [wordState, setWordState] = useState<IWord>(word);
+  const [isEditting, setIsEditting] = useState(false);
+  const setWords = useSetRecoilState(wordsState);
+  const { stringifiedAnt, stringifiedCol, stringifiedSyn } =
+    getStringifiedArrayProps(wordState);
+
   const { register, handleSubmit } = useForm();
 
   useEffect(() => {
     inView && controls.start("show");
   }, [controls, inView]);
 
-  const editWord = () => {
-    setIsEditting((prev) => !prev);
-  };
-
-  const onValid = (data: any) => {
+  const onValid = async (data: Object) => {
     console.log(data);
+    const { word: updatedWord } = await (
+      await fetch("/api/words", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data, wordId: String(word._id) }),
+      })
+    ).json();
+    console.log(updatedWord);
+    setWordState(() => updatedWord);
+    setWords((prev) => {
+      return prev.map((word) =>
+        word._id === updatedWord._id ? updatedWord : word
+      );
+    });
+    setIsEditting((prev) => !prev);
   };
 
   return (
@@ -126,12 +161,28 @@ const Word = ({ word }: IProps) => {
       {isEditting ? (
         <Li variants={wordVar} initial="hidden" animate={controls} ref={ref}>
           <span>
+            언어
+            <br />
+            <select
+              {...register("lang", {
+                required: true,
+                value: wordState.lang,
+              })}
+            >
+              {languages.map((language) => (
+                <option value={language} key={`language_option_${language}`}>
+                  {language}
+                </option>
+              ))}
+            </select>
+          </span>
+          <span>
             철자
             <br />
             <input
-              {...register("spelling", {
+              {...register(`spelling`, {
                 required: true,
-                value: word.spelling,
+                value: wordState.spelling,
               })}
               placeholder="required"
             />
@@ -141,7 +192,9 @@ const Word = ({ word }: IProps) => {
             발음
             <br />
             <input
-              {...register("pronunciation", { value: word.pronunciation })}
+              {...register(`pronunciation`, {
+                value: wordState.pronunciation,
+              })}
               placeholder="optional"
             />
           </span>
@@ -150,9 +203,9 @@ const Word = ({ word }: IProps) => {
             뜻
             <br />
             <input
-              {...register("meaning", {
+              {...register(`meaning`, {
                 required: true,
-                value: word.meaning,
+                value: wordState.meaning,
               })}
               placeholder="required"
             />
@@ -162,7 +215,7 @@ const Word = ({ word }: IProps) => {
             활용
             <br />
             <input
-              {...register("collocation", {
+              {...register(`collocation`, {
                 value: stringifiedCol,
               })}
               placeholder="optional(,로 구분)"
@@ -170,10 +223,11 @@ const Word = ({ word }: IProps) => {
           </span>
 
           <span>
-            기억 단서 :{" "}
+            기억 단서
+            <br />
             <input
-              {...register("association", {
-                value: word.association,
+              {...register(`association`, {
+                value: wordState.association,
               })}
               placeholder="optional"
             />
@@ -184,100 +238,120 @@ const Word = ({ word }: IProps) => {
             <br />
             <textarea
               rows={3}
-              {...register("ex", { value: word.ex })}
+              {...register(`ex`, { value: wordState.ex })}
               placeholder="optional"
             />
           </span>
           <span>
-            유의어 :{" "}
+            유의어
+            <br />
             <input
-              {...register("syn", { value: stringifiedSyn })}
+              {...register(`syn`, {
+                value: stringifiedSyn,
+              })}
               placeholder="optional(,로 구분)"
             />
           </span>
           <span>
-            반의어 :{" "}
+            반의어
+            <br />
             <input
-              {...register("ant", { value: stringifiedAnt })}
+              {...register(`ant`, {
+                value: stringifiedAnt,
+              })}
               placeholder="optional(,로 구분)"
             />
           </span>
           <ButtonContainer>
-            <button onClick={editWord}>변경 사항 저장</button>
+            <button>변경 사항 저장</button>
           </ButtonContainer>
         </Li>
       ) : (
         <Li variants={wordVar} initial="hidden" animate={controls} ref={ref}>
-          <span>철자 : {word.spelling}</span>
+          <span>철자 : {wordState.spelling}</span>
 
-          {word.pronunciation !== "" && (
-            <span>발음 : {word.pronunciation}</span>
+          {wordState.pronunciation !== "" && (
+            <span>발음 : {wordState.pronunciation}</span>
           )}
 
-          <span>뜻 : {word.meaning}</span>
+          <span>뜻 : {wordState.meaning}</span>
 
-          {word.collocation?.length > 0 && (
+          {wordState.collocation?.length > 0 && (
             <span>
-              활용 :{" "}
-              {word.collocation.map((col, index) =>
-                word.collocation && index < word.collocation.length - 1
-                  ? col + ", "
-                  : col
-              )}
+              활용
+              <br />
+              <ul>
+                {wordState.collocation.map((col, index) => (
+                  <li key={`${String(wordState._id)}col_${index}`}>{col}</li>
+                ))}
+              </ul>
             </span>
           )}
-          {word.association !== "" && (
-            <span>기억 단서 : {word.association}</span>
+          {wordState.association !== "" && (
+            <span>기억 단서 : {wordState.association}</span>
           )}
 
-          {word.ex?.length > 0 && (
+          {wordState.ex?.length > 0 && (
             <span>
               예문
               <br />
-              {word.ex.split("\n").length > 1 ? (
-                word.ex
+              {wordState.ex.split("\n").length > 1 ? (
+                wordState.ex
                   .split("\n")
                   .map((line, index) => (
-                    <span key={String(word._id) + `_ex${index}`}>{line}</span>
+                    <span key={String(wordState._id) + `_ex${index}`}>
+                      {line}
+                    </span>
                   ))
               ) : (
-                <span>{word.ex}</span>
+                <span>{wordState.ex}</span>
               )}
             </span>
           )}
-          {word.syn.length > 0 && (
+          {wordState.syn.length > 0 && (
             <span>
               유의어 :{" "}
-              {word.syn.map((syn, index) =>
-                word.syn && index < word.syn.length - 1 ? syn + ", " : syn
+              {wordState.syn.map((syn, index) =>
+                wordState.syn && index < wordState.syn.length - 1
+                  ? syn + ", "
+                  : syn
               )}
             </span>
           )}
-          {word.ant.length > 0 && (
+          {wordState.ant.length > 0 && (
             <span>
               반의어 :{" "}
-              {word.ant.map((ant, index) =>
-                word.ant && index < word.ant.length - 1 ? ant + ", " : ant
+              {wordState.ant.map((ant, index) =>
+                wordState.ant && index < wordState.ant.length - 1
+                  ? ant + ", "
+                  : ant
               )}
             </span>
           )}
           <span>
             장기기억 촉진 점수 :{" "}
-            {word.ltmsPoint <= 33
-              ? `낮음(${word.ltmsPoint})`
-              : word.ltmsPoint <= 66
-              ? `중간(${word.ltmsPoint})`
-              : `높음(${word.ltmsPoint})`}
+            {wordState.ltmsPoint <= 33
+              ? `낮음(${wordState.ltmsPoint})`
+              : wordState.ltmsPoint <= 66
+              ? `중간(${wordState.ltmsPoint})`
+              : `높음(${wordState.ltmsPoint})`}
             <Meter
               min={0}
               max={100}
-              optimum={word.ltmsPoint}
-              value={word.ltmsPoint}
-              point={word.ltmsPoint}
+              optimum={wordState.ltmsPoint}
+              value={wordState.ltmsPoint}
+              point={wordState.ltmsPoint}
             />
           </span>
           <ButtonContainer>
-            <button onClick={editWord}>{"단어 수정"}</button>
+            <button
+              onClick={(event: React.FormEvent) => {
+                event.preventDefault();
+                setIsEditting((prev) => !prev);
+              }}
+            >
+              {"단어 수정"}
+            </button>
           </ButtonContainer>
         </Li>
       )}

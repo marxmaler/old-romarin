@@ -16,7 +16,7 @@ export interface IWord {
   ex: string;
   syn: string[];
   ant: string[];
-  regRev?: Date[]; //정규 복습 스케쥴
+  regRev: Date[]; //정규 복습 스케쥴
   wrong: boolean;
   ltmsPoint: number;
   addedAt: Date;

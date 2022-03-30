@@ -67,7 +67,7 @@ const Form = styled.form`
   }
 `;
 
-interface IForm {
+export interface IForm {
   spelling: string;
   pronunciation: string;
   meaning: string;

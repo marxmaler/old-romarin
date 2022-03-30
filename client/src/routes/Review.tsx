@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { languageState, wordsState } from "../atoms";
+import { languageState, wordsSelector, wordsState } from "../atoms";
 import HeaderMenu from "../components/HeaderMenu";
 import LanguageSetter from "../components/LanguageSetter";
 import Word from "../components/Word";
@@ -48,9 +48,9 @@ const wordListVar = {
 };
 
 function Review() {
-  const words = useRecoilValue(wordsState);
   const [langNum, setLangNum] = useState(0);
   const language = useRecoilValue(languageState);
+  const words = useRecoilValue(wordsSelector);
 
   return (
     <>
@@ -69,15 +69,9 @@ function Review() {
             animate="show"
             exit="hide"
           >
-            {words.map((word) =>
-              language === "All" ? (
-                <Word key={String(word._id)} word={word} />
-              ) : (
-                word.lang === language && (
-                  <Word key={String(word._id)} word={word} />
-                )
-              )
-            )}
+            {words.map((word) => (
+              <Word key={String(word._id)} word={word} />
+            ))}
           </motion.ul>
         </AnimatePresence>
         <Link to={"/"}>
