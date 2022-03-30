@@ -7,7 +7,7 @@ const { persistAtom } = recoilPersist();
 export interface IWord {
   _id: Types.ObjectId;
   user: Types.ObjectId;
-  lang: string;
+  language: string;
   spelling: string;
   pronunciation: string;
   meaning: string;
@@ -32,8 +32,10 @@ export const wordsSelector = selector({
   key: "wordsSelector",
   get: ({ get }) => {
     const words = get(wordsState);
-    const lang = get(languageState);
-    return words.filter((word) => lang === "All" || word.lang === lang);
+    const language = get(languageState);
+    return words.filter(
+      (word) => language === "All" || word.language === language
+    );
   },
 });
 
@@ -41,9 +43,11 @@ export const synSelector = selector({
   key: "synSelector",
   get: ({ get }) => {
     const words = get(wordsState);
-    const lang = get(languageState);
+    const language = get(languageState);
     const wordsWithSyn = words
-      .filter((word) => word.lang === lang && word.syn && word.syn.length > 0)
+      .filter(
+        (word) => word.language === language && word.syn && word.syn.length > 0
+      )
       .map((word) => word);
 
     let syn: string[] = [];
@@ -60,9 +64,11 @@ export const antSelector = selector({
   key: "antSelector",
   get: ({ get }) => {
     const words = get(wordsState);
-    const lang = get(languageState);
+    const language = get(languageState);
     const wordsWithAnt = words
-      .filter((word) => word.lang === lang && word.ant && word.ant.length > 0)
+      .filter(
+        (word) => word.language === language && word.ant && word.ant.length > 0
+      )
       .map((word) => word);
 
     let ant: string[] = [];
@@ -79,11 +85,13 @@ export const colSelector = selector({
   key: "colSelector",
   get: ({ get }) => {
     const words = get(wordsState);
-    const lang = get(languageState);
+    const language = get(languageState);
     const wordsWithCol = words
       .filter(
         (word) =>
-          word.lang === lang && word.collocation && word.collocation.length > 0
+          word.language === language &&
+          word.collocation &&
+          word.collocation.length > 0
       )
       .map((word) => word);
 
@@ -98,7 +106,7 @@ export const colSelector = selector({
 });
 
 export const languageState = atom<string>({
-  key: "languages",
+  key: "language",
   default: "English",
   effects_UNSTABLE: [persistAtom],
 });

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { languages } from "../util/constant";
+import { languages } from "../util/language";
 import LanguageSetter from "./LanguageSetter";
 
 const FormContainer = styled.div`

@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { languageState, wordsSelector, wordsState } from "../atoms";
 import HeaderMenu from "../components/HeaderMenu";
@@ -51,6 +51,7 @@ function Review() {
   const [langNum, setLangNum] = useState(0);
   const language = useRecoilValue(languageState);
   const words = useRecoilValue(wordsSelector);
+  console.log(words);
 
   return (
     <>

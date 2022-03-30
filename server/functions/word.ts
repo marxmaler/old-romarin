@@ -16,23 +16,42 @@ export const stringToArray = (stringData: string) => {
   return array;
 };
 
-export const getStatLang = (lang: string) => {
+export const getlangFomLanguage = (language: string) => {
   const statLang =
-    lang === "English"
+    language === "English"
       ? "En"
-      : lang === "Español"
+      : language === "Español"
       ? "Es"
-      : lang === "Français"
+      : language === "Français"
       ? "Fr"
-      : lang === "Deutsch"
+      : language === "Deutsch"
       ? "De"
-      : lang === "日本語"
+      : language === "日本語"
       ? "Jp"
-      : lang === "中文"
+      : language === "中文"
       ? "Ch"
       : "Ru";
 
   return statLang;
+};
+
+export const getLanguageFromLang = (lang: string) => {
+  const language =
+    lang === "En"
+      ? "English"
+      : lang === "Es"
+      ? "Español"
+      : lang === "Fr"
+      ? "Français"
+      : lang === "De"
+      ? "Deutsch"
+      : lang === "Jp"
+      ? "日本語"
+      : lang === "Ch"
+      ? "中文"
+      : "Русский";
+
+  return language;
 };
 
 export const getLtmsPoint = ({

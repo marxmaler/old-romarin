@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { languageState } from "../atoms";
-import { languages } from "../util/constant";
+import { languages } from "../util/language";
 
 const Lang = styled.div<{ page: string }>`
   margin-bottom: 30px;
@@ -53,29 +53,29 @@ interface IProp {
 
 function LanguageSetter({ page, langNum, setLangNum }: IProp) {
   const [direction, setDirection] = useState(1);
-  const langs = ["review", "testSetting"].includes(page)
+  const languageOptions = ["review", "testSetting"].includes(page)
     ? ["All", ...languages]
     : languages;
 
   const [language, setLanguage] = useRecoilState(languageState);
 
   useEffect(() => {
-    setLanguage(langs[langNum]);
+    setLanguage(languageOptions[langNum]);
   }, [langNum]);
 
-  const prevLang = () => {
+  const prevLanguage = () => {
     setDirection(-1);
-    setLangNum((prev) => (prev > 0 ? prev - 1 : langs.length - 1));
+    setLangNum((prev) => (prev > 0 ? prev - 1 : languageOptions.length - 1));
   };
-  const nextLang = () => {
+  const nextLanguage = () => {
     setDirection(1);
-    setLangNum((prev) => (prev < langs.length - 1 ? prev + 1 : 0));
+    setLangNum((prev) => (prev < languageOptions.length - 1 ? prev + 1 : 0));
   };
 
   return (
     <Lang page={page}>
       <svg
-        onClick={prevLang}
+        onClick={prevLanguage}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 320 512"
       >
@@ -95,7 +95,7 @@ function LanguageSetter({ page, langNum, setLangNum }: IProp) {
         </motion.h3>
       </AnimatePresence>
       <svg
-        onClick={nextLang}
+        onClick={nextLanguage}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 320 512"
       >

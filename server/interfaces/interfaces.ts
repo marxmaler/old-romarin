@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 export interface IWord {
   _id: Types.ObjectId;
   user: Types.ObjectId;
-  lang: string;
+  language: string;
   spelling: string;
   pronunciation: string;
   meaning: string;

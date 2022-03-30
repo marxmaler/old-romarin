@@ -3,7 +3,7 @@ import { IWord } from "../interfaces/interfaces";
 
 const wordSchema = new Schema<IWord>({
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  lang: { type: String, required: true },
+  language: { type: String, required: true },
   spelling: { type: String, required: true },
   pronunciation: { type: String, required: true, default: "" },
   meaning: { type: String, required: true },

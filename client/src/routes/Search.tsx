@@ -4,9 +4,8 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { IWord, languageState, loginState } from "../atoms";
+import { IWord, loginState } from "../atoms";
 import HeaderMenu from "../components/HeaderMenu";
-import LanguageSetter from "../components/LanguageSetter";
 import Word from "../components/Word";
 import { koPropToEnProp } from "../util/word";
 
@@ -64,8 +63,6 @@ interface IForm {
 }
 
 function Search() {
-  const [langNum, setLangNum] = useState(0);
-  const language = useRecoilValue(languageState);
   const { user } = useRecoilValue(loginState);
   const [words, setWords] = useState<IWord[]>([]);
   const {
@@ -87,12 +84,6 @@ function Search() {
     <>
       <HeaderMenu />
       <Container>
-        <LanguageSetter
-          page={"review"}
-          langNum={langNum}
-          setLangNum={setLangNum}
-        />
-
         <Form onSubmit={handleSubmit(onValid)}>
           <span>
             검색 기준 :{" "}
@@ -111,7 +102,7 @@ function Search() {
         </Form>
         <AnimatePresence exitBeforeEnter>
           <motion.ul
-            key={language + "_wordList"}
+            key={"wordList"}
             variants={wordListVar}
             initial="hidden"
             animate="show"

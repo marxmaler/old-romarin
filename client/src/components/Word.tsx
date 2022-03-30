@@ -5,7 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { IWord, wordsState } from "../atoms";
-import { languages } from "../util/constant";
+import { languages } from "../util/language";
 
 const Form = styled.form``;
 
@@ -164,9 +164,9 @@ const Word = ({ word }: IProps) => {
             언어
             <br />
             <select
-              {...register("lang", {
+              {...register("language", {
                 required: true,
-                value: wordState.lang,
+                value: wordState.language,
               })}
             >
               {languages.map((language) => (

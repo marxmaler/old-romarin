@@ -4,7 +4,7 @@ import { getRegRev, getZeroTime } from "../functions/time";
 import {
   getLtmsPoint,
   getNthRev,
-  getStatLang,
+  getlangFomLanguage,
   stringToArray,
 } from "../functions/word";
 import { ITestResult } from "../interfaces/interfaces";
@@ -14,7 +14,7 @@ import Word from "../models/Word";
 export const postWord = async (req: Request, res: Response) => {
   const {
     today,
-    lang,
+    language,
     data: {
       spelling: rawSpelling,
       pronunciation: rawPronunciation,
@@ -47,7 +47,7 @@ export const postWord = async (req: Request, res: Response) => {
   const addedAt = getZeroTime(new Date(today));
   const newWord = await Word.create({
     user: userId,
-    lang,
+    language,
     spelling,
     pronunciation,
     meaning,
@@ -62,7 +62,7 @@ export const postWord = async (req: Request, res: Response) => {
   });
   const user = await User.findById(userId);
   if (user) {
-    const statLang = getStatLang(lang);
+    const statLang = getlangFomLanguage(language);
     user.stat[statLang].total += 1;
   }
   user?.save();
@@ -122,7 +122,7 @@ export const patchGradedWords = (req: Request, res: Response) => {
       } else {
         word.regRev?.splice(0, 1);
         const nthRev = getNthRev(word.regRev);
-        const statLang = getStatLang(word.lang);
+        const statLang = getlangFomLanguage(word.language);
         const user = await User.findById(word.user);
 
         if (user) {
@@ -152,7 +152,7 @@ export const patchGradedWords = (req: Request, res: Response) => {
 export const putWords = async (req: Request, res: Response) => {
   const {
     data: {
-      lang,
+      language,
       spelling: rawSpelling,
       pronunciation: rawPronunciation,
       meaning: rawMeaning,
@@ -180,12 +180,12 @@ export const putWords = async (req: Request, res: Response) => {
   const ltmsPoint = getLtmsPoint({ collocation, association, ex, syn, ant });
 
   const oldWord = await Word.findById(wordId);
-  const oldLang = oldWord?.lang;
+  const oldLanguage = oldWord?.language;
 
   const updatedWord = await Word.findByIdAndUpdate(
     wordId,
     {
-      lang,
+      language,
       spelling,
       pronunciation,
       meaning,
@@ -199,12 +199,12 @@ export const putWords = async (req: Request, res: Response) => {
     { new: true }
   );
 
-  if (updatedWord && oldLang && oldLang !== lang) {
+  if (updatedWord && oldLanguage && oldLanguage !== language) {
     const user = await User.findById(updatedWord?.user);
     const nthRev = getNthRev(updatedWord.regRev);
 
-    const oldStatLang = getStatLang(oldLang);
-    const newStatLang = getStatLang(updatedWord.lang);
+    const oldStatLang = getlangFomLanguage(oldLanguage);
+    const newStatLang = getlangFomLanguage(updatedWord.language);
 
     if (user) {
       nthRev === "once"
