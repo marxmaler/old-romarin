@@ -59,6 +59,9 @@ body {
 main {
   width: 100%;
   min-height: 100vh;
+  background-color: ${(props) => props.theme.periwinkleTint90};
+  /* background-image: url("https://cdn.pixabay.com/photo/2015/12/13/00/11/rosemary-1090419__340.jpg"); */
+
 }
 `;
 

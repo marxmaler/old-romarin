@@ -37,7 +37,7 @@ const Container = styled.div`
     padding: 20px;
     border-radius: 30px;
     background-color: ${(props) => props.theme.periwinkleTint90};
-    color: ${(props) => props.theme.periwinkleShade30};
+    color: ${(props) => props.theme.periwinkleShade50};
     width: max-content;
     display: flex;
     flex-direction: column;
@@ -59,12 +59,32 @@ const LiContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  background-color: ${(props) => props.theme.periwinkleTint10};
+  background-color: ${(props) => props.theme.periwinkle};
   color: white;
   border-radius: 10px;
   min-width: 45%;
   margin: 1.5em;
   margin-bottom: -0.5em;
+  padding: 0px 30px;
+`;
+
+const Select = styled.select`
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  outline: 0 none;
+  padding: 0 5px;
+  text-align: center;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  option {
+    color: white;
+    background-color: ${(props) => props.theme.periwinkleTint30};
+    padding: 3px 0;
+    font-size: 16px;
+    text-align: center;
+  }
 `;
 
 function Statistics() {
@@ -164,13 +184,13 @@ function Statistics() {
             <LiContainer>
               <li>
                 언어 :{" "}
-                <select onChange={selectMidLang}>
+                <Select onChange={selectMidLang}>
                   {languagesInKo.map((language, index) => (
                     <option key={`midLangOption_${index}`} value={langs[index]}>
                       {language}
                     </option>
                   ))}
-                </select>
+                </Select>
               </li>
 
               <li>전체 : {user?.stat[midLang].total}</li>
@@ -238,7 +258,7 @@ function Statistics() {
               <li>
                 <span>
                   그래프 :{" "}
-                  <select onChange={selectStatisticMenu}>
+                  <Select onChange={selectStatisticMenu}>
                     {["언어별 일일 평균", "언어별 1주 간 새로 추가된 단어"].map(
                       (menu, index) => (
                         <option
@@ -259,7 +279,7 @@ function Statistics() {
                         </option>
                       )
                     )}
-                  </select>
+                  </Select>
                 </span>
               </li>
             </LiContainer>

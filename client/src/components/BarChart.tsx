@@ -26,7 +26,7 @@ const BarChart = ({ labels, series }: IChartProps) => {
     title: {
       text: "단어별 복습 현황",
       align: "center",
-      style: { fontSize: "18px", color: "rgba(109, 95, 179, 1)" },
+      style: { fontSize: "18px", color: "rgba(78, 68, 128, 1)" },
     },
     colors: ["rgba(156, 136, 255,1)"],
     plotOptions: {
@@ -44,7 +44,7 @@ const BarChart = ({ labels, series }: IChartProps) => {
       offsetY: 0,
       style: {
         fontSize: "14px",
-        colors: ["white"],
+        colors: ["rgba(245, 243, 255, 1)"],
       },
     },
     // stroke: {

@@ -56,7 +56,7 @@ const LineAreaChart = ({ labels, avg }: ILineChartProp) => {
     title: {
       text: "지난 1주 간 새로 추가된 단어",
       align: "center",
-      style: { fontSize: "18px", color: "rgba(109, 95, 179, 1)" },
+      style: { fontSize: "18px", color: "rgba(78, 68, 128, 1)" },
     },
     markers: {
       size: [1, 0],

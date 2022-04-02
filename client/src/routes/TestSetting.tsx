@@ -8,14 +8,32 @@ import HeaderMenu from "../components/HeaderMenu";
 import LanguageSetter from "../components/LanguageSetter";
 import { ITestSettingFormProps, IWord } from "../interfaces";
 
+// const Container = styled(motion.div)`
+//   background: linear-gradient(
+//     to right bottom,
+//     rgba(156, 136, 255, 1),
+//     rgba(16, 14, 25, 1)
+//   );
+
+//   min-height: 100vh;
+//   width: 100%;
+//   color: white;
+//   padding: 50px;
+// `;
+
 const FormContainer = styled.div`
   display: flex;
-  margin-top: 50px;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  min-height: 50vh;
+  min-height: 100vh;
   color: white;
+  padding: 50px;
+  background: linear-gradient(
+    to right bottom,
+    rgba(156, 136, 255, 1),
+    rgba(16, 14, 25, 1)
+  );
   h3 {
     text-shadow: 1px 1px 1px rgba(189, 195, 199, 0.7);
     text-align: center;
@@ -27,7 +45,7 @@ const FormContainer = styled.div`
 `;
 
 const Form = styled.form`
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: ${(props) => props.theme.periwinkleTint50};
   padding: 30px 50px;
   display: flex;
   flex-direction: column;
@@ -77,6 +95,24 @@ const WordNum = styled.h3`
   color: rgba(255, 255, 255, 0.8) !important;
 `;
 
+const DarkBox = styled.div`
+  background-color: ${(props) => props.theme.periwinkleShade30};
+  padding: 20px;
+  border-radius: 10px;
+  margin: 10px 0px;
+  color: ${(props) => props.theme.periwinkleTint90};
+  border: ${(props) => props.theme.periwinkleTint90} 1px solid;
+  span {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    strong {
+      margin-bottom: 10px;
+    }
+  }
+`;
+
 function TestSetting() {
   const {
     register,
@@ -123,30 +159,33 @@ function TestSetting() {
         <Form onSubmit={handleSubmit(onValid)}>
           <WordNum>단어 갯수 : {selectedWords.length}개</WordNum>
           <ul>
-            <li>
-              <label>시험 문항수</label>
-              <input
-                type="number"
-                disabled={selectedWords.length > 0 ? false : true}
-                {...register("numQ", {
-                  required: "시험 문항수를 입력해주세요.",
-                  min: {
-                    value: 1,
-                    message: "0보다 큰 자연수를 입력해주세요.",
-                  },
-                  max: {
-                    value: selectedWords.length,
-                    message:
-                      "복습할 단어 수와 같거나 그보다 작은 자연수를 입력해주세요.",
-                  },
-                })}
-              ></input>
-            </li>
-            {errors?.numQ?.message && (
-              <ErrorMessage>
-                <span>{errors.numQ.message}</span>
-              </ErrorMessage>
-            )}
+            <DarkBox>
+              {" "}
+              <li>
+                <label>시험 문항수</label>
+                <input
+                  type="number"
+                  disabled={selectedWords.length > 0 ? false : true}
+                  {...register("numQ", {
+                    required: "시험 문항수를 입력해주세요.",
+                    min: {
+                      value: 1,
+                      message: "0보다 큰 자연수를 입력해주세요.",
+                    },
+                    max: {
+                      value: selectedWords.length,
+                      message:
+                        "복습할 단어 수와 같거나 그보다 작은 자연수를 입력해주세요.",
+                    },
+                  })}
+                ></input>
+              </li>
+              {errors?.numQ?.message && (
+                <ErrorMessage>
+                  <span>{errors.numQ.message}</span>
+                </ErrorMessage>
+              )}
+            </DarkBox>
           </ul>
           {selectedWords.length > 0 && <button>시험 시작</button>}
         </Form>

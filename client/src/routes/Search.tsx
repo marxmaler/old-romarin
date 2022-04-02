@@ -31,8 +31,51 @@ const Container = styled(motion.div)`
 const Form = styled.form`
   span {
     display: block;
+    strong {
+      font-size: 20px;
+      font-weight: 600;
+      display: block;
+      margin-top: 10px;
+    }
     input {
-      margin-bottom: 1em;
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+      border: 0;
+      &::placeholder {
+        text-align: center;
+      }
+    }
+  }
+`;
+
+const Select = styled.select`
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  outline: 0 none;
+  padding: 0 5px;
+  text-align: center;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  option {
+    color: white;
+    background-color: ${(props) => props.theme.periwinkleTint30};
+    padding: 3px 0;
+    font-size: 16px;
+    text-align: center;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  min-height: max-content;
+  margin-top: 10px;
+  a {
+    button {
     }
   }
 `;
@@ -92,7 +135,7 @@ function Search() {
         <Form onSubmit={handleSubmit(onValid)}>
           <span>
             검색 기준 :{" "}
-            <select
+            <Select
               {...register("queryBasis", { required: true, value: "spelling" })}
             >
               {["철자", "뜻", "유의어", "반의어"].map((basis, index) => (
@@ -103,11 +146,14 @@ function Search() {
                   {basis}
                 </option>
               ))}
-            </select>
+            </Select>
           </span>
           <span>
-            검색어 : <input {...register("query", { required: true })} />
-            <button>검색</button>
+            <strong>검색어</strong>
+            <input {...register("query", { required: true })} />
+            <ButtonContainer>
+              <button>검색</button>
+            </ButtonContainer>
           </span>
         </Form>
         <AnimatePresence exitBeforeEnter>
@@ -123,9 +169,11 @@ function Search() {
           </motion.ul>
         </AnimatePresence>
         {isSubmitSuccessful && (
-          <Link to={"/"}>
-            <button>뒤로 가기</button>
-          </Link>
+          <ButtonContainer>
+            <Link to={"/"}>
+              <button>뒤로 가기</button>
+            </Link>
+          </ButtonContainer>
         )}
       </Container>
     </>

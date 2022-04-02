@@ -110,7 +110,7 @@ const LineChart = ({
     title: {
       text: selectedMenu,
       align: "center",
-      style: { fontSize: "18px", color: "rgba(109, 95, 179, 1)" },
+      style: { fontSize: "18px", color: "rgba(78, 68, 128, 1)" },
     },
     markers: {
       size: [1, 1, 1, 1, 1, 1, 1, 0],

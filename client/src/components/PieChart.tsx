@@ -30,7 +30,7 @@ const PieChart = ({ labels, series }: IChartProps) => {
     title: {
       text: "누적 학습 단어 비율",
       align: "center",
-      style: { fontSize: "18px", color: "rgba(109, 95, 179, 1)" },
+      style: { fontSize: "18px", color: "rgba(78, 68, 128, 1)" },
     },
     dataLabels: {
       offsetY: 0,

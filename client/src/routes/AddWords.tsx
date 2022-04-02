@@ -9,6 +9,7 @@ const Container = styled(motion.div)`
     rgba(156, 136, 255, 1),
     rgba(16, 14, 25, 1)
   );
+
   min-height: 100vh;
   width: 100%;
   color: white;

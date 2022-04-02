@@ -15,7 +15,10 @@ const Lang = styled.div<{ page: string }>`
     width: 1em;
     cursor: pointer;
     path {
-      fill: ${(props) => props.theme.periwinkleTint90};
+      fill: ${(props) =>
+        props.page === "addWords"
+          ? props.theme.periwinkleShade50
+          : props.theme.periwinkleTint90};
     }
   }
   h3 {

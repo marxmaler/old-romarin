@@ -17,7 +17,7 @@ const FormContainer = styled.div`
     margin-bottom: 30px;
     font-size: 23px;
     font-weight: 700;
-    color: ${(props) => props.theme.periwinkleShade40};
+    color: ${(props) => props.theme.periwinkleShade50};
   }
 `;
 
@@ -28,8 +28,8 @@ const Form = styled.form`
   padding: 30px 50px;
   display: flex;
   flex-direction: column;
-  min-width: max-content;
   min-height: max-content;
+  max-width: 50vw;
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 20px;
 
@@ -57,17 +57,30 @@ const Form = styled.form`
         }
       }
       input {
-        width: 40em;
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        margin-top: 10px;
+        border: 0;
+        background-color: ${(props) => props.theme.periwinkleTint90};
+        color: ${(props) => props.theme.periwinkleShade50};
         &::placeholder {
           text-align: center;
         }
       }
       textarea {
         font-family: inherit;
-        width: 40em;
+        width: 100%;
         resize: none;
+        padding: 10px;
+        border-radius: 10px;
+        margin-top: 10px;
+        border: 0;
+        background-color: ${(props) => props.theme.periwinkleTint90};
+        color: ${(props) => props.theme.periwinkleShade50};
         &::placeholder {
           text-align: center;
+          transform: translate3d(0, 15px, 0);
         }
       }
     }
@@ -105,6 +118,16 @@ const TransparentBox = styled.div`
     strong {
       margin-bottom: 10px;
     }
+  }
+`;
+
+const SpellingInput = styled.input`
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  &::placeholder {
+    font-size: 14px;
+    font-weight: 100;
+    transform: translate3d(0, -4px, 0);
   }
 `;
 
@@ -172,10 +195,10 @@ function WordForm() {
                     기억해두고 싶은 다른 철자법이 있다면 기억 단서란에 써주세요.
                   </span>
                 </label>
-                <input
+                <SpellingInput
                   {...register("spelling", { required: true })}
                   placeholder="required"
-                ></input>
+                ></SpellingInput>
               </li>
               <li>
                 <label>
