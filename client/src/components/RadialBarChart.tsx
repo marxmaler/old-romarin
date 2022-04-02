@@ -1,6 +1,7 @@
 import { ApexOptions } from "apexcharts";
 import ReactApexChart from "react-apexcharts";
 import styled from "styled-components";
+import { IChartProps } from "../interfaces";
 
 const ChartContainer = styled.div`
   border: 0.5px rgba(0, 0, 0, 0.2) solid;
@@ -8,18 +9,14 @@ const ChartContainer = styled.div`
   margin-top: 20px;
 `;
 
-interface IPieChartProps {
-  labels: string;
-  series: number;
-}
-
-const RadialBarChart = ({ labels, series }: IPieChartProps) => {
+const RadialBarChart = ({ labels, series }: IChartProps) => {
   const options: ApexOptions = {
-    series: [series],
+    series: [{ data: series }],
     chart: {
       height: 350,
       type: "radialBar",
     },
+    colors: ["rgba(156, 136, 255,1)"],
     plotOptions: {
       radialBar: {
         hollow: {
@@ -27,14 +24,17 @@ const RadialBarChart = ({ labels, series }: IPieChartProps) => {
         },
       },
     },
-    labels: [labels],
+    labels: labels,
+    stroke: {
+      lineCap: "round",
+    },
   };
   return (
     <ChartContainer>
       <ReactApexChart
-        options={options}
         type="radialBar"
-        series={[series]}
+        options={options}
+        series={series}
         width={380}
       />
     </ChartContainer>

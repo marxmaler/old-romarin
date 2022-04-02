@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { ThemeConsumer } from "styled-components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { languages } from "../util/language";
@@ -11,25 +11,26 @@ const FormContainer = styled.div`
   align-items: center;
   width: 100%;
   min-height: 50vh;
-  color: white;
   h3 {
     text-shadow: 1px 1px 1px rgba(189, 195, 199, 0.7);
     text-align: center;
     margin-bottom: 30px;
     font-size: 23px;
     font-weight: 700;
-    color: rgba(0, 0, 0, 1);
+    color: ${(props) => props.theme.periwinkleShade40};
   }
 `;
 
 const Form = styled.form`
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: ${(props) => props.theme.periwinkleTint50};
+
+  color: white;
   padding: 30px 50px;
   display: flex;
   flex-direction: column;
   min-width: max-content;
   min-height: max-content;
-  border: 1px solid rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 20px;
 
   ul {
@@ -44,6 +45,12 @@ const Form = styled.form`
       label {
         display: inline-block;
         text-align: start;
+        strong {
+          font-size: 20px;
+          font-weight: 600;
+          display: block;
+          margin-bottom: 0.5em;
+        }
         span {
           display: block;
           font-size: 12px;
@@ -63,6 +70,40 @@ const Form = styled.form`
           text-align: center;
         }
       }
+    }
+  }
+`;
+
+const DarkBox = styled.div`
+  background-color: ${(props) => props.theme.periwinkleShade30};
+  padding: 20px;
+  border-radius: 10px;
+  margin: 10px 0px;
+  color: ${(props) => props.theme.periwinkleTint90};
+  border: ${(props) => props.theme.periwinkleTint90} 1px solid;
+  span {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    strong {
+      margin-bottom: 10px;
+    }
+  }
+`;
+
+const TransparentBox = styled.div`
+  background-color: transparent;
+  padding: 20px;
+  border-radius: 10px;
+  color: ${(props) => props.theme.periwinkleShade50};
+  span {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    strong {
+      margin-bottom: 10px;
     }
   }
 `;
@@ -107,117 +148,137 @@ function WordForm() {
   return (
     <>
       <FormContainer>
-        <h3>새로 추가된 단어: {numWords}개</h3>
-        <h3>학습 언어</h3>
-        <LanguageSetter
-          page="addWords"
-          langNum={langNum}
-          setLangNum={setLangNum}
-        />
         <Form onSubmit={handleSubmit(onValid)}>
+          <TransparentBox>
+            <h3>새로 추가된 단어: {numWords}개</h3>
+            <h3>학습 언어</h3>
+            <LanguageSetter
+              page="addWords"
+              langNum={langNum}
+              setLangNum={setLangNum}
+            />
+          </TransparentBox>
+
           <ul>
-            <li>
-              <label>
-                철자*
-                <span>
-                  단어 시험 유형 중에 Spelling 맞추기가 있으므로, 쓰는 법이 여러
-                  가지여도 하나만 적어주세요.
-                </span>
-                <span>
-                  기억해두고 싶은 다른 철자법이 있다면 기억 단서란에 써주세요.
-                </span>
-              </label>
-              <input
-                {...register("spelling", { required: true })}
-                placeholder="required"
-              ></input>
-            </li>
-            <li>
-              <label>발음</label>
-              <input
-                {...register("pronunciation")}
-                placeholder="optional"
-              ></input>
-            </li>
-            <li>
-              <label>뜻*</label>
-              <input
-                {...register("meaning", { required: true })}
-                placeholder="required"
-              ></input>
-            </li>
-            <li>
-              <label>
-                활용
-                <span>함께 자주 쓰이는 단어나 표현이 있으면 추가해주세요.</span>
-                <span>
-                  ( )로 이 단어가 들어가는 부분을 표시해두면 단어 시험에서
-                  알맞은 단어 고르기 문제가 출제됩니다.
-                </span>
-                <span>(장기기억 촉진 점수 10점)</span>
-              </label>
-              <input
-                {...register("collocation")}
-                placeholder="optional(,로 구분)"
-              ></input>
-            </li>
-            <li>
-              <label>
-                기억 단서
-                <span>
-                  단어를 기억하는데 도움이 되는 상상, 농담, 배경 지식, 발음 및
-                  철자상의 특징, TMI를 추가해주세요.
-                </span>
-                <span>
-                  웃기고, 섹시하고, 생생하고, 아름답고, 초현실적인 내용일수록
-                  기억에 오래남습니다.
-                </span>
-                <span>(장기기억 촉진 점수 50점)</span>
-              </label>
-              <input
-                {...register("association")}
-                placeholder="optional"
-              ></input>
-            </li>
-            <li>
-              <label>
-                예문
-                <span>
-                  직접 보고 들은 문장이나 손수 쓴 예문을 적어주세요. 기왕이면
-                  재밌고 흥미로운 걸로 부탁해요.
-                </span>
-                <span>
-                  ( )로 이 단어가 들어가는 부분을 표시해두면, 단어 시험에서 빈칸
-                  채우기 문제가 출제됩니다.
-                </span>
-                <span>(장기기억 촉진 점수 20점)</span>
-              </label>
-              <textarea
-                rows={3}
-                {...register("ex")}
-                placeholder="optional"
-              ></textarea>
-            </li>
-            <li>
-              <label>
-                유의어
-                <span>(장기기억 촉진 점수 10점)</span>
-              </label>
-              <input
-                {...register("syn")}
-                placeholder="optional(,로 구분)"
-              ></input>
-            </li>
-            <li>
-              <label>
-                반의어
-                <span>(장기기억 촉진 점수 10점)</span>
-              </label>
-              <input
-                {...register("ant")}
-                placeholder="optional(,로 구분)"
-              ></input>
-            </li>
+            <DarkBox>
+              <li>
+                <label>
+                  <strong>철자*</strong>
+                  <span>
+                    단어 시험 유형 중에 Spelling 맞추기가 있으므로, 쓰는 법이
+                    여러 가지여도 하나만 적어주세요.
+                  </span>
+                  <span>
+                    기억해두고 싶은 다른 철자법이 있다면 기억 단서란에 써주세요.
+                  </span>
+                </label>
+                <input
+                  {...register("spelling", { required: true })}
+                  placeholder="required"
+                ></input>
+              </li>
+              <li>
+                <label>
+                  <strong>발음</strong>
+                </label>
+                <input
+                  {...register("pronunciation")}
+                  placeholder="optional"
+                ></input>
+              </li>
+              <li>
+                <label>
+                  <strong>뜻*</strong>
+                </label>
+                <input
+                  {...register("meaning", { required: true })}
+                  placeholder="required"
+                ></input>
+              </li>
+            </DarkBox>
+            <TransparentBox>
+              <li>
+                <label>
+                  <strong>활용</strong>
+                  <span>
+                    함께 자주 쓰이는 단어나 표현이 있으면 추가해주세요.
+                  </span>
+                  <span>
+                    ( )로 이 단어가 들어가는 부분을 표시해두면 단어 시험에서
+                    알맞은 단어 고르기 문제가 출제됩니다.
+                  </span>
+                  <span>(장기기억 촉진 점수 10점)</span>
+                </label>
+                <input
+                  {...register("collocation")}
+                  placeholder="optional(,로 구분)"
+                ></input>
+              </li>
+            </TransparentBox>
+            <DarkBox>
+              <li>
+                <label>
+                  <strong>기억 단서</strong>
+                  <span>
+                    단어를 기억하는데 도움이 되는 상상, 농담, 배경 지식, 발음 및
+                    철자상의 특징, TMI를 추가해주세요.
+                  </span>
+                  <span>
+                    웃기고, 섹시하고, 생생하고, 아름답고, 초현실적인 내용일수록
+                    기억에 오래남습니다.
+                  </span>
+                  <span>(장기기억 촉진 점수 50점)</span>
+                </label>
+                <input
+                  {...register("association")}
+                  placeholder="optional"
+                ></input>
+              </li>
+            </DarkBox>
+
+            <DarkBox>
+              <li>
+                <label>
+                  <strong>예문</strong>
+                  <span>
+                    직접 보고 들은 문장이나 손수 쓴 예문을 적어주세요. 기왕이면
+                    재밌고 흥미로운 걸로 부탁해요.
+                  </span>
+                  <span>
+                    ( )로 이 단어가 들어가는 부분을 표시해두면, 단어 시험에서
+                    빈칸 채우기 문제가 출제됩니다.
+                  </span>
+                  <span>(장기기억 촉진 점수 20점)</span>
+                </label>
+                <textarea
+                  rows={3}
+                  {...register("ex")}
+                  placeholder="optional"
+                ></textarea>
+              </li>
+            </DarkBox>
+            <TransparentBox>
+              <li>
+                <label>
+                  <strong>유의어</strong>
+                  <span>(장기기억 촉진 점수 10점)</span>
+                </label>
+                <input
+                  {...register("syn")}
+                  placeholder="optional(,로 구분)"
+                ></input>
+              </li>
+              <li>
+                <label>
+                  <strong>반의어</strong>
+                  <span>(장기기억 촉진 점수 10점)</span>
+                </label>
+                <input
+                  {...register("ant")}
+                  placeholder="optional(,로 구분)"
+                ></input>
+              </li>
+            </TransparentBox>
           </ul>
           <button>추가</button>
         </Form>

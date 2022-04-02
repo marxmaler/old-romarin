@@ -4,9 +4,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { ITestResult, testResultsState, testSettingState } from "../atoms";
+import { testResultsState, testSettingState } from "../atoms";
 import HeaderMenu from "../components/HeaderMenu";
 import Question from "../components/Question";
+import { ITestResult } from "../interfaces";
 
 const TestSheet = styled.div`
   min-height: 50vh;

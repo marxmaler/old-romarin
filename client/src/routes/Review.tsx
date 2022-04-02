@@ -9,7 +9,11 @@ import LanguageSetter from "../components/LanguageSetter";
 import Word from "../components/Word";
 
 const Container = styled(motion.div)`
-  background-color: rgba(0, 0, 0, 0.9);
+  background: linear-gradient(
+    to right bottom,
+    rgba(156, 136, 255, 1),
+    rgba(16, 14, 25, 1)
+  );
   min-height: 50vh;
   max-width: 100%;
   color: rgba(255, 255, 255, 1);

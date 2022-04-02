@@ -11,6 +11,7 @@ import {
   patchGradedWords,
   putWords,
   getMatchedWords,
+  getWeeklyWords,
 } from "../controllers/wordController";
 import { mustLogin, mustNotLogin } from "../middlewares";
 
@@ -26,6 +27,7 @@ apiRouter
   .post(postWord)
   .put(putWords)
   .patch(patchGradedWords);
+apiRouter.route("/words/weekly/:date").all(mustLogin).get(getWeeklyWords);
 apiRouter.route("/words/:userId/:date").all(mustLogin).get(getWords);
 apiRouter
   .route("/words/:userId/:queryBasis/:query")

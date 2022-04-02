@@ -72,7 +72,9 @@ export const getLtmsPoint = ({
 
 export const getNthRev = (regRev: Date[]) => {
   const nthRev =
-    regRev?.length === 3
+    regRev?.length === 4
+      ? "never"
+      : regRev?.length === 3
       ? "once"
       : regRev?.length === 2
       ? "twice"

@@ -2,11 +2,13 @@ function timeFormat(time: number) {
   return String(time).padStart(2, "0");
 }
 
-export function getZeroTime(dateObj: Date) {
-  const year = dateObj.getFullYear();
-  const month = dateObj.getMonth() + 1;
-  const date = dateObj.getDate();
+export function getZeroTime() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const date = now.getDate();
   const zerofiedDate = `${year}-${timeFormat(month)}-${timeFormat(date)}`;
+
   return new Date(zerofiedDate);
 }
 
@@ -24,30 +26,29 @@ export function getTomorrow(dateObj: Date) {
   return tomorrow;
 }
 
-export function getAWeekLater(dateObj: Date) {
-  const aWeekLater = new Date(dateObj);
+export function getNDaysBeforeDate(n: number) {
+  const nDaysFromDate = getZeroTime();
+  nDaysFromDate.setDate(nDaysFromDate.getDate() - n);
+  return nDaysFromDate;
+}
+
+export function getAWeekLater() {
+  const aWeekLater = new Date();
   aWeekLater.setDate(aWeekLater.getDate() + 7);
   return aWeekLater;
 }
 
-export function getAMonthLater(dateObj: Date) {
-  const aMonthLater = new Date(dateObj);
+export function getAMonthLater() {
+  const aMonthLater = new Date();
   aMonthLater.setDate(aMonthLater.getDate() + 30);
   return aMonthLater;
 }
 
-export function getThreeMonthLater(dateObj: Date) {
-  const threeMonthLater = new Date(dateObj);
-  threeMonthLater.setDate(threeMonthLater.getDate() + 90);
-  return threeMonthLater;
-}
-
-export function getRegRev(dateObj: Date) {
-  const today = getZeroTime(dateObj);
-  const tomorrow = getTomorrow(today);
-  const nextWeek = getAWeekLater(today);
-  const nextMonth = getAMonthLater(today);
-  const threeMonthLater = getThreeMonthLater(today);
-  const regRev = [today, tomorrow, nextWeek, nextMonth, threeMonthLater];
-  return regRev;
+export function getEightDateArray() {
+  const today = getZeroTime();
+  const pastWeek = [];
+  for (let i = 7; i > 0; i--) {
+    pastWeek.push(getNDaysBeforeDate(i));
+  }
+  return [...pastWeek, today];
 }

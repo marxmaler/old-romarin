@@ -4,14 +4,19 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { IWord, loginState } from "../atoms";
+import { loginState } from "../atoms";
 import HeaderMenu from "../components/HeaderMenu";
 import Word from "../components/Word";
+import { IWord } from "../interfaces";
 import { koPropToEnProp } from "../util/word";
 
 const Container = styled(motion.div)`
-  background-color: rgba(0, 0, 0, 0.9);
-  min-height: 50vh;
+  background: linear-gradient(
+    to right bottom,
+    rgba(156, 136, 255, 1),
+    rgba(62, 54, 102, 1)
+  );
+  min-height: 85vh;
   max-width: 100%;
   color: rgba(255, 255, 255, 1);
   padding: 50px;
@@ -90,8 +95,13 @@ function Search() {
             <select
               {...register("queryBasis", { required: true, value: "spelling" })}
             >
-              {["철자", "뜻", "유의어", "반의어"].map((basis) => (
-                <option value={koPropToEnProp(basis)}>{basis}</option>
+              {["철자", "뜻", "유의어", "반의어"].map((basis, index) => (
+                <option
+                  key={`queryBasisOption_${index}`}
+                  value={koPropToEnProp(basis)}
+                >
+                  {basis}
+                </option>
               ))}
             </select>
           </span>

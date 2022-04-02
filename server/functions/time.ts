@@ -18,6 +18,12 @@ export function yyyymmdd(dateObj: Date) {
   return formattedDate;
 }
 
+export function getEightDaysAgo(dateObj: Date) {
+  const aWeekAgo = new Date(dateObj);
+  aWeekAgo.setDate(aWeekAgo.getDate() - 8);
+  return aWeekAgo;
+}
+
 export function getTomorrow(dateObj: Date) {
   const tomorrow = new Date(dateObj);
   tomorrow.setDate(tomorrow.getDate() + 1);

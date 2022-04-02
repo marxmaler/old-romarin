@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import { getRegRev, getZeroTime } from "../functions/time";
+import { getEightDaysAgo, getRegRev, getZeroTime } from "../functions/time";
 import {
   getLtmsPoint,
   getNthRev,
@@ -10,6 +10,59 @@ import {
 import { ITestResult } from "../interfaces/interfaces";
 import User from "../models/User";
 import Word from "../models/Word";
+
+// GET Methods
+
+export const getWords = async (req: Request, res: Response) => {
+  const today = new Date(req.params.date);
+  const userId = req.params.userId;
+
+  const words = userId
+    ? await Word.find({
+        user: userId,
+        $or: [
+          {
+            regRev: { $lte: today },
+          },
+          { wrong: true },
+        ],
+      })
+    : [];
+  return res.status(200).send({ words });
+};
+
+export const getMatchedWords = async (req: Request, res: Response) => {
+  const { userId, query, queryBasis } = req.params;
+
+  const words = userId
+    ? await Word.find({
+        user: userId,
+        $or: [
+          {
+            [queryBasis]: { $regex: query },
+          },
+        ],
+      })
+    : [];
+  return res.status(200).send({ words });
+};
+
+export const getWeeklyWords = async (req: Request, res: Response) => {
+  const { date } = req.params;
+
+  // 이러지 말고 1주일 치 단어를 한꺼번에 find로 가져오기, 가져오고 addedAt으로 프론트 쪽에서 솎아도 됨
+  const weeklyWords = await Word.find({
+    addedAt: { $gte: getEightDaysAgo(new Date(date)), $lte: new Date(date) },
+  });
+
+  // console.log(weeklyWords);
+  // console.log(weeklyWords.length);
+  return res.status(200).send({
+    result: weeklyWords,
+  });
+};
+
+// POST Methods
 
 export const postWord = async (req: Request, res: Response) => {
   const {
@@ -71,39 +124,7 @@ export const postWord = async (req: Request, res: Response) => {
   return res.sendStatus(200);
 };
 
-export const getWords = async (req: Request, res: Response) => {
-  const today = new Date(req.params.date);
-  const userId = req.params.userId;
-
-  const words = userId
-    ? await Word.find({
-        user: userId,
-        $or: [
-          {
-            regRev: { $lte: today },
-          },
-          { wrong: true },
-        ],
-      })
-    : [];
-  return res.status(200).send({ words });
-};
-
-export const getMatchedWords = async (req: Request, res: Response) => {
-  const { userId, query, queryBasis } = req.params;
-
-  const words = userId
-    ? await Word.find({
-        user: userId,
-        $or: [
-          {
-            [queryBasis]: { $regex: query },
-          },
-        ],
-      })
-    : [];
-  return res.status(200).send({ words });
-};
+// PATCH Methods
 
 export const patchGradedWords = (req: Request, res: Response) => {
   const testResults: ITestResult[] = req.body;
@@ -126,14 +147,20 @@ export const patchGradedWords = (req: Request, res: Response) => {
         const user = await User.findById(word.user);
 
         if (user) {
-          nthRev === "twice"
-            ? (user.stat[statLang].once -= 1)
-            : nthRev === "threeTimes"
-            ? (user.stat[statLang].twice -= 1)
-            : nthRev === "fourTimes"
-            ? (user.stat[statLang].threeTimes -= 1)
-            : null;
-          user.stat[statLang][nthRev] += 1;
+          if (
+            nthRev === "twice" ||
+            nthRev === "threeTimes" ||
+            nthRev === "fourTimes"
+          ) {
+            nthRev === "twice"
+              ? (user.stat[statLang].once -= 1)
+              : nthRev === "threeTimes"
+              ? (user.stat[statLang].twice -= 1)
+              : nthRev === "fourTimes"
+              ? (user.stat[statLang].threeTimes -= 1)
+              : null;
+          }
+          if (nthRev !== "never") user.stat[statLang][nthRev] += 1;
         }
 
         console.log(user);
@@ -148,6 +175,8 @@ export const patchGradedWords = (req: Request, res: Response) => {
   });
   return res.sendStatus(200);
 };
+
+// PUT Methods
 
 export const putWords = async (req: Request, res: Response) => {
   const {
@@ -207,14 +236,10 @@ export const putWords = async (req: Request, res: Response) => {
     const newStatLang = getlangFomLanguage(updatedWord.language);
 
     if (user) {
-      nthRev === "once"
-        ? (user.stat[oldStatLang].once -= 1)
-        : nthRev === "twice"
-        ? (user.stat[oldStatLang].twice -= 1)
-        : nthRev === "threeTimes"
-        ? (user.stat[oldStatLang].threeTimes -= 1)
-        : null;
-      user.stat[newStatLang][nthRev] += 1;
+      if (nthRev === "once" || nthRev === "twice" || nthRev === "threeTimes") {
+        user.stat[oldStatLang][nthRev] -= 1;
+        user.stat[newStatLang][nthRev] += 1;
+      }
 
       user.stat[oldStatLang].total -= 1;
       user.stat[newStatLang].total += 1;

@@ -1,26 +1,15 @@
 import { atom, selector } from "recoil";
-import { Types } from "mongoose";
 import { recoilPersist } from "recoil-persist";
+import {
+  ILogIn,
+  ITestResult,
+  ITestSetting,
+  IWeeklyWords,
+  IWord,
+} from "./interfaces";
+import { getZeroTime } from "./util/time";
 
 const { persistAtom } = recoilPersist();
-
-export interface IWord {
-  _id: Types.ObjectId;
-  user: Types.ObjectId;
-  language: string;
-  spelling: string;
-  pronunciation: string;
-  meaning: string;
-  collocation: string[];
-  association: string;
-  ex: string;
-  syn: string[];
-  ant: string[];
-  regRev: Date[]; //정규 복습 스케쥴
-  wrong: boolean;
-  ltmsPoint: number;
-  addedAt: Date;
-}
 
 export const wordsState = atom<IWord[]>({
   key: "words",
@@ -111,80 +100,6 @@ export const languageState = atom<string>({
   effects_UNSTABLE: [persistAtom],
 });
 
-interface ILangStat {
-  [key: string]: number;
-  total: number;
-  once: number;
-  twice: number;
-  threeTimes: number;
-  fourTimes: number;
-}
-
-interface User {
-  _id: Types.ObjectId;
-  email: string;
-  name: string;
-  password: string;
-  socialOnly: boolean;
-  stat: {
-    [key: string]: ILangStat;
-    En: {
-      total: number;
-      once: number;
-      twice: number;
-      threeTimes: number;
-      fourTimes: number;
-    };
-    Es: {
-      total: number;
-      once: number;
-      twice: number;
-      threeTimes: number;
-      fourTimes: number;
-    };
-    Fr: {
-      total: number;
-      once: number;
-      twice: number;
-      threeTimes: number;
-      fourTimes: number;
-    };
-    De: {
-      total: number;
-      once: number;
-      twice: number;
-      threeTimes: number;
-      fourTimes: number;
-    };
-    Jp: {
-      total: number;
-      once: number;
-      twice: number;
-      threeTimes: number;
-      fourTimes: number;
-    };
-    Ch: {
-      total: number;
-      once: number;
-      twice: number;
-      threeTimes: number;
-      fourTimes: number;
-    };
-    Ru: {
-      total: number;
-      once: number;
-      twice: number;
-      threeTimes: number;
-      fourTimes: number;
-    };
-  };
-}
-
-interface ILogIn {
-  loggedIn: boolean;
-  user: User | null;
-}
-
 export const loginState = atom<ILogIn>({
   key: "login",
   default: {
@@ -193,11 +108,6 @@ export const loginState = atom<ILogIn>({
   },
   effects_UNSTABLE: [persistAtom],
 });
-
-export interface ITestSetting {
-  numQ: number;
-  selectedWords: IWord[];
-}
 
 export const testSettingState = atom<ITestSetting>({
   key: "testSetting",
@@ -208,15 +118,32 @@ export const testSettingState = atom<ITestSetting>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export interface ITestResult {
-  wordId: string;
-  wrong: boolean;
-  myAnswer: string;
-  originalWord: IWord;
-}
-
 export const testResultsState = atom<ITestResult[]>({
   key: "testResults",
   default: [],
   effects_UNSTABLE: [persistAtom],
+});
+
+export const weeklyWordsState = atom<IWord[]>({
+  key: "weeklyWords",
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});
+export const weeklyWordsBeforeTodaySelector = selector({
+  key: "weeklyWordsBeforeTodaySelector",
+  get: ({ get }) => {
+    const weeklyWords = get(weeklyWordsState);
+    if (weeklyWords.length > 0) {
+      return weeklyWords.filter(
+        (word) => new Date(word.addedAt).getDate() !== getZeroTime().getDate()
+      );
+    } else {
+      return [];
+    }
+  },
+});
+
+export const weeklyWordsCntState = atom<number[]>({
+  key: "weeklyWordsCnt",
+  default: [0, 0, 0, 0, 0, 0, 0, 0],
 });

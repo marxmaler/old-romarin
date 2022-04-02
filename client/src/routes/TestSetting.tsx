@@ -3,9 +3,10 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { IWord, testSettingState, wordsSelector, wordsState } from "../atoms";
+import { testSettingState, wordsSelector } from "../atoms";
 import HeaderMenu from "../components/HeaderMenu";
 import LanguageSetter from "../components/LanguageSetter";
+import { ITestSettingFormProps, IWord } from "../interfaces";
 
 const FormContainer = styled.div`
   display: flex;
@@ -76,17 +77,13 @@ const WordNum = styled.h3`
   color: rgba(255, 255, 255, 0.8) !important;
 `;
 
-interface IForm {
-  numQ: number;
-}
-
 function TestSetting() {
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<IForm>();
+  } = useForm<ITestSettingFormProps>();
   const [langNum, setLangNum] = useState(0);
   const selectedWords = useRecoilValue(wordsSelector);
   const setTestSetting = useSetRecoilState(testSettingState);
@@ -96,12 +93,11 @@ function TestSetting() {
     setValue("numQ", selectedWords.length);
   }, [selectedWords]);
 
-  const onValid = (data: IForm) => {
+  const onValid = ({ numQ }: ITestSettingFormProps) => {
     //numQ 갯수와 selectedWords 갯수가 다르면 random index 뽑아서 새로운 selectedWord로 교체하기
-    if (data.numQ === selectedWords.length) {
-      setTestSetting({ numQ: data.numQ, selectedWords });
+    if (numQ === selectedWords.length) {
+      setTestSetting({ numQ, selectedWords });
     } else {
-      const numQ = data.numQ;
       const reselectedWords: IWord[] = [];
       while (reselectedWords.length < numQ) {
         const randomIndex = Math.floor(Math.random() * selectedWords.length);
@@ -109,7 +105,7 @@ function TestSetting() {
         !reselectedWords.includes(reselectedWord) &&
           reselectedWords.push(reselectedWord);
       }
-      setTestSetting({ numQ: data.numQ, selectedWords: reselectedWords });
+      setTestSetting({ numQ, selectedWords: reselectedWords });
     }
     navigate("/words/test");
   };

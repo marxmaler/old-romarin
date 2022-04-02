@@ -4,30 +4,46 @@ import { useForm } from "react-hook-form";
 import { useInView } from "react-intersection-observer";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { IWord, wordsState } from "../atoms";
+import { wordsState } from "../atoms";
+import { IWord, IWordProps } from "../interfaces";
 import { languages } from "../util/language";
-
-const Form = styled.form``;
+import { getStringifiedArrayProps } from "../util/word";
 
 const Li = styled(motion.li)`
+  border: ${(props) => props.theme.periwinkleTint90} 1px solid;
   list-style: none;
-  background-color: rgba(192, 57, 43, 1);
+  background-color: ${(props) => props.theme.periwinkleTint50};
   border-radius: 10px;
   padding: 10px;
   margin-bottom: 20px;
   span {
-    max-width: 50vw;
+    max-width: 30vw;
     display: block;
     margin: 0.5em;
+    line-height: 1.5em;
+
+    strong {
+      font-size: 20px;
+      font-weight: 600;
+      display: block;
+    }
 
     input {
-      width: 40em;
+      margin-bottom: 10px;
+      width: 100%;
+      border-radius: 10px;
+      padding: 10px;
+      border: 0;
       &::placeholder {
         text-align: center;
       }
     }
     textarea {
-      width: 40em;
+      margin-bottom: 10px;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px;
+      width: 100%;
       font-family: inherit;
       resize: none;
       &::placeholder {
@@ -35,11 +51,14 @@ const Li = styled(motion.li)`
       }
     }
 
+    select {
+      margin-bottom: 10px;
+    }
+
     ul {
       padding: 0px 30px;
       li {
         list-style: square;
-        margin-top: 5px;
         &:last-child {
           margin-bottom: 10px;
         }
@@ -68,16 +87,33 @@ const Meter = styled.meter<{ point: number }>`
   }
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainerTop = styled.div`
   display: flex;
-  justify-content: center;
-  button {
+  justify-content: flex-end;
+  min-height: max-content;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    &:hover {
+      transform: scale(1.3);
+      opacity: 0.5;
+      transition: 0.7s;
+    }
+    path {
+      fill: ${(props) => props.theme.periwinkleShade50};
+    }
   }
 `;
 
-interface IProps {
-  word: IWord;
-}
+const ButtonContainerBottom = styled.div`
+  display: flex;
+  justify-content: center;
+  min-height: max-content;
+  button {
+  }
+`;
 
 const wordVar = {
   hidden: {
@@ -96,33 +132,64 @@ const wordVar = {
   },
 };
 
-const getStringifiedArrayProps = (word: IWord) => {
-  let stringifiedCol = "";
-  let stringifiedSyn = "";
-  let stringifiedAnt = "";
-  word.collocation.length > 0 &&
-    word.collocation.forEach((col, index) => {
-      index !== word.collocation.length - 1
-        ? (stringifiedCol += col + ", ")
-        : (stringifiedCol += col);
-    });
-  word.syn.length > 0 &&
-    word.syn.forEach((syn, index) => {
-      index !== word.syn.length - 1
-        ? (stringifiedSyn += syn + ", ")
-        : (stringifiedSyn += syn);
-    });
-  word.ant.length > 0 &&
-    word.ant.forEach((ant, index) => {
-      index !== word.ant.length - 1
-        ? (stringifiedAnt += ant + ", ")
-        : (stringifiedAnt += ant);
-    });
+const DarkBox = styled.div`
+  background-color: ${(props) => props.theme.periwinkleShade30};
+  padding: 20px;
+  border-radius: 10px;
+  margin: 10px 0px;
+  color: ${(props) => props.theme.periwinkleTint90};
+  border: ${(props) => props.theme.periwinkleTint90} 1px solid;
+  span {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    strong {
+      margin-bottom: 10px;
+    }
+  }
+`;
 
-  return { stringifiedCol, stringifiedSyn, stringifiedAnt };
-};
+const TransparentBox = styled.div`
+  background-color: transparent;
+  padding: 20px;
+  border-radius: 10px;
+  color: ${(props) => props.theme.periwinkleShade50};
+  span {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    strong {
+      margin-bottom: 10px;
+    }
+  }
+`;
 
-const Word = ({ word }: IProps) => {
+const PointBox = styled.div`
+  background-color: transparent;
+  padding: 20px;
+  border-radius: 10px;
+  color: ${(props) => props.theme.periwinkleShade50};
+`;
+
+const Spelling = styled.span`
+  background-color: ${(props) => props.theme.periwinkleTint90};
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  strong {
+    color: ${(props) => props.theme.periwinkleShade50};
+    font-size: 24px !important;
+    font-weight: 900 !important;
+  }
+`;
+
+const Ex = styled.span`
+  line-height: 1.5em;
+`;
+
+const Word = ({ word }: IWordProps) => {
   const controls = useAnimation();
   const [ref, inView] = useInView();
   const [wordState, setWordState] = useState<IWord>(word);
@@ -160,199 +227,225 @@ const Word = ({ word }: IProps) => {
     <form onSubmit={handleSubmit(onValid)}>
       {isEditting ? (
         <Li variants={wordVar} initial="hidden" animate={controls} ref={ref}>
-          <span>
-            언어
-            <br />
-            <select
-              {...register("language", {
-                required: true,
-                value: wordState.language,
-              })}
-            >
-              {languages.map((language) => (
-                <option value={language} key={`language_option_${language}`}>
-                  {language}
-                </option>
-              ))}
-            </select>
-          </span>
-          <span>
-            철자
-            <br />
-            <input
-              {...register(`spelling`, {
-                required: true,
-                value: wordState.spelling,
-              })}
-              placeholder="required"
-            />
-          </span>
+          <DarkBox>
+            <span>
+              <strong>언어</strong>
+              <select
+                {...register("language", {
+                  required: true,
+                  value: wordState.language,
+                })}
+              >
+                {languages.map((language) => (
+                  <option value={language} key={`language_option_${language}`}>
+                    {language}
+                  </option>
+                ))}
+              </select>
+            </span>
+            <span>
+              <strong>철자</strong>
+              <input
+                {...register(`spelling`, {
+                  required: true,
+                  value: wordState.spelling,
+                })}
+                placeholder="required"
+              />
+            </span>
 
-          <span>
-            발음
-            <br />
-            <input
-              {...register(`pronunciation`, {
-                value: wordState.pronunciation,
-              })}
-              placeholder="optional"
-            />
-          </span>
+            <span>
+              <strong>발음</strong>
+              <input
+                {...register(`pronunciation`, {
+                  value: wordState.pronunciation,
+                })}
+                placeholder="optional"
+              />
+            </span>
 
-          <span>
-            뜻
-            <br />
-            <input
-              {...register(`meaning`, {
-                required: true,
-                value: wordState.meaning,
-              })}
-              placeholder="required"
-            />
-          </span>
-
-          <span>
-            활용
-            <br />
-            <input
-              {...register(`collocation`, {
-                value: stringifiedCol,
-              })}
-              placeholder="optional(,로 구분)"
-            />
-          </span>
-
-          <span>
-            기억 단서
-            <br />
-            <input
-              {...register(`association`, {
-                value: wordState.association,
-              })}
-              placeholder="optional"
-            />
-          </span>
-
-          <span>
-            예문
-            <br />
-            <textarea
-              rows={3}
-              {...register(`ex`, { value: wordState.ex })}
-              placeholder="optional"
-            />
-          </span>
-          <span>
-            유의어
-            <br />
-            <input
-              {...register(`syn`, {
-                value: stringifiedSyn,
-              })}
-              placeholder="optional(,로 구분)"
-            />
-          </span>
-          <span>
-            반의어
-            <br />
-            <input
-              {...register(`ant`, {
-                value: stringifiedAnt,
-              })}
-              placeholder="optional(,로 구분)"
-            />
-          </span>
-          <ButtonContainer>
+            <span>
+              <strong>뜻</strong>
+              <input
+                {...register(`meaning`, {
+                  required: true,
+                  value: wordState.meaning,
+                })}
+                placeholder="required"
+              />
+            </span>
+          </DarkBox>
+          <TransparentBox>
+            <span>
+              <strong>활용</strong>
+              <input
+                {...register(`collocation`, {
+                  value: stringifiedCol,
+                })}
+                placeholder="optional(,로 구분)"
+              />
+            </span>
+          </TransparentBox>
+          <DarkBox>
+            <span>
+              <strong>기억 단서</strong>
+              <input
+                {...register(`association`, {
+                  value: wordState.association,
+                })}
+                placeholder="optional"
+              />
+            </span>
+          </DarkBox>
+          <DarkBox>
+            <span>
+              <strong>예문</strong>
+              <textarea
+                rows={3}
+                {...register(`ex`, { value: wordState.ex })}
+                placeholder="optional"
+              />
+            </span>
+          </DarkBox>
+          <TransparentBox>
+            <span>
+              <strong>유의어</strong>
+              <input
+                {...register(`syn`, {
+                  value: stringifiedSyn,
+                })}
+                placeholder="optional(,로 구분)"
+              />
+            </span>
+            <span>
+              <strong>반의어</strong>
+              <input
+                {...register(`ant`, {
+                  value: stringifiedAnt,
+                })}
+                placeholder="optional(,로 구분)"
+              />
+            </span>
+          </TransparentBox>
+          <ButtonContainerBottom>
             <button>변경 사항 저장</button>
-          </ButtonContainer>
+          </ButtonContainerBottom>
         </Li>
       ) : (
         <Li variants={wordVar} initial="hidden" animate={controls} ref={ref}>
-          <span>철자 : {wordState.spelling}</span>
-
-          {wordState.pronunciation !== "" && (
-            <span>발음 : {wordState.pronunciation}</span>
-          )}
-
-          <span>뜻 : {wordState.meaning}</span>
-
-          {wordState.collocation?.length > 0 && (
-            <span>
-              활용
-              <br />
-              <ul>
-                {wordState.collocation.map((col, index) => (
-                  <li key={`${String(wordState._id)}col_${index}`}>{col}</li>
-                ))}
-              </ul>
-            </span>
-          )}
-          {wordState.association !== "" && (
-            <span>기억 단서 : {wordState.association}</span>
-          )}
-
-          {wordState.ex?.length > 0 && (
-            <span>
-              예문
-              <br />
-              {wordState.ex.split("\n").length > 1 ? (
-                wordState.ex
-                  .split("\n")
-                  .map((line, index) => (
-                    <span key={String(wordState._id) + `_ex${index}`}>
-                      {line}
-                    </span>
-                  ))
-              ) : (
-                <span>{wordState.ex}</span>
-              )}
-            </span>
-          )}
-          {wordState.syn.length > 0 && (
-            <span>
-              유의어 :{" "}
-              {wordState.syn.map((syn, index) =>
-                wordState.syn && index < wordState.syn.length - 1
-                  ? syn + ", "
-                  : syn
-              )}
-            </span>
-          )}
-          {wordState.ant.length > 0 && (
-            <span>
-              반의어 :{" "}
-              {wordState.ant.map((ant, index) =>
-                wordState.ant && index < wordState.ant.length - 1
-                  ? ant + ", "
-                  : ant
-              )}
-            </span>
-          )}
-          <span>
-            장기기억 촉진 점수 :{" "}
-            {wordState.ltmsPoint <= 33
-              ? `낮음(${wordState.ltmsPoint})`
-              : wordState.ltmsPoint <= 66
-              ? `중간(${wordState.ltmsPoint})`
-              : `높음(${wordState.ltmsPoint})`}
-            <Meter
-              min={0}
-              max={100}
-              optimum={wordState.ltmsPoint}
-              value={wordState.ltmsPoint}
-              point={wordState.ltmsPoint}
-            />
-          </span>
-          <ButtonContainer>
-            <button
+          <ButtonContainerTop>
+            <motion.svg
+              xmlns="http://www.w3.org/2000/svg"
               onClick={(event: React.FormEvent) => {
                 event.preventDefault();
                 setIsEditting((prev) => !prev);
               }}
+              viewBox="0 0 512 512"
             >
-              {"단어 수정"}
-            </button>
-          </ButtonContainer>
+              <path d="M490.3 40.4C512.2 62.27 512.2 97.73 490.3 119.6L460.3 149.7L362.3 51.72L392.4 21.66C414.3-.2135 449.7-.2135 471.6 21.66L490.3 40.4zM172.4 241.7L339.7 74.34L437.7 172.3L270.3 339.6C264.2 345.8 256.7 350.4 248.4 353.2L159.6 382.8C150.1 385.6 141.5 383.4 135 376.1C128.6 370.5 126.4 361 129.2 352.4L158.8 263.6C161.6 255.3 166.2 247.8 172.4 241.7V241.7zM192 63.1C209.7 63.1 224 78.33 224 95.1C224 113.7 209.7 127.1 192 127.1H96C78.33 127.1 64 142.3 64 159.1V416C64 433.7 78.33 448 96 448H352C369.7 448 384 433.7 384 416V319.1C384 302.3 398.3 287.1 416 287.1C433.7 287.1 448 302.3 448 319.1V416C448 469 405 512 352 512H96C42.98 512 0 469 0 416V159.1C0 106.1 42.98 63.1 96 63.1H192z" />
+            </motion.svg>
+          </ButtonContainerTop>
+          <DarkBox>
+            <Spelling>
+              <strong>{wordState.spelling}</strong>
+            </Spelling>
+
+            {wordState.pronunciation !== "" && (
+              <span>
+                <strong>발음</strong>
+                {wordState.pronunciation}
+              </span>
+            )}
+
+            <span>
+              <strong>뜻</strong>
+              {wordState.meaning}
+            </span>
+          </DarkBox>
+
+          {wordState.collocation?.length > 0 && (
+            <TransparentBox>
+              <span>
+                <strong>활용</strong>
+                <ul>
+                  {wordState.collocation.map((col, index) => (
+                    <li key={`${String(wordState._id)}col_${index}`}>{col}</li>
+                  ))}
+                </ul>
+              </span>
+            </TransparentBox>
+          )}
+
+          {wordState.association !== "" && (
+            <DarkBox>
+              <span>
+                <strong>기억 단서</strong>
+                {wordState.association}
+              </span>
+            </DarkBox>
+          )}
+
+          {wordState.ex?.length > 0 && (
+            <DarkBox>
+              <span>
+                <strong>예문</strong>
+                {wordState.ex.split("\n").length > 1 ? (
+                  wordState.ex
+                    .split("\n")
+                    .map((line, index) => (
+                      <Ex key={String(wordState._id) + `_ex${index}`}>
+                        {line}
+                      </Ex>
+                    ))
+                ) : (
+                  <Ex>{wordState.ex}</Ex>
+                )}
+              </span>
+            </DarkBox>
+          )}
+
+          {(wordState.syn.length > 0 || wordState.ant.length > 0) && (
+            <TransparentBox>
+              {wordState.syn.length > 0 && (
+                <span>
+                  <strong>유의어</strong>
+                  {wordState.syn.map((syn, index) =>
+                    wordState.syn && index < wordState.syn.length - 1
+                      ? syn + ", "
+                      : syn
+                  )}
+                </span>
+              )}
+              {wordState.ant.length > 0 && (
+                <span>
+                  <strong>반의어</strong>
+                  {wordState.ant.map((ant, index) =>
+                    wordState.ant && index < wordState.ant.length - 1
+                      ? ant + ", "
+                      : ant
+                  )}
+                </span>
+              )}
+            </TransparentBox>
+          )}
+
+          <PointBox>
+            <span>
+              장기기억 촉진 점수 :{" "}
+              {wordState.ltmsPoint <= 33
+                ? `낮음(${wordState.ltmsPoint})`
+                : wordState.ltmsPoint <= 66
+                ? `중간(${wordState.ltmsPoint})`
+                : `높음(${wordState.ltmsPoint})`}
+              <Meter
+                min={0}
+                max={100}
+                optimum={wordState.ltmsPoint}
+                value={wordState.ltmsPoint}
+                point={wordState.ltmsPoint}
+              />
+            </span>
+          </PointBox>
         </Li>
       )}
     </form>

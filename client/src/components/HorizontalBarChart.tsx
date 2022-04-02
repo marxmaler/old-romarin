@@ -1,7 +1,7 @@
 import { ApexOptions } from "apexcharts";
 import ReactApexChart from "react-apexcharts";
 import styled from "styled-components";
-import { IChartProps } from "../interfaces";
+import { IChartProps, ILanguageWords } from "../interfaces";
 
 const ChartContainer = styled.div`
   border: 0.5px rgba(0, 0, 0, 0.2) solid;
@@ -10,11 +10,29 @@ const ChartContainer = styled.div`
   padding-top: 20px;
 `;
 
-const BarChart = ({ labels, series }: IChartProps) => {
+interface IHorizontalBarChartProps {
+  labels: string[];
+  languageWords: ILanguageWords;
+  selectedMenu: string;
+}
+
+const HorizontalBarChart = ({
+  labels,
+  languageWords,
+  selectedMenu,
+}: IHorizontalBarChartProps) => {
+  const languageWordAvgArr: number[] = [];
+  const langs = Object.keys(languageWords);
+  langs.forEach((lang) => {
+    const wordsCnt = languageWords[lang].length;
+    const avg = Math.round(wordsCnt / 8);
+    languageWordAvgArr.push(avg);
+  });
+
   const seriesWithLabels = [
     {
       name: "단어 갯수",
-      data: series,
+      data: languageWordAvgArr,
     },
   ];
 
@@ -24,16 +42,15 @@ const BarChart = ({ labels, series }: IChartProps) => {
       height: 350,
     },
     title: {
-      text: "단어별 복습 현황",
+      text: selectedMenu,
       align: "center",
       style: { fontSize: "18px", color: "rgba(109, 95, 179, 1)" },
     },
     colors: ["rgba(156, 136, 255,1)"],
     plotOptions: {
       bar: {
-        horizontal: false,
-        columnWidth: "55%",
-        borderRadius: 10,
+        horizontal: true,
+        borderRadius: 4,
       },
     },
     dataLabels: {
@@ -41,36 +58,22 @@ const BarChart = ({ labels, series }: IChartProps) => {
       formatter: function (val) {
         return val + "개";
       },
-      offsetY: 0,
+      offsetX: 10,
       style: {
+        fontWeight: 500,
         fontSize: "14px",
-        colors: ["white"],
+        colors: ["rgba(245, 243, 255, 1)"],
       },
     },
-    // stroke: {
-    //   show: true,
-    //   width: 2,
-    //   colors: ["transparent"],
-    // },
     xaxis: {
       categories: labels,
-      tooltip: {
-        enabled: true,
-      },
     },
     yaxis: {
-      show: false,
+      show: true,
     },
 
     fill: {
       opacity: 0.8,
-    },
-    tooltip: {
-      y: {
-        formatter: function (val) {
-          return `${val}개`;
-        },
-      },
     },
   };
   return (
@@ -85,4 +88,4 @@ const BarChart = ({ labels, series }: IChartProps) => {
   );
 };
 
-export default BarChart;
+export default HorizontalBarChart;

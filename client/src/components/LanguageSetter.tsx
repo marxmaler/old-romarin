@@ -15,9 +15,7 @@ const Lang = styled.div<{ page: string }>`
     width: 1em;
     cursor: pointer;
     path {
-      fill: ${({ page }) => {
-        return page === "review" ? "white" : "black";
-      }};
+      fill: ${(props) => props.theme.periwinkleTint90};
     }
   }
   h3 {
@@ -27,6 +25,7 @@ const Lang = styled.div<{ page: string }>`
     width: 7em;
     font-weight: 700;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+    color: ${(props) => props.theme.periwinkleTint90};
   }
 `;
 

@@ -1,15 +1,6 @@
-import { FieldValues, UseFormRegister } from "react-hook-form";
 import styled from "styled-components";
-import { IWord } from "../atoms";
+import { IQuestionProp } from "../interfaces";
 import { getLanguageInKorean } from "../util/language";
-
-interface IProp {
-  word: IWord;
-  register: UseFormRegister<FieldValues>;
-  errors: {
-    [x: string]: any;
-  };
-}
 
 const Li = styled.li`
   width: 60%;
@@ -47,7 +38,7 @@ const ErrorMessage = styled.span`
   margin-top: 1em;
 `;
 
-function Question({ word, register, errors }: IProp) {
+function Question({ word, register, errors }: IQuestionProp) {
   const languageInKo = getLanguageInKorean(word.language);
 
   //의미 보고 철자 쓰기 문제
