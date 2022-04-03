@@ -1,4 +1,4 @@
-import styled, { ThemeConsumer } from "styled-components";
+import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { languages } from "../util/language";
@@ -49,7 +49,6 @@ const Form = styled.form`
           font-size: 20px;
           font-weight: 600;
           display: block;
-          margin-bottom: 0.5em;
         }
         span {
           display: block;
@@ -60,7 +59,6 @@ const Form = styled.form`
         width: 100%;
         padding: 10px;
         border-radius: 10px;
-        margin-top: 10px;
         border: 0;
         background-color: ${(props) => props.theme.periwinkleTint90};
         color: ${(props) => props.theme.periwinkleShade50};
@@ -94,14 +92,14 @@ const DarkBox = styled.div`
   margin: 10px 0px;
   color: ${(props) => props.theme.periwinkleTint90};
   border: ${(props) => props.theme.periwinkleTint90} 1px solid;
+  &:first-child {
+    margin-top: -30px;
+  }
   span {
-    margin-bottom: 20px;
-    &:last-child {
-      margin-bottom: 0;
-    }
-    strong {
-      margin-bottom: 10px;
-    }
+    margin-bottom: 10px;
+  }
+  strong {
+    margin-bottom: 10px;
   }
 `;
 
@@ -110,14 +108,14 @@ const TransparentBox = styled.div`
   padding: 20px;
   border-radius: 10px;
   color: ${(props) => props.theme.periwinkleShade50};
+  &:nth-child(1) {
+    padding-bottom: 0;
+  }
   span {
-    margin-bottom: 20px;
-    &:last-child {
-      margin-bottom: 0;
-    }
-    strong {
-      margin-bottom: 10px;
-    }
+    margin-bottom: 10px;
+  }
+  strong {
+    margin-bottom: 10px;
   }
 `;
 
@@ -129,6 +127,12 @@ const SpellingInput = styled.input`
     font-weight: 100;
     transform: translate3d(0, -4px, 0);
   }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  min-height: max-content;
 `;
 
 export interface IForm {
@@ -303,7 +307,9 @@ function WordForm() {
               </li>
             </TransparentBox>
           </ul>
-          <button>추가</button>
+          <ButtonContainer>
+            <button>추가</button>
+          </ButtonContainer>
         </Form>
       </FormContainer>
     </>

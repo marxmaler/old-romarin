@@ -78,6 +78,12 @@ const ErrorMessage = styled.li`
   }
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  min-height: max-content;
+`;
+
 interface IForm {
   email: string;
   name: string;
@@ -196,7 +202,9 @@ function JoinForm() {
               )}
             </ErrorMessage>
           </ul>
-          <button>가입</button>
+          <ButtonContainer>
+            <button>가입</button>
+          </ButtonContainer>
         </Form>
       </FormContainer>
     </>

@@ -17,12 +17,13 @@ const FormContainer = styled.div`
     margin-bottom: 50px;
     font-size: 40px;
     font-weight: 700;
-    color: rgba(0, 0, 0, 1);
+    color: ${(props) => props.theme.periwinkleShade50};
   }
 `;
 
 const Form = styled.form`
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: ${(props) => props.theme.periwinkleTint50};
+
   padding: 30px 50px;
   display: flex;
   flex-direction: column;
@@ -40,12 +41,20 @@ const Form = styled.form`
         margin-bottom: 0;
       }
       label {
-        display: inline-block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         text-align: center;
-        width: 4em;
+        width: 6em;
         margin-right: 0.5em;
       }
       input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 0;
+        background-color: ${(props) => props.theme.periwinkleTint90};
+        color: ${(props) => props.theme.periwinkleShade50};
         &::placeholder {
           text-align: center;
         }
@@ -64,6 +73,30 @@ const ErrorMessage = styled.li`
   span {
     padding: 1em;
   }
+`;
+
+const DarkBox = styled.div`
+  background-color: ${(props) => props.theme.periwinkleShade30};
+  padding: 20px;
+  border-radius: 10px;
+  margin: 10px 0px;
+  color: ${(props) => props.theme.periwinkleTint90};
+  border: ${(props) => props.theme.periwinkleTint90} 1px solid;
+  &:first-child {
+    margin-top: -30px;
+  }
+  span {
+    margin-bottom: 10px;
+  }
+  strong {
+    margin-bottom: 10px;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  min-height: max-content;
 `;
 
 interface IForm {
@@ -134,35 +167,42 @@ function LoginForm() {
   return (
     <>
       <FormContainer>
-        <h3>로그인</h3>
         <Form onSubmit={handleSubmit(onValid)}>
+          <h3>로그인</h3>
           <ul>
-            <li>
-              <label>이메일</label>
-              <input
-                type={"email"}
-                {...register("email", { required: true })}
-                placeholder="Email"
-              ></input>
-            </li>
-            <ErrorMessage>
-              {errors?.email?.message && <span>{errors?.email?.message}</span>}
-            </ErrorMessage>
-            <li>
-              <label>비밀번호</label>
-              <input
-                type={"password"}
-                {...register("password", { required: true })}
-                placeholder="Password"
-              ></input>
-            </li>
+            <DarkBox>
+              <li>
+                <label>이메일</label>
+                <input
+                  type={"email"}
+                  {...register("email", { required: true })}
+                  placeholder="Email"
+                ></input>
+              </li>
+              <ErrorMessage>
+                {errors?.email?.message && (
+                  <span>{errors?.email?.message}</span>
+                )}
+              </ErrorMessage>
+              <li>
+                <label>비밀번호</label>
+                <input
+                  type={"password"}
+                  {...register("password", { required: true })}
+                  placeholder="Password"
+                ></input>
+              </li>
+            </DarkBox>
+
             <ErrorMessage>
               {errors?.password?.message && (
                 <span>{errors?.password?.message}</span>
               )}
             </ErrorMessage>
           </ul>
-          <button>로그인</button>
+          <ButtonContainer>
+            <button>로그인</button>
+          </ButtonContainer>
         </Form>
       </FormContainer>
     </>

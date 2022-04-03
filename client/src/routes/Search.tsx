@@ -43,6 +43,7 @@ const Form = styled.form`
       border-radius: 10px;
       margin-top: 10px;
       border: 0;
+      color: ${(props) => props.theme.periwinkleShade50};
       &::placeholder {
         text-align: center;
       }
@@ -74,9 +75,9 @@ const ButtonContainer = styled.div`
   justify-content: center;
   min-height: max-content;
   margin-top: 10px;
-  a {
-    button {
-    }
+
+  button {
+    background-color: ${(props) => props.theme.periwinkleShade10};
   }
 `;
 

@@ -35,12 +35,11 @@ const FormContainer = styled.div`
     rgba(16, 14, 25, 1)
   );
   h3 {
-    text-shadow: 1px 1px 1px rgba(189, 195, 199, 0.7);
+    text-shadow: 1px 1px 1px ${(props) => props.theme.periwinkleShade90};
     text-align: center;
     margin-bottom: 30px;
     font-size: 23px;
     font-weight: 700;
-    color: rgba(0, 0, 0, 1);
   }
 `;
 
@@ -51,7 +50,7 @@ const Form = styled.form`
   flex-direction: column;
   min-width: max-content;
   min-height: max-content;
-  border: 1px solid rgba(0, 0, 0, 0.4);
+  border: 1px solid ${(props) => props.theme.periwinkleTint90};
   border-radius: 20px;
   ul {
     li {
@@ -62,16 +61,19 @@ const Form = styled.form`
       &:last-child {
         margin-bottom: 0;
       }
-      label {
-        display: inline-block;
-        text-align: start;
-        span {
-          display: block;
-          font-size: 12px;
-        }
-      }
       input {
-        width: 40em;
+        margin-top: 10px;
+        width: 100%;
+        border-radius: 10px;
+        padding: 10px;
+        border: 0;
+        background-color: ${(props) => props.theme.periwinkleTint90};
+        padding: 10px;
+        border-radius: 10px;
+        text-align: center;
+        color: ${(props) => props.theme.periwinkleShade50};
+        font-size: 24px !important;
+        font-weight: 900 !important;
         &::placeholder {
           text-align: center;
         }
@@ -92,7 +94,8 @@ const ErrorMessage = styled.li`
 `;
 
 const WordNum = styled.h3`
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: ${(props) => props.theme.periwinkleShade50};
+  text-shadow: none !important;
 `;
 
 const DarkBox = styled.div`
@@ -102,15 +105,20 @@ const DarkBox = styled.div`
   margin: 10px 0px;
   color: ${(props) => props.theme.periwinkleTint90};
   border: ${(props) => props.theme.periwinkleTint90} 1px solid;
-  span {
-    margin-bottom: 20px;
-    &:last-child {
-      margin-bottom: 0;
-    }
+  label {
     strong {
       margin-bottom: 10px;
+      font-size: 20px;
+      font-weight: 600;
+      display: block;
     }
   }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  min-height: max-content;
 `;
 
 function TestSetting() {
@@ -162,7 +170,9 @@ function TestSetting() {
             <DarkBox>
               {" "}
               <li>
-                <label>시험 문항수</label>
+                <label>
+                  <strong>시험 문항수</strong>
+                </label>
                 <input
                   type="number"
                   disabled={selectedWords.length > 0 ? false : true}
@@ -187,11 +197,14 @@ function TestSetting() {
               )}
             </DarkBox>
           </ul>
-          {selectedWords.length > 0 && <button>시험 시작</button>}
+          <ButtonContainer>
+            {selectedWords.length > 0 && <button>시험 시작</button>}
+          </ButtonContainer>
         </Form>
-        <Link to={"/"}>
+
+        {/* <Link to={"/"}>
           <button>뒤로 가기</button>
-        </Link>
+        </Link> */}
       </FormContainer>
     </>
   );

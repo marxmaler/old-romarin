@@ -161,6 +161,7 @@ export const patchGradedWords = (req: Request, res: Response) => {
               : null;
           }
           if (nthRev !== "never") user.stat[statLang][nthRev] += 1;
+          user.save();
         }
 
         console.log(user);

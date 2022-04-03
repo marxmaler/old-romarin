@@ -10,12 +10,18 @@ import Question from "../components/Question";
 import { ITestResult } from "../interfaces";
 
 const TestSheet = styled.div`
-  min-height: 50vh;
-  max-width: 100vw;
+  background: linear-gradient(
+    to right bottom,
+    rgba(156, 136, 255, 1),
+    rgba(16, 14, 25, 1)
+  );
+
+  min-height: 100vh;
+  width: 100%;
+  padding: 50px;
 `;
 
 const Form = styled(motion.form)`
-  background-color: rgba(0, 0, 0, 1);
   display: flex;
   flex-direction: column;
   align-items: center;

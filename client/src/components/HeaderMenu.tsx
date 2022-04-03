@@ -20,10 +20,19 @@ const HeaderContainer = styled.header`
   overflow: hidden;
   position: relative;
   align-items: center;
-  background-image: url("https://cdn.pixabay.com/photo/2015/12/13/00/11/rosemary-1090419__340.jpg");
-  background-position-y: center;
-  /* color: ${(props) => props.theme.periwinkleShade20}; */
   color: ${(props) => props.theme.periwinkleTint90};
+  &::before {
+    content: "";
+    background-image: url("https://cdn.pixabay.com/photo/2015/12/13/00/11/rosemary-1090419__340.jpg");
+    background-position-y: center;
+    opacity: 0.8;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+  }
+
   svg {
     font-size: 30px;
     cursor: pointer;

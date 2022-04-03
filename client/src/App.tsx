@@ -2,7 +2,8 @@ import Router from "./Router";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { rosemaryTheme } from "./theme";
 
-const GlobalStyle = createGlobalStyle`html, body, div, span, applet, object, iframe,
+const GlobalStyle = createGlobalStyle`
+html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
@@ -47,6 +48,7 @@ a {
   text-decoration:none;
   color: inherit;
 }
+
 body {
   line-height: 1;
   max-width: 100vw;
@@ -60,8 +62,41 @@ main {
   width: 100%;
   min-height: 100vh;
   background-color: ${(props) => props.theme.periwinkleTint90};
-  /* background-image: url("https://cdn.pixabay.com/photo/2015/12/13/00/11/rosemary-1090419__340.jpg"); */
+}
 
+button {
+  background-color: ${(props) => props.theme.periwinkleShade30};
+  width: max-content;
+padding: 5px 10px;
+border-radius: 10px;
+color: ${(props) => props.theme.periwinkleTint90};
+font-size: 16px;
+font-weight: 900;
+cursor: pointer;
+&:hover {
+  transform: translateY(1.5px);
+  transition: all 0.3s;
+  opacity: 0.8;
+}
+}
+
+select {
+    background-color: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  outline: 0 none;
+  padding: 0 5px;
+  text-align: center;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  option {
+    color: white;
+    background-color: ${(props) => props.theme.periwinkleTint30};
+    padding: 3px 0;
+    font-size: 16px;
+    text-align: center;
+  }
 }
 `;
 

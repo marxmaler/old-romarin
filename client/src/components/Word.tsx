@@ -34,6 +34,7 @@ const Li = styled(motion.li)`
       border-radius: 10px;
       padding: 10px;
       border: 0;
+      color: ${(props) => props.theme.periwinkleShade50};
       &::placeholder {
         text-align: center;
       }
@@ -46,6 +47,7 @@ const Li = styled(motion.li)`
       width: 100%;
       font-family: inherit;
       resize: none;
+      color: ${(props) => props.theme.periwinkleShade50};
       &::placeholder {
         text-align: center;
       }
@@ -140,7 +142,7 @@ const DarkBox = styled.div`
   color: ${(props) => props.theme.periwinkleTint90};
   border: ${(props) => props.theme.periwinkleTint90} 1px solid;
   span {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     &:last-child {
       margin-bottom: 0;
     }
@@ -152,11 +154,11 @@ const DarkBox = styled.div`
 
 const TransparentBox = styled.div`
   background-color: transparent;
-  padding: 20px;
+  padding: 10px 20px;
   border-radius: 10px;
   color: ${(props) => props.theme.periwinkleShade50};
   span {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     &:last-child {
       margin-bottom: 0;
     }
@@ -168,7 +170,7 @@ const TransparentBox = styled.div`
 
 const PointBox = styled.div`
   background-color: transparent;
-  padding: 20px;
+  padding: 0px 20px;
   border-radius: 10px;
   color: ${(props) => props.theme.periwinkleShade50};
 `;
@@ -182,6 +184,16 @@ const Spelling = styled.span`
     color: ${(props) => props.theme.periwinkleShade50};
     font-size: 24px !important;
     font-weight: 900 !important;
+  }
+`;
+
+const SpellingInput = styled.input`
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  &::placeholder {
+    font-size: 14px;
+    font-weight: 100;
+    transform: translate3d(0, -4px, 0);
   }
 `;
 
@@ -229,23 +241,28 @@ const Word = ({ word }: IWordProps) => {
         <Li variants={wordVar} initial="hidden" animate={controls} ref={ref}>
           <DarkBox>
             <span>
-              <strong>언어</strong>
-              <select
-                {...register("language", {
-                  required: true,
-                  value: wordState.language,
-                })}
-              >
-                {languages.map((language) => (
-                  <option value={language} key={`language_option_${language}`}>
-                    {language}
-                  </option>
-                ))}
-              </select>
+              <strong>
+                언어{" "}
+                <select
+                  {...register("language", {
+                    required: true,
+                    value: wordState.language,
+                  })}
+                >
+                  {languages.map((language) => (
+                    <option
+                      value={language}
+                      key={`language_option_${language}`}
+                    >
+                      {language}
+                    </option>
+                  ))}
+                </select>
+              </strong>
             </span>
             <span>
               <strong>철자</strong>
-              <input
+              <SpellingInput
                 {...register(`spelling`, {
                   required: true,
                   value: wordState.spelling,

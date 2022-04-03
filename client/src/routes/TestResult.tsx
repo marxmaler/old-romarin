@@ -8,12 +8,18 @@ import HeaderMenu from "../components/HeaderMenu";
 import { getLanguageInKorean } from "../util/language";
 
 const TestSheet = styled.div`
-  min-height: 50vh;
-  max-width: 100vw;
+  background: linear-gradient(
+    to right bottom,
+    rgba(156, 136, 255, 1),
+    rgba(16, 14, 25, 1)
+  );
+
+  min-height: 100vh;
+  width: 100%;
+  padding: 50px;
 `;
 
 const TestResultBox = styled(motion.div)`
-  background-color: rgba(0, 0, 0, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,13 +44,14 @@ const TestResultBox = styled(motion.div)`
 const Li = styled.li`
   min-width: 15em;
   width: 100%;
-  background-color: rgba(255, 255, 255, 1);
+  background-color: ${(props) => props.theme.periwinkleTint50};
+  border: 1px solid ${(props) => props.theme.periwinkleTint90};
+  color: ${(props) => props.theme.periwinkleShade50};
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 20px;
 
   h3 {
-    /* background-color: red; */
     font-size: 20px;
     display: block;
     font-weight: 700;
@@ -52,26 +59,49 @@ const Li = styled.li`
     span {
       font-weight: 500;
       line-height: 1.5em;
-      margin: 1em 0;
-      display: block;
       font-size: 16px;
-      background-color: tomato;
       max-width: 80%;
-      padding: 1em;
       color: white;
-      border-radius: 10px;
     }
     input {
     }
   }
 `;
 
-const Answers = styled.div`
+const Answers = styled.div``;
+
+const DarkBox = styled.div`
+  background-color: ${(props) => props.theme.periwinkleShade30};
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 50vw;
+  margin: 10px 0px;
+  color: ${(props) => props.theme.periwinkleTint90};
+  border: ${(props) => props.theme.periwinkleTint90} 1px solid;
+  span {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    strong {
+      margin-bottom: 10px;
+    }
+  }
+`;
+
+const TransparentBox = styled.div`
+  background-color: transparent;
+  padding: 20px;
+  border-radius: 10px;
+  color: ${(props) => props.theme.periwinkleShade50};
   display: flex;
   flex-direction: column;
   span {
     &:last-child {
-      margin-top: 1em;
+      margin-top: 10px;
+    }
+    strong {
+      margin-bottom: 10px;
     }
   }
 `;
@@ -122,12 +152,14 @@ function TestResult() {
                     보기에 제시된 뜻을 가진{" "}
                     {getLanguageInKorean(word.originalWord.language)} 단어의
                     철자를 빈 칸에 써주세요.
-                    <span>{word.originalWord.meaning}</span>
+                    <DarkBox>
+                      <span>{word.originalWord.meaning}</span>
+                    </DarkBox>
                   </h3>
-                  <Answers>
+                  <TransparentBox>
                     <span>{`내가 쓴 답 : ${word.myAnswer}`}</span>
                     <span>{`정답 : ${word.originalWord.spelling}`}</span>
-                  </Answers>
+                  </TransparentBox>
                 </Li>
               ))
             ) : (

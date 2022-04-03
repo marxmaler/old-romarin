@@ -68,25 +68,6 @@ const LiContainer = styled.div`
   padding: 0px 30px;
 `;
 
-const Select = styled.select`
-  background-color: transparent;
-  border: 1px solid white;
-  border-radius: 10px;
-  outline: 0 none;
-  padding: 0 5px;
-  text-align: center;
-  font-size: 16px;
-  color: white;
-  cursor: pointer;
-  option {
-    color: white;
-    background-color: ${(props) => props.theme.periwinkleTint30};
-    padding: 3px 0;
-    font-size: 16px;
-    text-align: center;
-  }
-`;
-
 function Statistics() {
   const [loginInfo, setLoginInfo] = useRecoilState(loginState);
   const { user } = loginInfo;
@@ -120,7 +101,9 @@ function Statistics() {
   useEffect(() => {
     // console.log("weeklyWordsBeforeToday:", weeklyWordsBeforeToday);
 
-    if (!isLoadingUser) setLoginInfo((prev) => ({ ...prev, ...userData }));
+    if (!isLoadingUser) {
+      setLoginInfo((prev) => ({ ...prev, ...userData }));
+    }
 
     if (!isLoadingWeeklyWords && weeklyWordsData?.result) {
       // console.log(weeklyWordsData.result);
@@ -142,7 +125,6 @@ function Statistics() {
     setWeeklyWordsCnt(() => [...newWeeklyWordCnt]);
     // console.log("languageWordsCnt:", languageWordsCnt);
     setWordCntState(() => languageWordsCnt);
-
     // console.log("weeklyWordsCnt:", weeklyWordsCnt);
     // console.log(weeklyWords);
   }, [isLoadingUser, isLoadingWeeklyWords]);
@@ -184,13 +166,13 @@ function Statistics() {
             <LiContainer>
               <li>
                 언어 :{" "}
-                <Select onChange={selectMidLang}>
+                <select onChange={selectMidLang}>
                   {languagesInKo.map((language, index) => (
                     <option key={`midLangOption_${index}`} value={langs[index]}>
                       {language}
                     </option>
                   ))}
-                </Select>
+                </select>
               </li>
 
               <li>전체 : {user?.stat[midLang].total}</li>
@@ -258,7 +240,7 @@ function Statistics() {
               <li>
                 <span>
                   그래프 :{" "}
-                  <Select onChange={selectStatisticMenu}>
+                  <select onChange={selectStatisticMenu}>
                     {["언어별 일일 평균", "언어별 1주 간 새로 추가된 단어"].map(
                       (menu, index) => (
                         <option
@@ -279,7 +261,7 @@ function Statistics() {
                         </option>
                       )
                     )}
-                  </Select>
+                  </select>
                 </span>
               </li>
             </LiContainer>
