@@ -58,6 +58,7 @@ const Li = styled(motion.li)`
     }
 
     ul {
+      max-width: 30vw;
       padding: 0px 30px;
       li {
         list-style: square;
@@ -141,8 +142,10 @@ const DarkBox = styled.div`
   margin: 10px 0px;
   color: ${(props) => props.theme.periwinkleTint90};
   border: ${(props) => props.theme.periwinkleTint90} 1px solid;
+
   span {
     margin-bottom: 10px;
+
     &:last-child {
       margin-bottom: 0;
     }

@@ -126,12 +126,14 @@ export const postWord = async (req: Request, res: Response) => {
 
 // PATCH Methods
 
-export const patchGradedWords = (req: Request, res: Response) => {
+export const patchGradedWords = async (req: Request, res: Response) => {
   const testResults: ITestResult[] = req.body;
 
-  testResults.forEach(async (testResult) => {
-    const { wordId, wrong } = testResult;
+  // console.log("testResults:", testResults);
+  for (let i = 0; i < testResults.length; i++) {
+    const { wordId, wrong } = testResults[i];
     const word = await Word.findById(wordId);
+
     if (word && wrong) {
       //문제를 틀렸음
       word.wrong = wrong;
@@ -143,9 +145,10 @@ export const patchGradedWords = (req: Request, res: Response) => {
       } else {
         word.regRev?.splice(0, 1);
         const nthRev = getNthRev(word.regRev);
+        console.log("nthRev:", nthRev);
         const statLang = getlangFomLanguage(word.language);
         const user = await User.findById(word.user);
-
+        console.log("조작 전:", user?.stat);
         if (user) {
           if (
             nthRev === "twice" ||
@@ -159,21 +162,25 @@ export const patchGradedWords = (req: Request, res: Response) => {
               : nthRev === "fourTimes"
               ? (user.stat[statLang].threeTimes -= 1)
               : null;
+            console.log("user.stat[statLang]", user.stat[statLang]);
           }
-          if (nthRev !== "never") user.stat[statLang][nthRev] += 1;
-          user.save();
+          if (nthRev !== "never") {
+            user.stat[statLang][nthRev] += 1;
+            user.save();
+          }
         }
 
-        console.log(user);
+        console.log("user:", user);
       }
     }
     word?.save();
     if (word?.regRev?.length === 0) {
       await Word.deleteOne({ _id: word._id });
     }
+  }
 
-    // console.log(word);
-  });
+  // console.log(word);
+
   return res.sendStatus(200);
 };
 

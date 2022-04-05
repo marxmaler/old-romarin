@@ -1,7 +1,7 @@
 import { ApexOptions } from "apexcharts";
 import ReactApexChart from "react-apexcharts";
 import styled from "styled-components";
-import { IChartProps, ILanguageWords } from "../interfaces";
+import { ILanguageWords } from "../interfaces";
 
 const ChartContainer = styled.div`
   border: 0.5px rgba(0, 0, 0, 0.2) solid;

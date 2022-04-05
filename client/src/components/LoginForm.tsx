@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import { loginState } from "../atoms";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const FormContainer = styled.div`
   display: flex;
@@ -111,16 +112,23 @@ function LoginForm() {
     setValue,
     formState: { errors },
     setError,
+    setFocus,
   } = useForm<IForm>();
   const navigate = useNavigate();
   const setLogin = useSetRecoilState(loginState);
 
+  useEffect(() => {
+    setFocus("email");
+  }, [setFocus]);
+
   const onValid = async (data: IForm) => {
+    console.log(data);
     const response = await fetch("/api/users/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ data }),
     });
+    console.log(response.status);
     if (response.status === 404) {
       setError("email", { message: "등록되지 않은 이메일입니다." });
     } else if (response.status === 400) {

@@ -1,6 +1,14 @@
+import { useRef, useState } from "react";
 import styled from "styled-components";
 import { IQuestionProp } from "../interfaces";
-import { getLanguageInKorean } from "../util/language";
+import { onInputChange } from "../util/keyboard";
+import {
+  getLanguageInKorean,
+  languages,
+  languagesInKo,
+} from "../util/language";
+import FrenchKeyboard from "./FrenchKeyboard";
+import RussianKeyboard from "./RussianKeyboard";
 
 const Li = styled.li`
   width: 60%;
@@ -86,6 +94,20 @@ const TransparentBox = styled.div`
 function Question({ word, register, errors }: IQuestionProp) {
   const languageInKo = getLanguageInKorean(word.language);
 
+  const [showKeyboard, setShowKeyboard] = useState(false);
+  const [lastInput, setLastInput] = useState("");
+  const [capsLockOn, setCapsLockOn] = useState(false);
+  const [shiftOn, setShiftOn] = useState(false);
+  const keyboardRef = useRef<HTMLDivElement>(null);
+
+  const onQuestionInputFocus = () => {
+    if (languageInKo === "프랑스어" || languageInKo === "러시아어") {
+      setShowKeyboard(true);
+    }
+  };
+  const onQuestionInputBlur = () => {
+    setShowKeyboard(false);
+  };
   //의미 보고 철자 쓰기 문제
   return (
     <>
@@ -103,8 +125,39 @@ function Question({ word, register, errors }: IQuestionProp) {
           </label>
           <input
             id={String(word._id) + "_answer"}
-            {...register(`${word._id}`, { required: "답안을 작성해주세요." })}
+            {...register(`${word._id}`, {
+              required: "답안을 작성해주세요.",
+              onChange: (event) =>
+                onInputChange(
+                  event,
+                  languages[languagesInKo.indexOf(languageInKo)],
+                  setLastInput,
+                  capsLockOn,
+                  shiftOn
+                ),
+              onBlur: onQuestionInputBlur,
+            })}
+            onFocus={onQuestionInputFocus}
+            onKeyDown={(event: React.KeyboardEvent) => {
+              setCapsLockOn(event.getModifierState("CapsLock"));
+              setShiftOn(event.getModifierState("Shift"));
+            }}
           />
+          {/* <RussianKeyboard /> */}
+          {showKeyboard && languageInKo === "프랑스어" ? (
+            <FrenchKeyboard />
+          ) : (
+            showKeyboard &&
+            languageInKo === "러시아어" && (
+              <RussianKeyboard
+                lastInput={lastInput}
+                setLastInput={setLastInput}
+                keyboardRef={keyboardRef}
+                shiftOn={shiftOn}
+                capsLockOn={capsLockOn}
+              />
+            )
+          )}
           <ErrorMessage>
             {errors[`${String(word._id)}`]
               ? errors[`${String(word._id)}`].message

@@ -3,9 +3,20 @@ import styled from "styled-components";
 import { fetchWords } from "../api";
 import { useQuery } from "react-query";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { loginState, testResultsState, wordsState } from "../atoms";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  useRecoilState,
+  useRecoilValue,
+  useResetRecoilState,
+  useSetRecoilState,
+} from "recoil";
+import {
+  loginState,
+  testResultsState,
+  weeklyWordsCntState,
+  weeklyWordsState,
+  wordsState,
+} from "../atoms";
 import { useEffect } from "react";
 
 const Container = styled.div`
@@ -83,10 +94,38 @@ function Home() {
   );
   const [words, setWords] = useRecoilState(wordsState);
   const setTestResults = useSetRecoilState(testResultsState);
+
+  const navigate = useNavigate();
+  const resetLogin = useResetRecoilState(loginState);
+  const resetWords = useResetRecoilState(wordsState);
+  const resetWeeklyWords = useResetRecoilState(weeklyWordsState);
+  const resetWeeklyWordsCnt = useResetRecoilState(weeklyWordsCntState);
   useEffect(() => {
-    setWords(data?.words);
-    setTestResults([]);
-  }, [data]);
+    if (data?.status === 401) {
+      //서버에는 로그인이 되어있지 않은데 클라이언트는 로그인이 되어있는 경우(서버 종료 후 재시작 등으로 세션 정보 불일치)
+      //로그아웃
+      resetWords();
+      resetWeeklyWords();
+      resetWeeklyWordsCnt();
+      resetLogin();
+      navigate("/login");
+    } else {
+      data?.json().then((json) => {
+        const { words: jsonWords } = json;
+        setWords(jsonWords);
+        setTestResults([]);
+      });
+    }
+  }, [
+    data,
+    navigate,
+    resetLogin,
+    resetWeeklyWords,
+    resetWeeklyWordsCnt,
+    resetWords,
+    setTestResults,
+    setWords,
+  ]);
 
   return (
     <>

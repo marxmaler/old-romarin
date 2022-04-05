@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
@@ -81,6 +81,8 @@ const ButtonContainer = styled.div`
   }
 `;
 
+const Input = styled(motion.input)``;
+
 const wordListVar = {
   hidden: {
     y: -30,
@@ -118,7 +120,14 @@ function Search() {
     register,
     handleSubmit,
     formState: { isSubmitSuccessful },
+    setFocus,
   } = useForm<IForm>();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setFocus("query");
+    }, 700);
+  }, [setFocus]);
 
   const onValid = async ({ query, queryBasis }: IForm) => {
     const { words: matchedWords } = await (
@@ -151,7 +160,12 @@ function Search() {
           </span>
           <span>
             <strong>검색어</strong>
-            <input {...register("query", { required: true })} />
+            <Input
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.7 }}
+              {...register("query", { required: true })}
+            />
             <ButtonContainer>
               <button>검색</button>
             </ButtonContainer>

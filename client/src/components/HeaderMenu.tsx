@@ -9,8 +9,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import TitleBlock from "./TitleBlock";
-import { useRecoilState } from "recoil";
-import { loginState } from "../atoms";
+import { useRecoilValue, useResetRecoilState } from "recoil";
+import {
+  loginState,
+  weeklyWordsCntState,
+  weeklyWordsState,
+  wordsState,
+} from "../atoms";
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -122,14 +127,21 @@ const MenuItem = styled.span`
 `;
 
 function HeaderMenu() {
-  const [login, setLogin] = useRecoilState(loginState);
+  const login = useRecoilValue(loginState);
   const PCMode = useMediaQuery({
     query: "(min-width:1024px)",
   });
+  const resetLogin = useResetRecoilState(loginState);
+  const resetWords = useResetRecoilState(wordsState);
+  const resetWeeklyWords = useResetRecoilState(weeklyWordsState);
+  const resetWeeklyWordsCnt = useResetRecoilState(weeklyWordsCntState);
 
   const logout = () => {
     fetch("/api/users/logout");
-    setLogin({ loggedIn: false, user: null });
+    resetWords();
+    resetWeeklyWords();
+    resetWeeklyWordsCnt();
+    resetLogin();
   };
 
   return (
@@ -186,9 +198,8 @@ function HeaderMenu() {
           <>
             <li>
               <MenuItem>
-                {login.loggedIn ? (
-                  <Link to={"/users/profile"}>프로필</Link>
-                ) : (
+                {login.loggedIn ? null : (
+                  // <Link to={"/users/profile"}>프로필</Link>
                   <Link to={"/join"}>가입</Link>
                 )}
               </MenuItem>

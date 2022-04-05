@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { languageState, wordsSelector, wordsState } from "../atoms";
+import { languageState, wordsSelector } from "../atoms";
 import HeaderMenu from "../components/HeaderMenu";
 import LanguageSetter from "../components/LanguageSetter";
 import Word from "../components/Word";
@@ -14,7 +14,7 @@ const Container = styled(motion.div)`
     rgba(156, 136, 255, 1),
     rgba(16, 14, 25, 1)
   );
-  min-height: 50vh;
+  min-height: 100vh;
   max-width: 100%;
   color: rgba(255, 255, 255, 1);
   padding: 50px;
@@ -24,6 +24,12 @@ const Container = styled(motion.div)`
   ul {
     width: max-content;
   }
+`;
+
+const NoWords = styled.span`
+  display: block;
+  margin-bottom: 50px;
+  font-size: 20px;
 `;
 
 const wordListVar = {
@@ -73,9 +79,11 @@ function Review() {
             animate="show"
             exit="hide"
           >
-            {words.map((word) => (
-              <Word key={String(word._id)} word={word} />
-            ))}
+            {words.length > 0 ? (
+              words.map((word) => <Word key={String(word._id)} word={word} />)
+            ) : (
+              <NoWords>복습할 단어가 없습니다.</NoWords>
+            )}
           </motion.ul>
         </AnimatePresence>
         <Link to={"/"}>

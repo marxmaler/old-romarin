@@ -4,6 +4,7 @@ import validator from "validator";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { loginState } from "../atoms";
+import { useEffect } from "react";
 
 const FormContainer = styled.div`
   display: flex;
@@ -18,22 +19,21 @@ const FormContainer = styled.div`
     margin-bottom: 50px;
     font-size: 40px;
     font-weight: 700;
-    color: rgba(0, 0, 0, 1);
+    color: ${(props) => props.theme.periwinkleShade50};
   }
 `;
 
 const Form = styled.form`
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: ${(props) => props.theme.periwinkleTint50};
   padding: 30px 50px;
   display: flex;
   flex-direction: column;
   min-width: max-content;
   min-height: max-content;
-  border: 1px solid rgba(0, 0, 0, 0.4);
+  border: 1px solid ${(props) => props.theme.periwinkleTint90};
   border-radius: 20px;
 
   ul {
-    border: 1px solid white;
     border-radius: 5px;
     padding: 10px;
     li {
@@ -47,17 +47,24 @@ const Form = styled.form`
       label {
         display: inline-block;
         text-align: start;
-        width: 7em;
-        margin-bottom: 0.5em;
+
+        strong {
+          font-size: 20px;
+          font-weight: 600;
+          display: block;
+        }
       }
       span {
         font-size: 12px;
         margin-bottom: 0.5em;
       }
       input {
-        margin-bottom: 0.5em;
-        border-radius: 5px;
-        padding: 5px;
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 0;
+        background-color: ${(props) => props.theme.periwinkleTint90};
+        color: ${(props) => props.theme.periwinkleShade50};
         &::placeholder {
           text-align: center;
         }
@@ -78,10 +85,32 @@ const ErrorMessage = styled.li`
   }
 `;
 
+const DarkBox = styled.div`
+  background-color: ${(props) => props.theme.periwinkleShade30};
+  padding: 20px;
+  border-radius: 10px;
+  margin: 10px 0px;
+  color: ${(props) => props.theme.periwinkleTint90};
+  border: ${(props) => props.theme.periwinkleTint90} 1px solid;
+  &:first-child {
+    margin-top: -30px;
+  }
+  span {
+    margin-bottom: 10px;
+  }
+  strong {
+    margin-bottom: 10px;
+  }
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   min-height: max-content;
+`;
+
+const ConfirmStrong = styled.strong`
+  margin-top: 10px;
 `;
 
 interface IForm {
@@ -98,6 +127,7 @@ function JoinForm() {
     setValue,
     formState: { errors },
     setError,
+    setFocus,
   } = useForm<IForm>();
   const navigate = useNavigate();
 
@@ -109,6 +139,10 @@ function JoinForm() {
       user: null,
     });
   }
+
+  useEffect(() => {
+    setFocus("email");
+  }, [setFocus]);
 
   const onValid = (data: IForm) => {
     if (
@@ -147,60 +181,76 @@ function JoinForm() {
   return (
     <>
       <FormContainer>
-        <h3>가입</h3>
         <Form onSubmit={handleSubmit(onValid)}>
+          <h3>가입</h3>
           <ul>
-            <li>
-              <label>이메일</label>
-              <input
-                type={"email"}
-                {...register("email", { required: true })}
-                placeholder="이메일"
-              ></input>
-            </li>
-            <ErrorMessage>
-              {errors?.email?.message && <span>{errors?.email?.message}</span>}
-            </ErrorMessage>
-            <li>
-              <label>닉네임</label>
-              <input
-                type={"text"}
-                {...register("name", {
-                  required: true,
-                })}
-                placeholder="닉네임"
-              ></input>
-            </li>
-            <li>
-              <label>비밀번호</label>
-              <span>
-                최소 8자 이상, 알파벳 소문자, 숫자, 특수문자가 포함되어야
-                합니다.
-              </span>
-              <input
-                type={"password"}
-                {...register("password", { required: true })}
-                placeholder="비밀번호"
-              ></input>
-            </li>
-            <ErrorMessage>
-              {errors?.password?.message && (
-                <span>{errors?.password?.message}</span>
-              )}
-            </ErrorMessage>
-            <li>
-              <label>비밀번호 확인</label>
-              <input
-                type={"password"}
-                {...register("passwordConfirm", { required: true })}
-                placeholder="비밀번호 확인"
-              ></input>
-            </li>
-            <ErrorMessage>
-              {errors?.passwordConfirm?.message && (
-                <span>{errors?.passwordConfirm?.message}</span>
-              )}
-            </ErrorMessage>
+            <DarkBox>
+              <li>
+                <label>
+                  <strong>이메일</strong>
+                </label>
+                <input
+                  type={"email"}
+                  {...register("email", { required: true })}
+                  placeholder="이메일"
+                />
+              </li>
+              <ErrorMessage>
+                {errors?.email?.message && (
+                  <span>{errors?.email?.message}</span>
+                )}
+              </ErrorMessage>
+            </DarkBox>
+            <DarkBox>
+              <li>
+                <label>
+                  <strong>닉네임</strong>
+                </label>
+                <input
+                  type={"text"}
+                  {...register("name", {
+                    required: true,
+                  })}
+                  placeholder="닉네임"
+                ></input>
+              </li>
+            </DarkBox>
+            <DarkBox>
+              <li>
+                <label>
+                  <strong>비밀번호</strong>
+                </label>
+                <span>
+                  최소 8자 이상, 알파벳 소문자, 숫자, 특수문자가 포함되어야
+                  합니다.
+                </span>
+                <input
+                  type={"password"}
+                  {...register("password", { required: true })}
+                  placeholder="비밀번호"
+                ></input>
+              </li>
+              <ErrorMessage>
+                {errors?.password?.message && (
+                  <span>{errors?.password?.message}</span>
+                )}
+              </ErrorMessage>
+              <li>
+                <label>
+                  <ConfirmStrong>비밀번호 확인</ConfirmStrong>
+                </label>
+                <input
+                  type={"password"}
+                  {...register("passwordConfirm", { required: true })}
+                  placeholder="비밀번호 확인"
+                ></input>
+              </li>
+              <ErrorMessage>
+                {errors?.passwordConfirm?.message && (
+                  <span>{errors?.passwordConfirm?.message}</span>
+                )}
+              </ErrorMessage>
+            </DarkBox>
           </ul>
           <ButtonContainer>
             <button>가입</button>
