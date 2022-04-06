@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import React, { useEffect } from "react";
+import { ReactHTMLElement } from "react";
 import { useRef } from "react";
+import { UseFormSetValue } from "react-hook-form";
 import styled, { keyframes } from "styled-components";
+import { IForm } from "./WordForm";
 
 const keyPressAnimation = keyframes`
   0% {
@@ -125,7 +128,10 @@ interface IKeyboardProps {
   keyboardRef: React.RefObject<HTMLDivElement>;
   setLastInput: React.Dispatch<React.SetStateAction<string>>;
   shiftOn: boolean;
+  setShiftOn: React.Dispatch<React.SetStateAction<boolean>>;
   capsLockOn: boolean;
+  setCapsLockOn: React.Dispatch<React.SetStateAction<boolean>>;
+  inputRef?: React.MutableRefObject<HTMLInputElement | null>;
 }
 
 function RussianKeyboard({
@@ -133,14 +139,33 @@ function RussianKeyboard({
   setLastInput,
   keyboardRef,
   shiftOn,
+  setShiftOn,
   capsLockOn,
+  setCapsLockOn,
+  inputRef,
 }: IKeyboardProps) {
   const cap = (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn);
 
-  // const onKeyClick = (event: React.MouseEvent<HTMLDivElement>) => {
-  //   //input을 ref나 get으로 찾아서 input창 value에 key 이어붙이기
-  //   // event.currentTarget.classList.add("pressed");
-  // };
+  const onKeyClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const clickedKey = event.currentTarget.textContent;
+    // console.log(inputRef?.current?.value);
+    if (inputRef?.current) {
+      const stringArr = [...inputRef?.current?.value];
+      const selectionStart = inputRef?.current?.selectionStart;
+      if (selectionStart) {
+        let newValue = "";
+        if (selectionStart !== inputRef.current.value.length) {
+          const formerPart = stringArr.slice(0, selectionStart);
+          const latterPart = stringArr.slice(selectionStart);
+          newValue = [...formerPart, clickedKey, ...latterPart].join("");
+        } else {
+          newValue = [...stringArr, clickedKey].join("");
+        }
+        inputRef.current.value = newValue;
+        inputRef.current.selectionStart = selectionStart + 1;
+      }
+    }
+  };
 
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
   // let timeoutId: NodeJS.Timeout | null = null;
@@ -185,7 +210,11 @@ function RussianKeyboard({
               "-",
               "Ъ",
             ].map((key) => (
-              <Key key={`rus_key_${key}`} id={`rus_key_${key}`}>
+              <Key
+                key={`rus_key_${key}`}
+                id={`rus_key_${key}`}
+                onClick={onKeyClick}
+              >
                 {key}
               </Key>
             ))
@@ -204,7 +233,11 @@ function RussianKeyboard({
               "-",
               "ъ",
             ].map((key) => (
-              <Key key={`rus_key_${key}`} id={`rus_key_${key}`}>
+              <Key
+                key={`rus_key_${key}`}
+                id={`rus_key_${key}`}
+                onClick={onKeyClick}
+              >
                 {key}
               </Key>
             ))}
@@ -215,14 +248,22 @@ function RussianKeyboard({
         {cap
           ? ["Я", "Ш", "Е", "Р", "Т", "Ы", "У", "И", "О", "П", "Ю", "Щ"].map(
               (key) => (
-                <Key key={`rus_key_${key}`} id={`rus_key_${key}`}>
+                <Key
+                  key={`rus_key_${key}`}
+                  id={`rus_key_${key}`}
+                  onClick={onKeyClick}
+                >
                   {key}
                 </Key>
               )
             )
           : ["я", "ш", "е", "р", "т", "ы", "у", "и", "о", "п", "ю", "щ"].map(
               (key) => (
-                <Key key={`rus_key_${key}`} id={`rus_key_${key}`}>
+                <Key
+                  key={`rus_key_${key}`}
+                  id={`rus_key_${key}`}
+                  onClick={onKeyClick}
+                >
                   {key}
                 </Key>
               )
@@ -230,7 +271,11 @@ function RussianKeyboard({
         <BackSlashKey>{cap ? "Э" : "э"}</BackSlashKey>
       </Row>
       <Row>
-        <CAPSLOCKKey>
+        <CAPSLOCKKey
+          onClick={() => {
+            setCapsLockOn((prev) => !prev);
+          }}
+        >
           CAPS
           <br />
           LOCK
@@ -238,14 +283,22 @@ function RussianKeyboard({
         {cap
           ? ["А", "С", "Д", "Ф", "Г", "Ч", "Й", "К", "Л", "Ь", "Ж"].map(
               (key) => (
-                <Key key={`rus_key_${key}`} id={`rus_key_${key}`}>
+                <Key
+                  key={`rus_key_${key}`}
+                  id={`rus_key_${key}`}
+                  onClick={onKeyClick}
+                >
                   {key}
                 </Key>
               )
             )
           : ["а", "с", "д", "ф", "г", "ч", "й", "к", "л", "ь", "ж"].map(
               (key) => (
-                <Key key={`rus_key_${key}`} id={`rus_key_${key}`}>
+                <Key
+                  key={`rus_key_${key}`}
+                  id={`rus_key_${key}`}
+                  onClick={onKeyClick}
+                >
                   {key}
                 </Key>
               )
@@ -253,19 +306,45 @@ function RussianKeyboard({
         <ENTERKey>ENTER</ENTERKey>
       </Row>
       <Row>
-        <SHIFTKey>SHIFT</SHIFTKey>
+        <SHIFTKey
+          onClick={() => {
+            setShiftOn((prev) => !prev);
+            setTimeout(() => {
+              setShiftOn((prev) => !prev);
+            }, 100);
+          }}
+        >
+          SHIFT
+        </SHIFTKey>
         {cap
           ? ["З", "Х", "Ц", "В", "Б", "Н", "М", ",", ".", "/"].map((key) => (
-              <Key key={`rus_key_${key}`} id={`rus_key_${key}`}>
+              <Key
+                key={`rus_key_${key}`}
+                id={`rus_key_${key}`}
+                onClick={onKeyClick}
+              >
                 {key}
               </Key>
             ))
           : ["з", "х", "ц", "в", "б", "н", "м", ",", ".", "/"].map((key) => (
-              <Key key={`rus_key_${key}`} id={`rus_key_${key}`}>
+              <Key
+                key={`rus_key_${key}`}
+                id={`rus_key_${key}`}
+                onClick={onKeyClick}
+              >
                 {key}
               </Key>
             ))}
-        <RightSHIFTKey>SHIFT</RightSHIFTKey>
+        <RightSHIFTKey
+          onClick={() => {
+            setShiftOn((prev) => !prev);
+            setTimeout(() => {
+              setShiftOn((prev) => !prev);
+            }, 100);
+          }}
+        >
+          SHIFT
+        </RightSHIFTKey>
       </Row>
     </Wrapper>
   );

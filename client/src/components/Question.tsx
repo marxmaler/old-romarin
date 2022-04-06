@@ -154,7 +154,9 @@ function Question({ word, register, errors }: IQuestionProp) {
                 setLastInput={setLastInput}
                 keyboardRef={keyboardRef}
                 shiftOn={shiftOn}
+                setShiftOn={setShiftOn}
                 capsLockOn={capsLockOn}
+                setCapsLockOn={setCapsLockOn}
               />
             )
           )}

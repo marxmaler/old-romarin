@@ -174,6 +174,7 @@ function WordForm() {
   const keyboardRef = useRef<HTMLDivElement>(null);
   const [hoverKeyboard, setHoverKeyboard] = useState(false);
   const [spellingInputBlur, setSpellingInputBlur] = useState(true);
+  const spellingInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setFocus("spelling");
@@ -221,6 +222,19 @@ function WordForm() {
     setFocus("spelling");
   };
 
+  const { ref, ...registerRest } = register("spelling", {
+    required: true,
+    onChange: (event: React.FormEvent<HTMLInputElement>) => {
+      onInputChange(
+        event,
+        languages[langNum],
+        setLastInput,
+        capsLockOn,
+        shiftOn
+      );
+    },
+    onBlur: onSpellingInputBlur,
+  });
   return (
     <>
       <FormContainer>
@@ -249,19 +263,7 @@ function WordForm() {
                   </span>
                 </label>
                 <SpellingInput
-                  {...register("spelling", {
-                    required: true,
-                    onChange: (event: React.FormEvent<HTMLInputElement>) => {
-                      onInputChange(
-                        event,
-                        languages[langNum],
-                        setLastInput,
-                        capsLockOn,
-                        shiftOn
-                      );
-                    },
-                    onBlur: onSpellingInputBlur,
-                  })}
+                  {...registerRest}
                   placeholder="required"
                   onFocus={onSpellingInputFocus}
                   onKeyDown={(event: React.KeyboardEvent) => {
@@ -270,6 +272,10 @@ function WordForm() {
                   }}
                   onKeyUp={(event: React.KeyboardEvent) => {
                     setShiftOn(event.getModifierState("Shift"));
+                  }}
+                  ref={(element) => {
+                    ref(element);
+                    spellingInputRef.current = element;
                   }}
                 />
               </li>
@@ -285,7 +291,10 @@ function WordForm() {
                       setLastInput={setLastInput}
                       keyboardRef={keyboardRef}
                       shiftOn={shiftOn}
+                      setShiftOn={setShiftOn}
                       capsLockOn={capsLockOn}
+                      setCapsLockOn={setCapsLockOn}
+                      inputRef={spellingInputRef}
                     />
                   )
                 )}
