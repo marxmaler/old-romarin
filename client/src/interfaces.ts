@@ -23,7 +23,6 @@ export interface User {
   _id: Types.ObjectId;
   email: string;
   name: string;
-  password: string;
   socialOnly: boolean;
   stat: {
     [key: string]: ILangStat;

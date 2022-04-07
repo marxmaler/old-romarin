@@ -136,9 +136,10 @@ function LoginForm() {
     } else if (response.status === 401) {
       const { user } = await response.json();
       if (user.email === data.email) {
+        const { password, ...rest } = user;
         setLogin({
           loggedIn: true,
-          user,
+          user: rest,
         });
 
         navigate("/");
@@ -152,19 +153,20 @@ function LoginForm() {
             body: JSON.stringify({ data }),
           })
         ).json();
-
+        const { password, ...rest } = user;
         setLogin({
           loggedIn: true,
-          user,
+          user: rest,
         });
 
         navigate("/");
       }
     } else {
       const { user } = await response.json();
+      const { password, ...rest } = user;
       setLogin({
         loggedIn: true,
-        user,
+        user: rest,
       });
 
       navigate("/");

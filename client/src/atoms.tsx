@@ -1,12 +1,6 @@
 import { atom, selector } from "recoil";
 import { recoilPersist } from "recoil-persist";
-import {
-  ILogIn,
-  ITestResult,
-  ITestSetting,
-  IWeeklyWords,
-  IWord,
-} from "./interfaces";
+import { ILogIn, ITestResult, ITestSetting, IWord } from "./interfaces";
 import { getZeroTime } from "./util/time";
 
 const { persistAtom } = recoilPersist();
