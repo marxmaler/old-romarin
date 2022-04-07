@@ -1,10 +1,7 @@
 import { motion } from "framer-motion";
 import React, { useEffect } from "react";
-import { ReactHTMLElement } from "react";
 import { useRef } from "react";
-import { UseFormSetValue } from "react-hook-form";
 import styled, { keyframes } from "styled-components";
-import { IForm } from "./WordForm";
 
 const keyPressAnimation = keyframes`
   0% {

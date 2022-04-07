@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { languageState } from "../atoms";
@@ -55,15 +56,19 @@ interface IProp {
 
 function LanguageSetter({ page, langNum, setLangNum }: IProp) {
   const [direction, setDirection] = useState(1);
-  const languageOptions = ["review", "testSetting"].includes(page)
-    ? ["All", ...languages]
-    : languages;
+  const languageOptions = useMemo(
+    () =>
+      ["review", "testSetting"].includes(page)
+        ? ["All", ...languages]
+        : languages,
+    [page]
+  );
 
   const [language, setLanguage] = useRecoilState(languageState);
 
   useEffect(() => {
     setLanguage(languageOptions[langNum]);
-  }, [langNum]);
+  }, [setLanguage, languageOptions, langNum]);
 
   const prevLanguage = () => {
     setDirection(-1);
@@ -91,7 +96,7 @@ function LanguageSetter({ page, langNum, setLangNum }: IProp) {
           initial="fadeIn"
           animate="stay"
           exit="fadeOut"
-          transition={{ duration: 0.7 }}
+          transition={{ duration: 0.5 }}
         >
           {language}
         </motion.h3>

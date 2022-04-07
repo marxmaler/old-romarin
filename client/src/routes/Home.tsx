@@ -101,7 +101,8 @@ function Home() {
   const resetWeeklyWords = useResetRecoilState(weeklyWordsState);
   const resetWeeklyWordsCnt = useResetRecoilState(weeklyWordsCntState);
   useEffect(() => {
-    if (data?.status === 401) {
+    const clonedResponse = data?.clone();
+    if (clonedResponse?.status === 401) {
       //서버에는 로그인이 되어있지 않은데 클라이언트는 로그인이 되어있는 경우(서버 종료 후 재시작 등으로 세션 정보 불일치)
       //로그아웃
       resetWords();
@@ -110,9 +111,9 @@ function Home() {
       resetLogin();
       navigate("/login");
     } else {
-      data?.json().then((json) => {
-        const { words: jsonWords } = json;
-        setWords(jsonWords);
+      data?.json().then((receivedData) => {
+        const { words: receivedWords } = receivedData;
+        setWords(receivedWords);
         setTestResults([]);
       });
     }
