@@ -10,11 +10,11 @@ import { languages } from "../util/language";
 import { getStringifiedArrayProps } from "../util/word";
 
 const Li = styled(motion.li)`
-  border: ${(props) => props.theme.periwinkleTint90} 1px solid;
+  border: 1.5px solid ${(props) => props.theme.periwinkleShade50};
   list-style: none;
   background-color: ${(props) => props.theme.periwinkleTint50};
-  border-radius: 10px;
-  padding: 10px;
+  border-radius: 20px;
+  padding: 20px 30px;
   margin-bottom: 20px;
   span {
     max-width: 30vw;

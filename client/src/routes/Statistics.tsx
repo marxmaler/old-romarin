@@ -36,6 +36,7 @@ const Container = styled.div`
   ul {
     padding: 20px;
     border-radius: 30px;
+    border: 1.5px solid ${(props) => props.theme.periwinkleShade50};
     background-color: ${(props) => props.theme.periwinkleTint90};
     color: ${(props) => props.theme.periwinkleShade50};
     width: max-content;

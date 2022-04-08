@@ -14,9 +14,9 @@ const Li = styled.li`
   width: 60%;
   background-color: ${(props) => props.theme.periwinkleTint50};
   border-radius: 10px;
-  padding: 20px;
+  padding: 20px 30px;
   margin-bottom: 20px;
-  border: ${(props) => props.theme.periwinkleTint90} 1px solid;
+  border: 1.5px solid ${(props) => props.theme.periwinkleShade50};
   h3 {
     color: ${(props) => props.theme.periwinkleShade50};
     font-size: 20px;

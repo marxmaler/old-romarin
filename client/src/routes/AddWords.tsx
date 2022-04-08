@@ -21,7 +21,7 @@ function AddWords() {
     <>
       <HeaderMenu />
       <Container>
-        <WordForm></WordForm>
+        <WordForm />
       </Container>
     </>
   );

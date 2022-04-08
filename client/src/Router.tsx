@@ -18,37 +18,37 @@ function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={login.loggedIn ? <Home /> : <Login />}></Route>
-        <Route path="/join" element={!login.loggedIn && <Join />}></Route>
-        <Route path="/login" element={!login.loggedIn && <Login />}></Route>
+        <Route path="/" element={login.loggedIn ? <Home /> : <Login />} />
+        <Route path="/join" element={!login.loggedIn && <Join />} />
+        <Route path="/login" element={!login.loggedIn && <Login />} />
         <Route
           path="/words"
           element={login.loggedIn ? <AddWords /> : <Login />}
-        ></Route>
+        />
         <Route
           path="/words/review"
           element={login.loggedIn ? <Review /> : <Login />}
-        ></Route>
+        />
         <Route
           path="/words/test"
           element={login.loggedIn ? <Test /> : <Login />}
-        ></Route>
+        />
         <Route
           path="/words/test/setting"
           element={login.loggedIn ? <TestSetting /> : <Login />}
-        ></Route>
+        />
         <Route
           path="/words/test/result"
           element={login.loggedIn ? <TestResult /> : <Login />}
-        ></Route>
+        />
         <Route
           path="/words/search"
           element={login.loggedIn ? <Search /> : <Login />}
-        ></Route>
+        />
         <Route
           path="/words/statistics"
           element={login.loggedIn ? <Statistics /> : <Login />}
-        ></Route>
+        />
       </Routes>
     </BrowserRouter>
   );

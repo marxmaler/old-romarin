@@ -6,11 +6,10 @@ import LanguageSetter from "./LanguageSetter";
 import RussianKeyboard from "./RussianKeyboard";
 import FrenchKeyboard from "./FrenchKeyboard";
 import { onInputChange } from "../util/keyboard";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
-const FormContainer = styled.div`
+const FormContainer = styled(motion.div)`
   display: flex;
-  margin-top: 50px;
   flex-direction: column;
   align-items: center;
   width: 100%;
@@ -34,7 +33,7 @@ const Form = styled.form`
   flex-direction: column;
   min-height: max-content;
   max-width: 50vw;
-  border: 1px solid ${(props) => props.theme.periwinkleTint90};
+  border: 1.5px solid ${(props) => props.theme.periwinkleShade50};
   border-radius: 20px;
 
   ul {
@@ -163,6 +162,23 @@ export type inputNames =
   | "syn"
   | "ant";
 
+const wordFormVar = {
+  hidden: {
+    opacity: 0,
+    y: -30,
+    transition: {
+      duration: 0.7,
+    },
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+    },
+  },
+};
+
 function WordForm() {
   const { register, handleSubmit, setValue, setFocus } = useForm<IForm>();
   const [numWords, setNumWords] = useState(0);
@@ -237,7 +253,7 @@ function WordForm() {
   });
   return (
     <>
-      <FormContainer>
+      <FormContainer variants={wordFormVar} initial="hidden" animate="show">
         <Form onSubmit={handleSubmit(onValid)}>
           <TransparentBox>
             <h3>새로 추가된 단어: {numWords}개</h3>

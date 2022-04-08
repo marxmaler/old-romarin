@@ -4,12 +4,7 @@ import { fetchWords } from "../api";
 import { useQuery } from "react-query";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  useRecoilState,
-  useRecoilValue,
-  useResetRecoilState,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
 import {
   loginState,
   testResultsState,
@@ -32,7 +27,7 @@ const Container = styled.div`
   position: relative;
 `;
 
-const ContentSection = styled.div`
+const ContentSection = styled(motion.div)`
   background-color: ${(props) => props.theme.periwinkleTint90};
   border-radius: 30px;
   padding-bottom: 50px;
@@ -87,22 +82,38 @@ const Noti = styled.h3`
   border-top-left-radius: 30px;
 `;
 
+const contentSectionVar = {
+  hidden: {
+    opacity: 0,
+    y: -30,
+    transition: {
+      duration: 0.7,
+    },
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+    },
+  },
+};
+
 function Home() {
   const { user } = useRecoilValue(loginState);
-  const { isLoading, data } = useQuery("fetchWords", () =>
+  const { isLoading, data, isError } = useQuery("fetchWords", () =>
     fetchWords(user?._id)
   );
   const [words, setWords] = useRecoilState(wordsState);
-  const setTestResults = useSetRecoilState(testResultsState);
 
   const navigate = useNavigate();
   const resetLogin = useResetRecoilState(loginState);
   const resetWords = useResetRecoilState(wordsState);
   const resetWeeklyWords = useResetRecoilState(weeklyWordsState);
   const resetWeeklyWordsCnt = useResetRecoilState(weeklyWordsCntState);
+  const resetTestResults = useResetRecoilState(testResultsState);
   useEffect(() => {
-    const clonedResponse = data?.clone();
-    if (clonedResponse?.status === 401) {
+    if (isError) {
       //서버에는 로그인이 되어있지 않은데 클라이언트는 로그인이 되어있는 경우(서버 종료 후 재시작 등으로 세션 정보 불일치)
       //로그아웃
       resetWords();
@@ -110,21 +121,20 @@ function Home() {
       resetWeeklyWordsCnt();
       resetLogin();
       navigate("/login");
-    } else {
-      data?.json().then((receivedData) => {
-        const { words: receivedWords } = receivedData;
-        setWords(receivedWords);
-        setTestResults([]);
-      });
+    } else if (data) {
+      const { words: receivedWords } = data;
+      setWords(receivedWords);
+      resetTestResults();
     }
   }, [
+    isError,
     data,
     navigate,
     resetLogin,
     resetWeeklyWords,
     resetWeeklyWordsCnt,
     resetWords,
-    setTestResults,
+    resetTestResults,
     setWords,
   ]);
 
@@ -132,7 +142,11 @@ function Home() {
     <>
       <HeaderMenu />
       <Container>
-        <ContentSection>
+        <ContentSection
+          variants={contentSectionVar}
+          initial="hidden"
+          animate="show"
+        >
           <Noti>
             {isLoading
               ? "복습할 단어 가져오는 중"
