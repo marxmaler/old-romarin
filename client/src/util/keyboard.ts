@@ -2,7 +2,7 @@ import { disassemble } from "hangul-js";
 
 export const convertKey = (key: string, language: string, cap: boolean) => {
   if (language === "Русский") {
-    console.log(cap);
+    // console.log(cap);
     const convertedKey =
       key === "~" || (cap && key === "`")
         ? "Ё"
@@ -161,6 +161,7 @@ export const onInputChange = (
   let input = event.currentTarget.selectionStart
     ? event.currentTarget.value[event.currentTarget.selectionStart - 1]
     : "";
+
   if (input !== "") {
     const disassembledInput = disassemble(input);
     let lastParticle = disassembledInput[disassembledInput.length - 1];
@@ -188,11 +189,10 @@ export const onInputChange = (
     const stringArray = [...event.currentTarget.value];
     stringArray[event.currentTarget.selectionStart - 1] = convertResult.key;
     event.currentTarget.value = stringArray.join("");
-    event.currentTarget.selectionStart = selectStart;
-    event.currentTarget.selectionEnd = selectStart;
-  } else if (convertResult) {
-    event.currentTarget.value =
-      convertResult.key === undefined ? "" : convertResult.key;
+  } else if (convertResult && input !== "") {
+    event.currentTarget.value = convertResult.key;
   }
+  event.currentTarget.selectionStart = selectStart;
+  event.currentTarget.selectionEnd = selectStart;
   setLastInput(convertResult.key);
 };

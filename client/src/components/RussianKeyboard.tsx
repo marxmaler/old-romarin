@@ -149,17 +149,29 @@ function RussianKeyboard({
     if (inputRef?.current) {
       const stringArr = [...inputRef?.current?.value];
       const selectionStart = inputRef?.current?.selectionStart;
-      if (selectionStart) {
+      if (selectionStart !== null) {
         let newValue = "";
-        if (selectionStart !== inputRef.current.value.length) {
+        if (clickedKey && inputRef.current.value.length < 1) {
+          //아무 값도 없을 때
+          console.log("condition1");
+          newValue = clickedKey;
+        } else if (selectionStart !== inputRef.current.value.length) {
+          //중간에서 입력할 때
+          console.log("selectionStart:", selectionStart);
+          console.log("length:", inputRef.current.value.length);
           const formerPart = stringArr.slice(0, selectionStart);
           const latterPart = stringArr.slice(selectionStart);
           newValue = [...formerPart, clickedKey, ...latterPart].join("");
-        } else {
+        } else if (selectionStart === inputRef.current.value.length) {
+          //맨 뒤에서 입력할 때
+          console.log("selectionStart:", selectionStart);
+          console.log("length:", inputRef.current.value.length);
           newValue = [...stringArr, clickedKey].join("");
+        } else {
         }
         inputRef.current.value = newValue;
         inputRef.current.selectionStart = selectionStart + 1;
+        inputRef.current.selectionEnd = selectionStart + 1;
       }
     }
   };
