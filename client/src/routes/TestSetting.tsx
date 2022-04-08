@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { testSettingState, wordsSelector } from "../atoms";
@@ -135,22 +135,19 @@ function TestSetting() {
 
   useEffect(() => {
     setValue("numQ", selectedWords.length);
-  }, [selectedWords]);
+  }, [setValue, selectedWords]);
 
   const onValid = ({ numQ }: ITestSettingFormProps) => {
-    //numQ 갯수와 selectedWords 갯수가 다르면 random index 뽑아서 새로운 selectedWord로 교체하기
-    if (numQ === selectedWords.length) {
-      setTestSetting({ numQ, selectedWords });
-    } else {
-      const reselectedWords: IWord[] = [];
-      while (reselectedWords.length < numQ) {
-        const randomIndex = Math.floor(Math.random() * selectedWords.length);
-        const reselectedWord = selectedWords[randomIndex];
-        !reselectedWords.includes(reselectedWord) &&
-          reselectedWords.push(reselectedWord);
-      }
-      setTestSetting({ numQ, selectedWords: reselectedWords });
+    //numQ 갯수만큼 random index 뽑아서 단어 섞기
+    const reselectedWords: IWord[] = [];
+    while (reselectedWords.length < numQ) {
+      const randomIndex = Math.floor(Math.random() * selectedWords.length);
+      const reselectedWord = selectedWords[randomIndex];
+      !reselectedWords.includes(reselectedWord) &&
+        reselectedWords.push(reselectedWord);
     }
+    setTestSetting({ numQ, selectedWords: reselectedWords });
+
     navigate("/words/test");
   };
 
@@ -201,10 +198,6 @@ function TestSetting() {
             {selectedWords.length > 0 && <button>시험 시작</button>}
           </ButtonContainer>
         </Form>
-
-        {/* <Link to={"/"}>
-          <button>뒤로 가기</button>
-        </Link> */}
       </FormContainer>
     </>
   );
