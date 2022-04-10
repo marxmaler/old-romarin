@@ -99,9 +99,16 @@ function Question({ word, register, errors }: IQuestionProp) {
   const [capsLockOn, setCapsLockOn] = useState(false);
   const [shiftOn, setShiftOn] = useState(false);
   const keyboardRef = useRef<HTMLDivElement>(null);
-  const [apostropheOn, setApostropheOn] = useState(false);
-  const [quotaionMarkOn, setQuotaionMarkOn] = useState(false);
-  const [tildeOn, setTildeOn] = useState(false);
+  // const [apostropheOn, setApostropheOn] = useState(false);
+  // const [quotaionMarkOn, setQuotaionMarkOn] = useState(false);
+  // const [tildeOn, setTildeOn] = useState(false);
+  // const [altOn, setAltOn] = useState(false);
+  const specialKeyOnRef = useRef({
+    apostropheOn: false,
+    quotaionMarkOn: false,
+    tildeOn: false,
+    altOn: false,
+  });
   const questionInputRef = useRef<HTMLInputElement | null>(null);
 
   const onQuestionInputFocus = () => {
@@ -116,13 +123,22 @@ function Question({ word, register, errors }: IQuestionProp) {
   const { ref, ...registerRest } = register(`${word._id}`, {
     required: "답안을 작성해주세요.",
     onChange: (event: React.FormEvent<HTMLInputElement>) =>
-      onInputChange(
+      onInputChange({
         event,
-        languages[languagesInKo.indexOf(languageInKo)],
+        language: languages[languagesInKo.indexOf(languageInKo)],
         setLastInput,
         capsLockOn,
-        shiftOn
-      ),
+        shiftOn,
+        // apostropheOn,
+        // setApostropheOn,
+        // quotaionMarkOn,
+        // setQuotaionMarkOn,
+        // tildeOn,
+        // setTildeOn,
+        // altOn,
+        // setAltOn,
+        specialKeyOnRef,
+      }),
     onBlur: onQuestionInputBlur,
   });
   return (
@@ -162,14 +178,14 @@ function Question({ word, register, errors }: IQuestionProp) {
             showKeyboard &&
             languageInKo === "러시아어" && (
               <RussianKeyboard
+                keyboardRef={keyboardRef}
+                inputRef={questionInputRef}
                 lastInput={lastInput}
                 setLastInput={setLastInput}
-                keyboardRef={keyboardRef}
                 shiftOn={shiftOn}
                 setShiftOn={setShiftOn}
                 capsLockOn={capsLockOn}
                 setCapsLockOn={setCapsLockOn}
-                inputRef={questionInputRef}
               />
             )
           )}

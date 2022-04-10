@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import styled, { keyframes } from "styled-components";
-import { onKeyClick, onKeyDown } from "../util/keyboard";
+import { onKeyClick } from "../util/keyboard";
 
 const keyPressAnimation = keyframes`
   0% {
@@ -122,32 +122,30 @@ export const keyBoardVar = {
 };
 
 interface IKeyboardProps {
-  lastInput: string;
   keyboardRef: React.RefObject<HTMLDivElement>;
+  inputRef: React.MutableRefObject<HTMLInputElement | null>;
+  lastInput: string;
   setLastInput: React.Dispatch<React.SetStateAction<string>>;
   shiftOn: boolean;
   setShiftOn: React.Dispatch<React.SetStateAction<boolean>>;
   capsLockOn: boolean;
   setCapsLockOn: React.Dispatch<React.SetStateAction<boolean>>;
-  inputRef?: React.MutableRefObject<HTMLInputElement | null>;
 }
 
 function RussianKeyboard({
+  keyboardRef,
+  inputRef,
   lastInput,
   setLastInput,
-  keyboardRef,
   shiftOn,
   setShiftOn,
   capsLockOn,
   setCapsLockOn,
-  inputRef,
 }: IKeyboardProps) {
   const [cap, setCap] = useState(
     (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn)
   );
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
-  // let timeoutId: NodeJS.Timeout | null = null;
-  //만약 inputValue가 해당 key content과 일치한다면 click 이벤트 강제로 발동 시키기
 
   useEffect(() => {
     // console.log(lastInput[0]);

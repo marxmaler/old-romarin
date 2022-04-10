@@ -189,9 +189,16 @@ function WordForm() {
   const [lastInput, setLastInput] = useState("");
   const [capsLockOn, setCapsLockOn] = useState(false);
   const [shiftOn, setShiftOn] = useState(false);
-  const [apostropheOn, setApostropheOn] = useState(false);
-  const [quotaionMarkOn, setQuotaionMarkOn] = useState(false);
-  const [tildeOn, setTildeOn] = useState(false);
+  // const [apostropheOn, setApostropheOn] = useState(false);
+  // const [quotaionMarkOn, setQuotaionMarkOn] = useState(false);
+  // const [tildeOn, setTildeOn] = useState(false);
+  // const [altOn, setAltOn] = useState(false);
+  const specialKeyOnRef = useRef({
+    apostropheOn: false,
+    quotaionMarkOn: false,
+    tildeOn: false,
+    altOn: false,
+  });
   const keyboardRef = useRef<HTMLDivElement>(null);
   const [hoverKeyboard, setHoverKeyboard] = useState(false);
   const [spellingInputBlur, setSpellingInputBlur] = useState(true);
@@ -246,13 +253,22 @@ function WordForm() {
   const { ref, ...registerRest } = register("spelling", {
     required: true,
     onChange: (event: React.FormEvent<HTMLInputElement>) => {
-      onInputChange(
+      onInputChange({
         event,
-        languages[langNum],
+        language: languages[langNum],
         setLastInput,
         capsLockOn,
-        shiftOn
-      );
+        shiftOn,
+        specialKeyOnRef,
+        // apostropheOn,
+        // setApostropheOn,
+        // quotaionMarkOn,
+        // setQuotaionMarkOn,
+        // tildeOn,
+        // setTildeOn,
+        // altOn,
+        // setAltOn,
+      });
     },
     onBlur: onSpellingInputBlur,
   });
@@ -292,9 +308,7 @@ function WordForm() {
                       event,
                       setCapsLockOn,
                       setShiftOn,
-                      setApostropheOn,
-                      setQuotaionMarkOn,
-                      setTildeOn,
+                      specialKeyOnRef,
                     })
                   }
                   onKeyUp={(event: React.KeyboardEvent) => {
@@ -314,6 +328,11 @@ function WordForm() {
                     setLastInput={setLastInput}
                     keyboardRef={keyboardRef}
                     inputRef={spellingInputRef}
+                    shiftOn={shiftOn}
+                    setShiftOn={setShiftOn}
+                    capsLockOn={capsLockOn}
+                    setCapsLockOn={setCapsLockOn}
+                    specialKeyOnRef={specialKeyOnRef}
                   />
                 ) : showKeyboard && langNum === 2 ? (
                   <FrenchKeyboard />
@@ -323,14 +342,14 @@ function WordForm() {
                   showKeyboard &&
                   langNum === 6 && (
                     <RussianKeyboard
+                      keyboardRef={keyboardRef}
+                      inputRef={spellingInputRef}
                       lastInput={lastInput}
                       setLastInput={setLastInput}
-                      keyboardRef={keyboardRef}
                       shiftOn={shiftOn}
                       setShiftOn={setShiftOn}
                       capsLockOn={capsLockOn}
                       setCapsLockOn={setCapsLockOn}
-                      inputRef={spellingInputRef}
                     />
                   )
                 )}

@@ -1,6 +1,23 @@
 import { disassemble } from "hangul-js";
 
-export const convertKey = (key: string, language: string, cap: boolean) => {
+interface IConvertKeyProps {
+  key: string;
+  language: string;
+  cap: boolean;
+  specialKeyOnRef: React.MutableRefObject<{
+    apostropheOn: boolean;
+    quotaionMarkOn: boolean;
+    tildeOn: boolean;
+    altOn: boolean;
+  }>;
+}
+export const convertKey = ({
+  key,
+  language,
+  cap,
+  specialKeyOnRef,
+}: IConvertKeyProps) => {
+  // console.log(specialKeyOnRef);
   if (language === "Русский") {
     // console.log(cap);
     const convertedKey =
@@ -138,25 +155,89 @@ export const convertKey = (key: string, language: string, cap: boolean) => {
         ? "м"
         : key;
 
-    return {
-      key: convertedKey,
-      converted: true,
-    };
+    return convertedKey;
+  } else if (language === "Español") {
+    const tildeOn = specialKeyOnRef.current.tildeOn;
+    const apostropheOn = specialKeyOnRef.current.apostropheOn;
+    const quotaionMarkOn = specialKeyOnRef.current.quotaionMarkOn;
+    const altOn = specialKeyOnRef.current.altOn;
+
+    console.log(specialKeyOnRef);
+    console.log("altOn:", altOn);
+    const convertedKey =
+      (tildeOn && key === "N") || (tildeOn && cap && key === "ㅜ")
+        ? "Ñ"
+        : tildeOn && ["n", "ㅜ"].includes(key)
+        ? "ñ"
+        : (apostropheOn && key === "A") || (apostropheOn && cap && key === "ㅁ")
+        ? "Á"
+        : apostropheOn && ["a", "ㅁ"].includes(key)
+        ? "á"
+        : (apostropheOn && key === "E") || (apostropheOn && cap && key === "ㄷ")
+        ? "É"
+        : apostropheOn && ["e", "ㄷ"].includes(key)
+        ? "é"
+        : (apostropheOn && key === "I") || (apostropheOn && cap && key === "ㅑ")
+        ? "Í"
+        : apostropheOn && ["i", "ㅑ"].includes(key)
+        ? "í"
+        : (apostropheOn && key === "O") || (apostropheOn && cap && key === "ㅐ")
+        ? "Ó"
+        : apostropheOn && ["o", "ㅐ"].includes(key)
+        ? "ó"
+        : (apostropheOn && key === "U") || (apostropheOn && cap && key === "ㅕ")
+        ? "Ú"
+        : apostropheOn && ["u", "ㅕ"].includes(key)
+        ? "ú"
+        : (quotaionMarkOn && key === "U") ||
+          (quotaionMarkOn && cap && key === "ㅕ")
+        ? "Ü"
+        : quotaionMarkOn && ["u", "ㅕ"].includes(key)
+        ? "ü"
+        : altOn && ["/", "?"].includes(key)
+        ? "¿"
+        : altOn && ["1", "!"].includes(key)
+        ? "¡"
+        : key;
+    console.log("convertedKey:", convertedKey);
+    if (convertedKey !== key) {
+      //만약 convert가 발생했으면 각종 state 다 false로 reset하기
+      console.log("did you?");
+      specialKeyOnRef.current.tildeOn = false;
+      specialKeyOnRef.current.apostropheOn = false;
+      specialKeyOnRef.current.quotaionMarkOn = false;
+      specialKeyOnRef.current.altOn = false;
+    }
+
+    return convertedKey;
   }
 
-  return {
-    key,
-    converted: false,
-  };
+  return key;
 };
 
-export const onInputChange = (
-  event: React.FormEvent<HTMLInputElement>,
-  language: string,
-  setLastInput: React.Dispatch<React.SetStateAction<string>>,
-  capsLockOn: boolean,
-  shiftOn: boolean
-) => {
+interface IOnInputChangeProps {
+  event: React.FormEvent<HTMLInputElement>;
+  language: string;
+  setLastInput: React.Dispatch<React.SetStateAction<string>>;
+  capsLockOn: boolean;
+  shiftOn: boolean;
+  specialKeyOnRef: React.MutableRefObject<{
+    apostropheOn: boolean;
+    quotaionMarkOn: boolean;
+    tildeOn: boolean;
+    altOn: boolean;
+  }>;
+}
+
+export const onInputChange = ({
+  event,
+  language,
+  setLastInput,
+  capsLockOn,
+  shiftOn,
+  specialKeyOnRef,
+}: IOnInputChangeProps) => {
+  console.log("onInputChange:", specialKeyOnRef);
   const cap = (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn);
   let input = event.currentTarget.selectionStart
     ? event.currentTarget.value[event.currentTarget.selectionStart - 1]
@@ -180,21 +261,26 @@ export const onInputChange = (
     input = lastParticle;
   }
   const selectStart = event.currentTarget.selectionStart;
-  const convertResult = convertKey(input, language, cap);
+  const convertedKey = convertKey({
+    key: input,
+    language,
+    cap,
+    specialKeyOnRef,
+  });
   if (
     event.currentTarget.value.length > 1 &&
     event.currentTarget.selectionStart
   ) {
     // console.log(convertedResult);
     const stringArray = [...event.currentTarget.value];
-    stringArray[event.currentTarget.selectionStart - 1] = convertResult.key;
+    stringArray[event.currentTarget.selectionStart - 1] = convertedKey;
     event.currentTarget.value = stringArray.join("");
-  } else if (convertResult && input !== "") {
-    event.currentTarget.value = convertResult.key;
+  } else if (convertedKey && input !== "") {
+    event.currentTarget.value = convertedKey;
   }
-  event.currentTarget.selectionStart = Number(selectStart) + 1;
-  event.currentTarget.selectionEnd = Number(selectStart) + 1;
-  setLastInput(convertResult.key);
+  event.currentTarget.selectionStart = Number(selectStart);
+  event.currentTarget.selectionEnd = Number(selectStart);
+  setLastInput(convertedKey);
 };
 
 export const onKeyClick = (
@@ -230,43 +316,45 @@ export const onKeyClick = (
 
 interface IOnKeyDownProps {
   event: React.KeyboardEvent;
-  setCapsLockOn: React.Dispatch<React.SetStateAction<boolean>>;
-  setShiftOn: React.Dispatch<React.SetStateAction<boolean>>;
-  setApostropheOn?: React.Dispatch<React.SetStateAction<boolean>>;
-  setQuotaionMarkOn?: React.Dispatch<React.SetStateAction<boolean>>;
-  setTildeOn?: React.Dispatch<React.SetStateAction<boolean>>;
+  setCapsLockOn?: React.Dispatch<React.SetStateAction<boolean>>;
+  setShiftOn?: React.Dispatch<React.SetStateAction<boolean>>;
+  specialKeyOnRef: React.MutableRefObject<{
+    apostropheOn: boolean;
+    quotaionMarkOn: boolean;
+    tildeOn: boolean;
+    altOn: boolean;
+  }>;
 }
 export const onKeyDown = ({
   event,
   setCapsLockOn,
   setShiftOn,
-  setApostropheOn,
-  setQuotaionMarkOn,
-  setTildeOn,
+  specialKeyOnRef,
 }: IOnKeyDownProps) => {
-  setCapsLockOn(event.getModifierState("CapsLock"));
-  setShiftOn(event.getModifierState("Shift"));
-  if (setApostropheOn) {
+  if (setCapsLockOn && setShiftOn) {
+    setCapsLockOn(event.getModifierState("CapsLock"));
+    setShiftOn(event.getModifierState("Shift"));
+  }
+
+  if (specialKeyOnRef) {
     if (event.key === "'") {
-      setApostropheOn(true);
-    } else {
-      setApostropheOn(false);
+      specialKeyOnRef.current.apostropheOn = true;
+      // console.log(event.key);
+      event.preventDefault();
     }
-  }
-
-  if (setQuotaionMarkOn) {
     if (event.key === '"') {
-      setQuotaionMarkOn(true);
-    } else {
-      setQuotaionMarkOn(false);
+      specialKeyOnRef.current.quotaionMarkOn = true;
+      event.preventDefault();
     }
-  }
-
-  if (setTildeOn) {
     if (event.key === "~") {
-      setTildeOn(true);
-    } else {
-      setTildeOn(false);
+      specialKeyOnRef.current.tildeOn = true;
+      event.preventDefault();
+    }
+
+    //크롬에서 alt키 누를때마다 자꾸 설정창 focus되게 하는 거 막기
+    if (event.altKey === true) {
+      specialKeyOnRef.current.altOn = event.altKey;
+      event.preventDefault();
     }
   }
 };
