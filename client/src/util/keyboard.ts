@@ -1,5 +1,3 @@
-import { disassemble } from "hangul-js";
-
 interface IConvertKeyProps {
   key: string;
   language: string;
@@ -29,45 +27,45 @@ export const convertKey = ({
         ? "Ъ"
         : key === "="
         ? "ъ"
-        : key === "Q" || (cap && key === "ㅂ")
+        : key === "Q"
         ? "Я"
-        : ["q", "ㅂ"].includes(key)
+        : key === "q"
         ? "я"
-        : key === "W" || (cap && key === "ㅈ")
+        : key === "W"
         ? "Ш"
-        : ["w", "ㅈ"].includes(key)
+        : key === "w"
         ? "ш"
-        : key === "E" || (cap && key === "ㄷ")
+        : key === "E"
         ? "Е"
-        : ["e", "ㄷ"].includes(key)
+        : key === "e"
         ? "е"
-        : key === "R" || (cap && key === "ㄱ")
+        : key === "R"
         ? "Р"
-        : ["r", "ㄱ"].includes(key)
+        : key === "r"
         ? "р"
-        : key === "T" || (cap && key === "ㅅ")
+        : key === "T"
         ? "Т"
-        : ["t", "ㅅ"].includes(key)
+        : key === "t"
         ? "т"
-        : key === "Y" || (cap && key === "ㅛ")
+        : key === "Y"
         ? "Ы"
-        : ["y", "ㅛ"].includes(key)
+        : key === "y"
         ? "ы"
-        : key === "U" || (cap && key === "ㅕ")
+        : key === "U"
         ? "У"
-        : ["u", "ㅕ"].includes(key)
+        : key === "u"
         ? "у"
-        : key === "I" || (cap && key === "ㅑ")
+        : key === "I"
         ? "И"
-        : ["i", "ㅑ"].includes(key)
+        : key === "i"
         ? "и"
-        : key === "O" || (cap && key === "ㅐ")
+        : key === "O"
         ? "О"
-        : ["o", "ㅐ"].includes(key)
+        : key === "o"
         ? "о"
-        : key === "P" || (cap && key === "ㅔ")
+        : key === "P"
         ? "П"
-        : ["p", "ㅔ"].includes(key)
+        : key === "p"
         ? "п"
         : key === "{" || (cap && key === "[")
         ? "Ю"
@@ -75,47 +73,47 @@ export const convertKey = ({
         ? "ю"
         : key === "}" || (cap && key === "]")
         ? "Щ"
-        : ["]"].includes(key)
+        : key === "]"
         ? "щ"
         : key === "|" || (cap && key === "\\")
         ? "Э"
-        : ["\\"].includes(key)
+        : key === "\\"
         ? "э"
-        : key === "A" || (cap && key === "ㅁ")
+        : key === "A"
         ? "А"
-        : ["a", "ㅁ"].includes(key)
+        : key === "a"
         ? "а"
-        : key === "S" || (cap && key === "ㄴ")
+        : key === "S"
         ? "С"
-        : ["s", "ㄴ"].includes(key)
+        : key === "s"
         ? "с"
-        : key === "D" || (cap && key === "ㅇ")
+        : key === "D"
         ? "Д"
-        : ["d", "ㅇ"].includes(key)
+        : key === "d"
         ? "д"
-        : key === "F" || (cap && key === "ㄹ")
+        : key === "F"
         ? "Ф"
-        : ["f", "ㄹ"].includes(key)
+        : key === "f"
         ? "ф"
-        : key === "G" || (cap && key === "ㅎ")
+        : key === "G"
         ? "Г"
-        : ["g", "ㅎ"].includes(key)
+        : key === "g"
         ? "г"
-        : key === "H" || (cap && key === "ㅗ")
+        : key === "H"
         ? "Ч"
-        : ["h", "ㅗ"].includes(key)
+        : key === "h"
         ? "ч"
-        : key === "J" || (cap && key === "ㅓ")
+        : key === "J"
         ? "Й"
-        : ["j", "ㅓ"].includes(key)
+        : key === "j"
         ? "й"
-        : key === "K" || (cap && key === "ㅏ")
+        : key === "K"
         ? "К"
-        : ["k", "ㅏ"].includes(key)
+        : key === "k"
         ? "к"
-        : key === "L" || (cap && key === "ㅣ")
+        : key === "L"
         ? "Л"
-        : ["l", "ㅣ"].includes(key)
+        : key === "l"
         ? "л"
         : key === ":" || (cap && key === ";")
         ? "Ь"
@@ -125,33 +123,33 @@ export const convertKey = ({
         ? "Ж"
         : key === "'"
         ? "ж"
-        : key === "Z" || (cap && key === "ㅋ")
+        : key === "Z"
         ? "З"
-        : ["z", "ㅋ"].includes(key)
+        : key === "z"
         ? "з"
-        : key === "X" || (cap && key === "ㅌ")
+        : key === "X"
         ? "Х"
-        : ["x", "ㅌ"].includes(key)
+        : key === "x"
         ? "х"
-        : key === "C" || (cap && key === "ㅊ")
+        : key === "C"
         ? "Ц"
-        : ["c", "ㅊ"].includes(key)
+        : key === "c"
         ? "ц"
-        : key === "V" || (cap && key === "ㅍ")
+        : key === "V"
         ? "В"
-        : ["v", "ㅍ"].includes(key)
+        : key === "v"
         ? "в"
-        : key === "B" || (cap && key === "ㅠ")
+        : key === "B"
         ? "Б"
-        : ["b", "ㅠ"].includes(key)
+        : key === "b"
         ? "б"
-        : key === "N" || (cap && key === "ㅜ")
+        : key === "N"
         ? "Н"
-        : ["n", "ㅜ"].includes(key)
+        : key === "n"
         ? "н"
-        : key === "M" || (cap && key === "ㅡ")
+        : key === "M"
         ? "М"
-        : ["m", "ㅡ"].includes(key)
+        : key === "m"
         ? "м"
         : key;
 
@@ -169,6 +167,8 @@ export const convertKey = ({
         ? "Ñ"
         : tildeOn && ["n", "ㅜ"].includes(key)
         ? "ñ"
+        : tildeOn && key === "~"
+        ? "~"
         : (apostropheOn && key === "A") || (apostropheOn && cap && key === "ㅁ")
         ? "Á"
         : apostropheOn && ["a", "ㅁ"].includes(key)
@@ -189,20 +189,21 @@ export const convertKey = ({
         ? "Ú"
         : apostropheOn && ["u", "ㅕ"].includes(key)
         ? "ú"
-        : (quotaionMarkOn && key === "U") ||
-          (quotaionMarkOn && cap && key === "ㅕ")
+        : apostropheOn && key === "'"
+        ? "'"
+        : quotaionMarkOn && key === "U"
         ? "Ü"
-        : quotaionMarkOn && ["u", "ㅕ"].includes(key)
+        : quotaionMarkOn && key === "u"
         ? "ü"
-        : altOn && ["/", "?"].includes(key)
+        : quotaionMarkOn && key === '"'
+        ? '"'
+        : altOn && key === "?"
         ? "¿"
-        : altOn && ["1", "!"].includes(key)
+        : altOn && key === "!"
         ? "¡"
         : key;
-    console.log("convertedKey:", convertedKey);
-    if (convertedKey !== key) {
+    if (convertedKey !== key || ["'", '"', "~"].includes(key)) {
       //만약 convert가 발생했으면 각종 state 다 false로 reset하기
-      console.log("did you?");
       specialKeyOnRef.current.tildeOn = false;
       specialKeyOnRef.current.apostropheOn = false;
       specialKeyOnRef.current.quotaionMarkOn = false;
@@ -243,23 +244,6 @@ export const onInputChange = ({
     ? event.currentTarget.value[event.currentTarget.selectionStart - 1]
     : "";
 
-  if (input !== "") {
-    const disassembledInput = disassemble(input);
-    let lastParticle = disassembledInput[disassembledInput.length - 1];
-    if (["ㄲ", "ㄸ", "ㅃ", "ㅆ", "ㅉ"].includes(lastParticle)) {
-      lastParticle =
-        lastParticle === "ㄲ"
-          ? "ㄱ"
-          : lastParticle === "ㄸ"
-          ? "ㄷ"
-          : lastParticle === "ㅃ"
-          ? "ㅂ"
-          : lastParticle === "ㅆ"
-          ? "ㅅ"
-          : "ㅈ";
-    }
-    input = lastParticle;
-  }
   const selectStart = event.currentTarget.selectionStart;
   const convertedKey = convertKey({
     key: input,
@@ -338,17 +322,22 @@ export const onKeyDown = ({
 
   if (specialKeyOnRef) {
     if (event.key === "'") {
-      specialKeyOnRef.current.apostropheOn = true;
-      // console.log(event.key);
-      event.preventDefault();
+      if (!specialKeyOnRef.current.apostropheOn) {
+        specialKeyOnRef.current.apostropheOn = true;
+        event.preventDefault();
+      }
     }
     if (event.key === '"') {
-      specialKeyOnRef.current.quotaionMarkOn = true;
-      event.preventDefault();
+      if (!specialKeyOnRef.current.quotaionMarkOn) {
+        specialKeyOnRef.current.quotaionMarkOn = true;
+        event.preventDefault();
+      }
     }
     if (event.key === "~") {
-      specialKeyOnRef.current.tildeOn = true;
-      event.preventDefault();
+      if (!specialKeyOnRef.current.tildeOn) {
+        specialKeyOnRef.current.tildeOn = true;
+        event.preventDefault();
+      }
     }
 
     //크롬에서 alt키 누를때마다 자꾸 설정창 focus되게 하는 거 막기

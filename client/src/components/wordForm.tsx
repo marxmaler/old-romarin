@@ -337,7 +337,17 @@ function WordForm() {
                 ) : showKeyboard && langNum === 2 ? (
                   <FrenchKeyboard />
                 ) : showKeyboard && langNum === 3 ? (
-                  <GermanKeyboard />
+                  <GermanKeyboard
+                    lastInput={lastInput}
+                    setLastInput={setLastInput}
+                    keyboardRef={keyboardRef}
+                    inputRef={spellingInputRef}
+                    shiftOn={shiftOn}
+                    setShiftOn={setShiftOn}
+                    capsLockOn={capsLockOn}
+                    setCapsLockOn={setCapsLockOn}
+                    specialKeyOnRef={specialKeyOnRef}
+                  />
                 ) : (
                   showKeyboard &&
                   langNum === 6 && (

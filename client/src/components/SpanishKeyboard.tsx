@@ -95,6 +95,20 @@ const titles = [
   "'(작은 따옴표) + o",
   "'(작은 따옴표) + u",
   '"(큰 따옴표) + u',
+  "alt + ?",
+  "alt + !",
+];
+
+const capTitles = [
+  "~(shift + `) + N",
+  "'(작은 따옴표) + A",
+  "'(작은 따옴표) + E",
+  "'(작은 따옴표) + I",
+  "'(작은 따옴표) + O",
+  "'(작은 따옴표) + U",
+  '"(큰 따옴표) + U',
+  "alt + ?",
+  "alt + !",
 ];
 
 interface IKeyboardProps {
@@ -106,14 +120,6 @@ interface IKeyboardProps {
   setShiftOn: React.Dispatch<React.SetStateAction<boolean>>;
   capsLockOn: boolean;
   setCapsLockOn: React.Dispatch<React.SetStateAction<boolean>>;
-  //   apostropheOn: boolean;
-  //   setApostropheOn: React.Dispatch<React.SetStateAction<boolean>>;
-  //   quotaionMarkOn: boolean;
-  //   setQuotaionMarkOn: React.Dispatch<React.SetStateAction<boolean>>;
-  //   tildeOn: boolean;
-  //   setTildeOn: React.Dispatch<React.SetStateAction<boolean>>;
-  //   altOn: boolean;
-  //   setAltOn: React.Dispatch<React.SetStateAction<boolean>>;
   specialKeyOnRef: React.MutableRefObject<{
     apostropheOn: boolean;
     quotaionMarkOn: boolean;
@@ -132,15 +138,7 @@ function SpanishKeyboard({
   capsLockOn,
   setCapsLockOn,
   specialKeyOnRef,
-}: //   apostropheOn,
-//   setApostropheOn,
-//   quotaionMarkOn,
-//   setQuotaionMarkOn,
-//   tildeOn,
-//   setTildeOn,
-//   altOn,
-//   setAltOn,
-IKeyboardProps) {
+}: IKeyboardProps) {
   const [cap, setCap] = useState(
     (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn)
   );
@@ -166,17 +164,22 @@ IKeyboardProps) {
       setShiftOn(event.getModifierState("Shift"));
       if (specialKeyOnRef) {
         if (event.key === "'") {
-          specialKeyOnRef.current.apostropheOn = true;
-          //   console.log(event.key);
-          event.preventDefault();
+          if (!specialKeyOnRef.current.apostropheOn) {
+            specialKeyOnRef.current.apostropheOn = true;
+            event.preventDefault();
+          }
         }
         if (event.key === '"') {
-          specialKeyOnRef.current.quotaionMarkOn = true;
-          event.preventDefault();
+          if (!specialKeyOnRef.current.quotaionMarkOn) {
+            specialKeyOnRef.current.quotaionMarkOn = true;
+            event.preventDefault();
+          }
         }
         if (event.key === "~") {
-          specialKeyOnRef.current.tildeOn = true;
-          event.preventDefault();
+          if (!specialKeyOnRef.current.tildeOn) {
+            specialKeyOnRef.current.tildeOn = true;
+            event.preventDefault();
+          }
         }
         //크롬에서 alt키 누를때마다 자꾸 설정창 focus되게 하는 거 막기
         if (event.altKey === true) {
@@ -208,7 +211,7 @@ IKeyboardProps) {
               <Key
                 key={`esp_key_${key}`}
                 id={`esp_key_${key}`}
-                title={titles[index]}
+                title={capTitles[index]}
                 onClick={(event) => onKeyClick(event, inputRef)}
               >
                 {key}
