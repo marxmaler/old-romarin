@@ -15,7 +15,10 @@ export const convertKey = ({
   cap,
   specialKeyOnRef,
 }: IConvertKeyProps) => {
-  // console.log(specialKeyOnRef);
+  const tildeOn = specialKeyOnRef.current.tildeOn;
+  const apostropheOn = specialKeyOnRef.current.apostropheOn;
+  const quotaionMarkOn = specialKeyOnRef.current.quotaionMarkOn;
+  const altOn = specialKeyOnRef.current.altOn;
   if (language === "Русский") {
     // console.log(cap);
     const convertedKey =
@@ -155,13 +158,6 @@ export const convertKey = ({
 
     return convertedKey;
   } else if (language === "Español") {
-    const tildeOn = specialKeyOnRef.current.tildeOn;
-    const apostropheOn = specialKeyOnRef.current.apostropheOn;
-    const quotaionMarkOn = specialKeyOnRef.current.quotaionMarkOn;
-    const altOn = specialKeyOnRef.current.altOn;
-
-    console.log(specialKeyOnRef);
-    console.log("altOn:", altOn);
     const convertedKey =
       (tildeOn && key === "N") || (tildeOn && cap && key === "ㅜ")
         ? "Ñ"
@@ -206,6 +202,34 @@ export const convertKey = ({
       //만약 convert가 발생했으면 각종 state 다 false로 reset하기
       specialKeyOnRef.current.tildeOn = false;
       specialKeyOnRef.current.apostropheOn = false;
+      specialKeyOnRef.current.quotaionMarkOn = false;
+      specialKeyOnRef.current.altOn = false;
+    }
+
+    return convertedKey;
+  } else if (language === "Deutsch") {
+    const convertedKey =
+      quotaionMarkOn && key === "A"
+        ? "Ä"
+        : quotaionMarkOn && key === "a"
+        ? "ä"
+        : quotaionMarkOn && key === "O"
+        ? "Ö"
+        : quotaionMarkOn && key === "o"
+        ? "ö"
+        : quotaionMarkOn && key === "U"
+        ? "Ü"
+        : quotaionMarkOn && key === "u"
+        ? "ü"
+        : quotaionMarkOn && key === '"'
+        ? '"'
+        : altOn && key === "S"
+        ? "ẞ"
+        : altOn && key === "s"
+        ? "ß"
+        : key;
+    if (convertedKey !== key || ['"'].includes(key)) {
+      //만약 convert가 발생했으면 각종 state 다 false로 reset하기
       specialKeyOnRef.current.quotaionMarkOn = false;
       specialKeyOnRef.current.altOn = false;
     }
