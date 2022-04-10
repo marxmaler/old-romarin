@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import styled, { keyframes } from "styled-components";
+import { onKeyClick, onKeyDown } from "../util/keyboard";
 
 const keyPressAnimation = keyframes`
   0% {
@@ -141,41 +142,9 @@ function RussianKeyboard({
   setCapsLockOn,
   inputRef,
 }: IKeyboardProps) {
-  const cap = (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn);
-
-  const onKeyClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    const clickedKey = event.currentTarget.textContent;
-    // console.log(inputRef?.current?.value);
-    if (inputRef?.current) {
-      const stringArr = [...inputRef?.current?.value];
-      const selectionStart = inputRef?.current?.selectionStart;
-      if (selectionStart !== null) {
-        let newValue = "";
-        if (clickedKey && inputRef.current.value.length < 1) {
-          //아무 값도 없을 때
-          console.log("condition1");
-          newValue = clickedKey;
-        } else if (selectionStart !== inputRef.current.value.length) {
-          //중간에서 입력할 때
-          console.log("selectionStart:", selectionStart);
-          console.log("length:", inputRef.current.value.length);
-          const formerPart = stringArr.slice(0, selectionStart);
-          const latterPart = stringArr.slice(selectionStart);
-          newValue = [...formerPart, clickedKey, ...latterPart].join("");
-        } else if (selectionStart === inputRef.current.value.length) {
-          //맨 뒤에서 입력할 때
-          console.log("selectionStart:", selectionStart);
-          console.log("length:", inputRef.current.value.length);
-          newValue = [...stringArr, clickedKey].join("");
-        } else {
-        }
-        inputRef.current.value = newValue;
-        inputRef.current.selectionStart = selectionStart + 1;
-        inputRef.current.selectionEnd = selectionStart + 1;
-      }
-    }
-  };
-
+  const [cap, setCap] = useState(
+    (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn)
+  );
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
   // let timeoutId: NodeJS.Timeout | null = null;
   //만약 inputValue가 해당 key content과 일치한다면 click 이벤트 강제로 발동 시키기
@@ -194,6 +163,21 @@ function RussianKeyboard({
     }, 100);
     setLastInput("");
   }, [lastInput, setLastInput]);
+
+  //CapsLock
+  useEffect(() => {
+    document.addEventListener("keydown", (event) => {
+      setCapsLockOn(event.getModifierState("CapsLock"));
+      setShiftOn(event.getModifierState("Shift"));
+    });
+    document.addEventListener("keyup", (event) => {
+      setShiftOn(event.getModifierState("Shift"));
+    });
+  }, [setCapsLockOn, setShiftOn]);
+
+  useEffect(() => {
+    setCap((!shiftOn && capsLockOn) || (shiftOn && !capsLockOn));
+  }, [shiftOn, capsLockOn, setCap]);
   return (
     <Wrapper
       ref={keyboardRef}
@@ -222,7 +206,7 @@ function RussianKeyboard({
               <Key
                 key={`rus_key_${key}`}
                 id={`rus_key_${key}`}
-                onClick={onKeyClick}
+                onClick={(event) => onKeyClick(event, inputRef)}
               >
                 {key}
               </Key>
@@ -245,7 +229,7 @@ function RussianKeyboard({
               <Key
                 key={`rus_key_${key}`}
                 id={`rus_key_${key}`}
-                onClick={onKeyClick}
+                onClick={(event) => onKeyClick(event, inputRef)}
               >
                 {key}
               </Key>
@@ -260,7 +244,7 @@ function RussianKeyboard({
                 <Key
                   key={`rus_key_${key}`}
                   id={`rus_key_${key}`}
-                  onClick={onKeyClick}
+                  onClick={(event) => onKeyClick(event, inputRef)}
                 >
                   {key}
                 </Key>
@@ -271,7 +255,7 @@ function RussianKeyboard({
                 <Key
                   key={`rus_key_${key}`}
                   id={`rus_key_${key}`}
-                  onClick={onKeyClick}
+                  onClick={(event) => onKeyClick(event, inputRef)}
                 >
                   {key}
                 </Key>
@@ -295,7 +279,7 @@ function RussianKeyboard({
                 <Key
                   key={`rus_key_${key}`}
                   id={`rus_key_${key}`}
-                  onClick={onKeyClick}
+                  onClick={(event) => onKeyClick(event, inputRef)}
                 >
                   {key}
                 </Key>
@@ -306,7 +290,7 @@ function RussianKeyboard({
                 <Key
                   key={`rus_key_${key}`}
                   id={`rus_key_${key}`}
-                  onClick={onKeyClick}
+                  onClick={(event) => onKeyClick(event, inputRef)}
                 >
                   {key}
                 </Key>
@@ -330,7 +314,7 @@ function RussianKeyboard({
               <Key
                 key={`rus_key_${key}`}
                 id={`rus_key_${key}`}
-                onClick={onKeyClick}
+                onClick={(event) => onKeyClick(event, inputRef)}
               >
                 {key}
               </Key>
@@ -339,7 +323,7 @@ function RussianKeyboard({
               <Key
                 key={`rus_key_${key}`}
                 id={`rus_key_${key}`}
-                onClick={onKeyClick}
+                onClick={(event) => onKeyClick(event, inputRef)}
               >
                 {key}
               </Key>

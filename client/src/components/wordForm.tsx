@@ -5,8 +5,10 @@ import { languages } from "../util/language";
 import LanguageSetter from "./LanguageSetter";
 import RussianKeyboard from "./RussianKeyboard";
 import FrenchKeyboard from "./FrenchKeyboard";
-import { onInputChange } from "../util/keyboard";
+import { onInputChange, onKeyDown } from "../util/keyboard";
 import { AnimatePresence, motion } from "framer-motion";
+import GermanKeyboard from "./GermanKeyboard";
+import SpanishKeyboard from "./SpanishKeyboard";
 
 const FormContainer = styled(motion.div)`
   display: flex;
@@ -187,6 +189,9 @@ function WordForm() {
   const [lastInput, setLastInput] = useState("");
   const [capsLockOn, setCapsLockOn] = useState(false);
   const [shiftOn, setShiftOn] = useState(false);
+  const [apostropheOn, setApostropheOn] = useState(false);
+  const [quotaionMarkOn, setQuotaionMarkOn] = useState(false);
+  const [tildeOn, setTildeOn] = useState(false);
   const keyboardRef = useRef<HTMLDivElement>(null);
   const [hoverKeyboard, setHoverKeyboard] = useState(false);
   const [spellingInputBlur, setSpellingInputBlur] = useState(true);
@@ -198,7 +203,7 @@ function WordForm() {
 
   const onSpellingInputFocus = () => {
     setSpellingInputBlur(false);
-    if (langNum === 2 || langNum === 6) {
+    if ([1, 2, 3, 6].includes(langNum)) {
       setShowKeyboard(true);
     }
   };
@@ -282,10 +287,16 @@ function WordForm() {
                   {...registerRest}
                   placeholder="required"
                   onFocus={onSpellingInputFocus}
-                  onKeyDown={(event: React.KeyboardEvent) => {
-                    setCapsLockOn(event.getModifierState("CapsLock"));
-                    setShiftOn(event.getModifierState("Shift"));
-                  }}
+                  onKeyDown={(event) =>
+                    onKeyDown({
+                      event,
+                      setCapsLockOn,
+                      setShiftOn,
+                      setApostropheOn,
+                      setQuotaionMarkOn,
+                      setTildeOn,
+                    })
+                  }
                   onKeyUp={(event: React.KeyboardEvent) => {
                     setShiftOn(event.getModifierState("Shift"));
                   }}
@@ -297,8 +308,17 @@ function WordForm() {
               </li>
 
               <AnimatePresence>
-                {showKeyboard && langNum === 2 ? (
+                {showKeyboard && langNum === 1 ? (
+                  <SpanishKeyboard
+                    lastInput={lastInput}
+                    setLastInput={setLastInput}
+                    keyboardRef={keyboardRef}
+                    inputRef={spellingInputRef}
+                  />
+                ) : showKeyboard && langNum === 2 ? (
                   <FrenchKeyboard />
+                ) : showKeyboard && langNum === 3 ? (
+                  <GermanKeyboard />
                 ) : (
                   showKeyboard &&
                   langNum === 6 && (

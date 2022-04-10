@@ -99,6 +99,10 @@ function Question({ word, register, errors }: IQuestionProp) {
   const [capsLockOn, setCapsLockOn] = useState(false);
   const [shiftOn, setShiftOn] = useState(false);
   const keyboardRef = useRef<HTMLDivElement>(null);
+  const [apostropheOn, setApostropheOn] = useState(false);
+  const [quotaionMarkOn, setQuotaionMarkOn] = useState(false);
+  const [tildeOn, setTildeOn] = useState(false);
+  const questionInputRef = useRef<HTMLInputElement | null>(null);
 
   const onQuestionInputFocus = () => {
     if (languageInKo === "프랑스어" || languageInKo === "러시아어") {
@@ -108,7 +112,19 @@ function Question({ word, register, errors }: IQuestionProp) {
   const onQuestionInputBlur = () => {
     setShowKeyboard(false);
   };
-  //의미 보고 철자 쓰기 문제
+
+  const { ref, ...registerRest } = register(`${word._id}`, {
+    required: "답안을 작성해주세요.",
+    onChange: (event: React.FormEvent<HTMLInputElement>) =>
+      onInputChange(
+        event,
+        languages[languagesInKo.indexOf(languageInKo)],
+        setLastInput,
+        capsLockOn,
+        shiftOn
+      ),
+    onBlur: onQuestionInputBlur,
+  });
   return (
     <>
       <Li>
@@ -125,22 +141,18 @@ function Question({ word, register, errors }: IQuestionProp) {
           </label>
           <input
             id={String(word._id) + "_answer"}
-            {...register(`${word._id}`, {
-              required: "답안을 작성해주세요.",
-              onChange: (event) =>
-                onInputChange(
-                  event,
-                  languages[languagesInKo.indexOf(languageInKo)],
-                  setLastInput,
-                  capsLockOn,
-                  shiftOn
-                ),
-              onBlur: onQuestionInputBlur,
-            })}
+            {...registerRest}
             onFocus={onQuestionInputFocus}
             onKeyDown={(event: React.KeyboardEvent) => {
               setCapsLockOn(event.getModifierState("CapsLock"));
               setShiftOn(event.getModifierState("Shift"));
+            }}
+            onKeyUp={(event: React.KeyboardEvent) => {
+              setShiftOn(event.getModifierState("Shift"));
+            }}
+            ref={(element) => {
+              ref(element);
+              questionInputRef.current = element;
             }}
           />
           {/* <RussianKeyboard /> */}
@@ -157,6 +169,7 @@ function Question({ word, register, errors }: IQuestionProp) {
                 setShiftOn={setShiftOn}
                 capsLockOn={capsLockOn}
                 setCapsLockOn={setCapsLockOn}
+                inputRef={questionInputRef}
               />
             )
           )}

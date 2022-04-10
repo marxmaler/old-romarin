@@ -192,7 +192,81 @@ export const onInputChange = (
   } else if (convertResult && input !== "") {
     event.currentTarget.value = convertResult.key;
   }
-  event.currentTarget.selectionStart = selectStart;
-  event.currentTarget.selectionEnd = selectStart;
+  event.currentTarget.selectionStart = Number(selectStart) + 1;
+  event.currentTarget.selectionEnd = Number(selectStart) + 1;
   setLastInput(convertResult.key);
+};
+
+export const onKeyClick = (
+  event: React.MouseEvent<HTMLDivElement>,
+  inputRef: React.MutableRefObject<HTMLInputElement | null> | undefined
+) => {
+  const clickedKey = event.currentTarget.textContent;
+  // console.log(inputRef?.current?.value);
+  if (inputRef?.current) {
+    const stringArr = [...inputRef?.current?.value];
+    const selectionStart = inputRef?.current?.selectionStart;
+    if (selectionStart !== null) {
+      let newValue = "";
+      if (clickedKey && inputRef.current.value.length < 1) {
+        //아무 값도 없을 때
+        newValue = clickedKey;
+      } else if (selectionStart !== inputRef.current.value.length) {
+        //중간에서 입력할 때
+        const formerPart = stringArr.slice(0, selectionStart);
+        const latterPart = stringArr.slice(selectionStart);
+        newValue = [...formerPart, clickedKey, ...latterPart].join("");
+      } else if (selectionStart === inputRef.current.value.length) {
+        //맨 뒤에서 입력할 때
+        newValue = [...stringArr, clickedKey].join("");
+      } else {
+      }
+      inputRef.current.value = newValue;
+      inputRef.current.selectionStart = selectionStart + 1;
+      inputRef.current.selectionEnd = selectionStart + 1;
+    }
+  }
+};
+
+interface IOnKeyDownProps {
+  event: React.KeyboardEvent;
+  setCapsLockOn: React.Dispatch<React.SetStateAction<boolean>>;
+  setShiftOn: React.Dispatch<React.SetStateAction<boolean>>;
+  setApostropheOn?: React.Dispatch<React.SetStateAction<boolean>>;
+  setQuotaionMarkOn?: React.Dispatch<React.SetStateAction<boolean>>;
+  setTildeOn?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+export const onKeyDown = ({
+  event,
+  setCapsLockOn,
+  setShiftOn,
+  setApostropheOn,
+  setQuotaionMarkOn,
+  setTildeOn,
+}: IOnKeyDownProps) => {
+  setCapsLockOn(event.getModifierState("CapsLock"));
+  setShiftOn(event.getModifierState("Shift"));
+  if (setApostropheOn) {
+    if (event.key === "'") {
+      setApostropheOn(true);
+    } else {
+      setApostropheOn(false);
+    }
+  }
+
+  if (setQuotaionMarkOn) {
+    if (event.key === '"') {
+      setQuotaionMarkOn(true);
+    } else {
+      setQuotaionMarkOn(false);
+    }
+  }
+
+  if (setTildeOn) {
+    if (event.key === "~") {
+      setTildeOn(true);
+    } else {
+      setTildeOn(false);
+    }
+  }
 };

@@ -43,12 +43,64 @@ const Key = styled.div`
   }
 `;
 
-function SpanishKeyboard() {
+const titles = [
+  "~(shift + `) + n",
+  "'(작은 따옴표) + a",
+  "'(작은 따옴표) + e",
+  "'(작은 따옴표) + i",
+  "'(작은 따옴표) + o",
+  "'(작은 따옴표) + u",
+  '"(큰 따옴표) + u',
+];
+
+interface IKeyboardProps {
+  lastInput: string;
+  keyboardRef: React.RefObject<HTMLDivElement>;
+  setLastInput: React.Dispatch<React.SetStateAction<string>>;
+  inputRef?: React.MutableRefObject<HTMLInputElement | null>;
+}
+
+function SpanishKeyboard({
+  lastInput,
+  setLastInput,
+  keyboardRef,
+  inputRef,
+}: IKeyboardProps) {
+  const onKeyClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const clickedKey = event.currentTarget.textContent;
+    // console.log(inputRef?.current?.value);
+    if (inputRef?.current) {
+      const stringArr = [...inputRef?.current?.value];
+      const selectionStart = inputRef?.current?.selectionStart;
+      if (selectionStart !== null) {
+        let newValue = "";
+        if (clickedKey && inputRef.current.value.length < 1) {
+          //아무 값도 없을 때
+          newValue = clickedKey;
+        } else if (selectionStart !== inputRef.current.value.length) {
+          //중간에서 입력할 때
+          const formerPart = stringArr.slice(0, selectionStart);
+          const latterPart = stringArr.slice(selectionStart);
+          newValue = [...formerPart, clickedKey, ...latterPart].join("");
+        } else if (selectionStart === inputRef.current.value.length) {
+          //맨 뒤에서 입력할 때
+          newValue = [...stringArr, clickedKey].join("");
+        } else {
+        }
+        inputRef.current.value = newValue;
+        inputRef.current.selectionStart = selectionStart + 1;
+        inputRef.current.selectionEnd = selectionStart + 1;
+      }
+    }
+  };
+
   return (
     <Wrapper>
       <Row>
-        {["ñ", "á", "é", "í", "ó", "ú", "ü"].map((key) => (
-          <Key>{key}</Key>
+        {["ñ", "á", "é", "í", "ó", "ú", "ü"].map((key, index) => (
+          <Key key={`esp_key_${key}`} title={titles[index]}>
+            {key}
+          </Key>
         ))}
       </Row>
     </Wrapper>

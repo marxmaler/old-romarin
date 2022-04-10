@@ -86,7 +86,7 @@ const Form = styled.form`
 `;
 
 const ErrorMessage = styled.li`
-  color: red;
+  color: ${(props) => props.theme.periwinkleTint90};
   font-size: 12px;
   span {
     padding: 1em;

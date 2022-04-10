@@ -43,12 +43,21 @@ const Key = styled.div`
   }
 `;
 
+const titles = [
+  "alt + s",
+  '"(큰 따옴표) + a',
+  '"(큰 따옴표) + o',
+  '"(큰 따옴표) + u',
+];
+
 function GermanKeyboard() {
   return (
     <Wrapper>
       <Row>
-        {["ß", "ä", "ö", "ü"].map((key) => (
-          <Key>{key}</Key>
+        {["ß", "ä", "ö", "ü"].map((key, index) => (
+          <Key key={`deu_key_${key}`} title={titles[index]}>
+            {key}
+          </Key>
         ))}
       </Row>
     </Wrapper>

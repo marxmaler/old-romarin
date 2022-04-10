@@ -43,6 +43,25 @@ const Key = styled.div`
   }
 `;
 
+const titles = [
+  ",(쉼표) + c",
+  "'(작은 따옴표) + e",
+  "`(~ 밑에 있는 따옴표) + a",
+  "`(~ 밑에 있는 따옴표) + e",
+  "`(~ 밑에 있는 따옴표) + u",
+  "^(shift + 6) + a",
+  "^(shift + 6) + e",
+  "^(shift + 6) + i",
+  "^(shift + 6) + o",
+  "^(shift + 6) + u",
+  '"(큰 따옴표) + e',
+  '"(큰 따옴표) + i',
+  '"(큰 따옴표) + u',
+  '"(큰 따옴표) + y',
+  "alt + a + e",
+  "alt + o + e",
+];
+
 function FrenchKeyboard() {
   return (
     <Wrapper>
@@ -64,8 +83,10 @@ function FrenchKeyboard() {
           "ÿ",
           "æ",
           "œ",
-        ].map((key) => (
-          <Key>{key}</Key>
+        ].map((key, index) => (
+          <Key key={`fr_key_${key}`} title={titles[index]}>
+            {key}
+          </Key>
         ))}
       </Row>
     </Wrapper>
