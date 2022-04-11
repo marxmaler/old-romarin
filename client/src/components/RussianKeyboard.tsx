@@ -130,6 +130,8 @@ interface IKeyboardProps {
   setShiftOn: React.Dispatch<React.SetStateAction<boolean>>;
   capsLockOn: boolean;
   setCapsLockOn: React.Dispatch<React.SetStateAction<boolean>>;
+  backSpaceOn: boolean;
+  setBackSpaceOn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function RussianKeyboard({
@@ -141,6 +143,8 @@ function RussianKeyboard({
   setShiftOn,
   capsLockOn,
   setCapsLockOn,
+  backSpaceOn,
+  setBackSpaceOn,
 }: IKeyboardProps) {
   const [cap, setCap] = useState(
     (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn)
@@ -148,9 +152,15 @@ function RussianKeyboard({
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // console.log(lastInput[0]);
-    const pressedKey = document.getElementById(`rus_key_${lastInput}`);
-    // console.log(pressedKey);
+    let pressedKey: HTMLElement | null = null;
+    if (!backSpaceOn) {
+      pressedKey = document.getElementById(`rus_key_${lastInput}`);
+      // console.log(pressedKey);
+    } else if (backSpaceOn || lastInput === "backSpace") {
+      pressedKey = document.getElementById("backSpace");
+      if (backSpaceOn) setBackSpaceOn(false);
+    }
+
     if (pressedKey?.classList.contains("pressed") && timeoutId.current) {
       clearTimeout(timeoutId.current);
       pressedKey.classList.remove("pressed");
@@ -160,13 +170,21 @@ function RussianKeyboard({
       pressedKey?.classList.remove("pressed");
     }, 100);
     setLastInput("");
-  }, [lastInput, setLastInput]);
+    if (backSpaceOn) setBackSpaceOn(false);
+  }, [lastInput, setLastInput, backSpaceOn, setBackSpaceOn]);
 
   //CapsLock
   useEffect(() => {
     document.addEventListener("keydown", (event) => {
-      setCapsLockOn(event.getModifierState("CapsLock"));
-      setShiftOn(event.getModifierState("Shift"));
+      if (event.key === "CapsLock") {
+        setCapsLockOn(event.getModifierState("CapsLock"));
+      }
+      if (event.key === "Shift") {
+        setShiftOn(event.getModifierState("Shift"));
+      }
+      if (event.key === "Backspace") {
+        setBackSpaceOn(true);
+      }
     });
     document.addEventListener("keyup", (event) => {
       setShiftOn(event.getModifierState("Shift"));
@@ -232,7 +250,7 @@ function RussianKeyboard({
                 {key}
               </Key>
             ))}
-        <BACKSPACEKey>←</BACKSPACEKey>
+        <BACKSPACEKey id="backSpace">←</BACKSPACEKey>
       </Row>
       <Row>
         <TABKey>TAB</TABKey>

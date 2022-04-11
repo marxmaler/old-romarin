@@ -110,9 +110,10 @@ function Question({ word, register, errors }: IQuestionProp) {
     altBuffer: "",
   });
   const questionInputRef = useRef<HTMLInputElement | null>(null);
+  const [backSpaceOn, setBackSpaceOn] = useState(false);
 
   const onQuestionInputFocus = () => {
-    if (languageInKo === "프랑스어" || languageInKo === "러시아어") {
+    if (["Español", "Français", "Deutsch", "Русский"].includes(word.language)) {
       setShowKeyboard(true);
     }
   };
@@ -130,6 +131,8 @@ function Question({ word, register, errors }: IQuestionProp) {
         capsLockOn,
         shiftOn,
         specialKeyOnRef,
+        backSpaceOn,
+        setBackSpaceOn,
       }),
     onBlur: onQuestionInputBlur,
   });
@@ -158,6 +161,7 @@ function Question({ word, register, errors }: IQuestionProp) {
                 setCapsLockOn,
                 setShiftOn,
                 specialKeyOnRef,
+                setBackSpaceOn,
               })
             }
             onKeyUp={(event: React.KeyboardEvent) => {
@@ -192,6 +196,8 @@ function Question({ word, register, errors }: IQuestionProp) {
                 setShiftOn={setShiftOn}
                 capsLockOn={capsLockOn}
                 setCapsLockOn={setCapsLockOn}
+                backSpaceOn={backSpaceOn}
+                setBackSpaceOn={setBackSpaceOn}
               />
             )
           )}

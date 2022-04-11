@@ -321,7 +321,6 @@ export const convertKey = ({
         : altOn && altBuffer === "o" && key === "e"
         ? "œ"
         : key;
-    console.log(altOn, altBuffer, convertedKey);
     if (
       convertedKey !== key ||
       ["'", '"', "`", ",", "^"].includes(key) ||
@@ -363,6 +362,8 @@ interface IOnInputChangeProps {
     caretOn: boolean;
     altBuffer: string;
   }>;
+  backSpaceOn: boolean;
+  setBackSpaceOn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const onInputChange = ({
@@ -372,8 +373,9 @@ export const onInputChange = ({
   capsLockOn,
   shiftOn,
   specialKeyOnRef,
+  backSpaceOn,
+  setBackSpaceOn,
 }: IOnInputChangeProps) => {
-  console.log("onInputChange:", specialKeyOnRef.current);
   const cap = (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn);
   let input = event.currentTarget.selectionStart
     ? event.currentTarget.value[event.currentTarget.selectionStart - 1]
@@ -386,20 +388,26 @@ export const onInputChange = ({
     cap,
     specialKeyOnRef,
   });
-  if (
-    event.currentTarget.value.length > 1 &&
-    event.currentTarget.selectionStart
-  ) {
-    // console.log(convertedResult);
-    const stringArray = [...event.currentTarget.value];
-    stringArray[event.currentTarget.selectionStart - 1] = convertedKey;
-    event.currentTarget.value = stringArray.join("");
-  } else if (convertedKey && input !== "") {
-    event.currentTarget.value = convertedKey;
+
+  if (backSpaceOn) {
+    setBackSpaceOn(false);
+    setLastInput("backSpace");
+  } else {
+    if (
+      event.currentTarget.value.length > 1 &&
+      event.currentTarget.selectionStart
+    ) {
+      // console.log(convertedResult);
+      const stringArray = [...event.currentTarget.value];
+      stringArray[event.currentTarget.selectionStart - 1] = convertedKey;
+      event.currentTarget.value = stringArray.join("");
+    } else if (convertedKey && input !== "") {
+      event.currentTarget.value = convertedKey;
+    }
+    event.currentTarget.selectionStart = Number(selectStart);
+    event.currentTarget.selectionEnd = Number(selectStart);
+    setLastInput(convertedKey);
   }
-  event.currentTarget.selectionStart = Number(selectStart);
-  event.currentTarget.selectionEnd = Number(selectStart);
-  setLastInput(convertedKey);
 };
 
 export const onKeyClick = (
@@ -435,7 +443,7 @@ export const onKeyClick = (
 
 interface IOnKeyDownProps {
   language: string;
-  event: React.KeyboardEvent;
+  event: React.KeyboardEvent<HTMLInputElement>;
   setCapsLockOn?: React.Dispatch<React.SetStateAction<boolean>>;
   setShiftOn?: React.Dispatch<React.SetStateAction<boolean>>;
   specialKeyOnRef: React.MutableRefObject<{
@@ -448,6 +456,7 @@ interface IOnKeyDownProps {
     caretOn: boolean;
     altBuffer: string;
   }>;
+  setBackSpaceOn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export const onKeyDown = ({
   event,
@@ -455,6 +464,7 @@ export const onKeyDown = ({
   setCapsLockOn,
   setShiftOn,
   specialKeyOnRef,
+  setBackSpaceOn,
 }: IOnKeyDownProps) => {
   if (setCapsLockOn && setShiftOn) {
     setCapsLockOn(event.getModifierState("CapsLock"));
@@ -497,7 +507,6 @@ export const onKeyDown = ({
       ["a", "o", "A", "O"].includes(event.key)
     ) {
       specialKeyOnRef.current.altBuffer = event.key;
-      console.log("segundo:", event.key, specialKeyOnRef.current);
       event.preventDefault();
     }
 
@@ -518,6 +527,19 @@ export const onKeyDown = ({
         specialKeyOnRef.current.caretOn = true;
         event.preventDefault();
       }
+    }
+
+    if (event.key === "Backspace") {
+      setBackSpaceOn(true);
+      const currentValue = event.currentTarget.value;
+      const selectionStart = event.currentTarget.selectionStart;
+      if (selectionStart) {
+        const formerPart = currentValue.slice(0, selectionStart - 1);
+        const latterPart = currentValue.slice(selectionStart);
+        const newValue = [...formerPart, ...latterPart].join("");
+        event.currentTarget.value = newValue;
+      }
+      event.preventDefault();
     }
   }
 };

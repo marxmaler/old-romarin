@@ -203,6 +203,7 @@ function WordForm() {
   const [hoverKeyboard, setHoverKeyboard] = useState(false);
   const [spellingInputBlur, setSpellingInputBlur] = useState(true);
   const spellingInputRef = useRef<HTMLInputElement | null>(null);
+  const [backSpaceOn, setBackSpaceOn] = useState(false);
 
   useEffect(() => {
     setFocus("spelling");
@@ -231,7 +232,7 @@ function WordForm() {
         setShowKeyboard(false);
       }
     });
-  }, [setHoverKeyboard, setShowKeyboard, spellingInputBlur]);
+  }, [setHoverKeyboard, setShowKeyboard, spellingInputBlur, keyboardRef]);
 
   const onValid = (data: IForm) => {
     const today = new Date();
@@ -260,6 +261,8 @@ function WordForm() {
         capsLockOn,
         shiftOn,
         specialKeyOnRef,
+        backSpaceOn,
+        setBackSpaceOn,
       });
     },
     onBlur: onSpellingInputBlur,
@@ -302,6 +305,7 @@ function WordForm() {
                       setCapsLockOn,
                       setShiftOn,
                       specialKeyOnRef,
+                      setBackSpaceOn,
                     })
                   }
                   onKeyUp={(event: React.KeyboardEvent) => {
@@ -363,6 +367,8 @@ function WordForm() {
                       setShiftOn={setShiftOn}
                       capsLockOn={capsLockOn}
                       setCapsLockOn={setCapsLockOn}
+                      backSpaceOn={backSpaceOn}
+                      setBackSpaceOn={setBackSpaceOn}
                     />
                   )
                 )}
