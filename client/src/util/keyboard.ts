@@ -7,6 +7,10 @@ interface IConvertKeyProps {
     quotaionMarkOn: boolean;
     tildeOn: boolean;
     altOn: boolean;
+    commaOn: boolean;
+    backtickOn: boolean;
+    caretOn: boolean;
+    altBuffer: string;
   }>;
 }
 export const convertKey = ({
@@ -15,10 +19,17 @@ export const convertKey = ({
   cap,
   specialKeyOnRef,
 }: IConvertKeyProps) => {
-  const tildeOn = specialKeyOnRef.current.tildeOn;
-  const apostropheOn = specialKeyOnRef.current.apostropheOn;
-  const quotaionMarkOn = specialKeyOnRef.current.quotaionMarkOn;
-  const altOn = specialKeyOnRef.current.altOn;
+  const {
+    apostropheOn,
+    quotaionMarkOn,
+    tildeOn,
+    altOn,
+    commaOn,
+    backtickOn,
+    caretOn,
+    altBuffer,
+  } = specialKeyOnRef.current;
+
   if (language === "Русский") {
     // console.log(cap);
     const convertedKey =
@@ -72,7 +83,7 @@ export const convertKey = ({
         ? "п"
         : key === "{" || (cap && key === "[")
         ? "Ю"
-        : ["["].includes(key)
+        : key === "["
         ? "ю"
         : key === "}" || (cap && key === "]")
         ? "Щ"
@@ -159,31 +170,31 @@ export const convertKey = ({
     return convertedKey;
   } else if (language === "Español") {
     const convertedKey =
-      (tildeOn && key === "N") || (tildeOn && cap && key === "ㅜ")
+      tildeOn && key === "N"
         ? "Ñ"
-        : tildeOn && ["n", "ㅜ"].includes(key)
+        : tildeOn && key === "n"
         ? "ñ"
         : tildeOn && key === "~"
         ? "~"
-        : (apostropheOn && key === "A") || (apostropheOn && cap && key === "ㅁ")
+        : apostropheOn && key === "A"
         ? "Á"
-        : apostropheOn && ["a", "ㅁ"].includes(key)
+        : apostropheOn && key === "a"
         ? "á"
-        : (apostropheOn && key === "E") || (apostropheOn && cap && key === "ㄷ")
+        : apostropheOn && key === "E"
         ? "É"
-        : apostropheOn && ["e", "ㄷ"].includes(key)
+        : apostropheOn && key === "e"
         ? "é"
-        : (apostropheOn && key === "I") || (apostropheOn && cap && key === "ㅑ")
+        : apostropheOn && key === "I"
         ? "Í"
-        : apostropheOn && ["i", "ㅑ"].includes(key)
+        : apostropheOn && key === "i"
         ? "í"
-        : (apostropheOn && key === "O") || (apostropheOn && cap && key === "ㅐ")
+        : apostropheOn && key === "O"
         ? "Ó"
-        : apostropheOn && ["o", "ㅐ"].includes(key)
+        : apostropheOn && key === "o"
         ? "ó"
-        : (apostropheOn && key === "U") || (apostropheOn && cap && key === "ㅕ")
+        : apostropheOn && key === "U"
         ? "Ú"
-        : apostropheOn && ["u", "ㅕ"].includes(key)
+        : apostropheOn && key === "u"
         ? "ú"
         : apostropheOn && key === "'"
         ? "'"
@@ -221,8 +232,6 @@ export const convertKey = ({
         ? "Ü"
         : quotaionMarkOn && key === "u"
         ? "ü"
-        : quotaionMarkOn && key === '"'
-        ? '"'
         : altOn && key === "S"
         ? "ẞ"
         : altOn && key === "s"
@@ -232,6 +241,104 @@ export const convertKey = ({
       //만약 convert가 발생했으면 각종 state 다 false로 reset하기
       specialKeyOnRef.current.quotaionMarkOn = false;
       specialKeyOnRef.current.altOn = false;
+    }
+
+    return convertedKey;
+  } else if (language === "Français") {
+    const convertedKey =
+      commaOn && key === "C"
+        ? "Ç"
+        : commaOn && key === "c"
+        ? "ç"
+        : commaOn && key === ","
+        ? ","
+        : quotaionMarkOn && key === "E"
+        ? "Ë"
+        : quotaionMarkOn && key === "e"
+        ? "ë"
+        : quotaionMarkOn && key === "I"
+        ? "Ï"
+        : quotaionMarkOn && key === "i"
+        ? "ï"
+        : quotaionMarkOn && key === "U"
+        ? "Ü"
+        : quotaionMarkOn && key === "u"
+        ? "ü"
+        : quotaionMarkOn && key === "Y"
+        ? "Ÿ"
+        : quotaionMarkOn && key === "y"
+        ? "ÿ"
+        : quotaionMarkOn && key === '"'
+        ? '"'
+        : apostropheOn && key === "E"
+        ? "É"
+        : apostropheOn && key === "e"
+        ? "é"
+        : apostropheOn && key === "'"
+        ? "'"
+        : backtickOn && key === "A"
+        ? "À"
+        : backtickOn && key === "a"
+        ? "à"
+        : backtickOn && key === "E"
+        ? "È"
+        : backtickOn && key === "e"
+        ? "è"
+        : backtickOn && key === "U"
+        ? "Ù"
+        : backtickOn && key === "u"
+        ? "ù"
+        : backtickOn && key === "`"
+        ? "`"
+        : caretOn && key === "A"
+        ? "Â"
+        : caretOn && key === "a"
+        ? "â"
+        : caretOn && key === "E"
+        ? "Ê"
+        : caretOn && key === "e"
+        ? "ê"
+        : caretOn && key === "I"
+        ? "Î"
+        : caretOn && key === "i"
+        ? "î"
+        : caretOn && key === "O"
+        ? "Ô"
+        : caretOn && key === "o"
+        ? "ô"
+        : caretOn && key === "U"
+        ? "Û"
+        : caretOn && key === "u"
+        ? "û"
+        : caretOn && key === "^"
+        ? "^"
+        : altOn && altBuffer === "A" && key === "E"
+        ? "Æ"
+        : altOn && altBuffer === "a" && key === "e"
+        ? "æ"
+        : altOn && altBuffer === "O" && key === "E"
+        ? "Œ"
+        : altOn && altBuffer === "o" && key === "e"
+        ? "œ"
+        : key;
+    console.log(altOn, altBuffer, convertedKey);
+    if (
+      convertedKey !== key ||
+      ["'", '"', "`", ",", "^"].includes(key) ||
+      (specialKeyOnRef.current.altOn &&
+        !["a", "o", "A", "O"].includes(specialKeyOnRef.current.altBuffer)) ||
+      (specialKeyOnRef.current.altOn &&
+        specialKeyOnRef.current.altBuffer !== "" &&
+        !["e", "E"].includes(key))
+    ) {
+      //만약 convert가 발생했으면 각종 state 다 false로 reset하기
+      specialKeyOnRef.current.apostropheOn = false;
+      specialKeyOnRef.current.quotaionMarkOn = false;
+      specialKeyOnRef.current.backtickOn = false;
+      specialKeyOnRef.current.commaOn = false;
+      specialKeyOnRef.current.caretOn = false;
+      specialKeyOnRef.current.altOn = false;
+      specialKeyOnRef.current.altBuffer = "";
     }
 
     return convertedKey;
@@ -251,6 +358,10 @@ interface IOnInputChangeProps {
     quotaionMarkOn: boolean;
     tildeOn: boolean;
     altOn: boolean;
+    commaOn: boolean;
+    backtickOn: boolean;
+    caretOn: boolean;
+    altBuffer: string;
   }>;
 }
 
@@ -262,7 +373,7 @@ export const onInputChange = ({
   shiftOn,
   specialKeyOnRef,
 }: IOnInputChangeProps) => {
-  console.log("onInputChange:", specialKeyOnRef);
+  console.log("onInputChange:", specialKeyOnRef.current);
   const cap = (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn);
   let input = event.currentTarget.selectionStart
     ? event.currentTarget.value[event.currentTarget.selectionStart - 1]
@@ -323,6 +434,7 @@ export const onKeyClick = (
 };
 
 interface IOnKeyDownProps {
+  language: string;
   event: React.KeyboardEvent;
   setCapsLockOn?: React.Dispatch<React.SetStateAction<boolean>>;
   setShiftOn?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -331,10 +443,15 @@ interface IOnKeyDownProps {
     quotaionMarkOn: boolean;
     tildeOn: boolean;
     altOn: boolean;
+    commaOn: boolean;
+    backtickOn: boolean;
+    caretOn: boolean;
+    altBuffer: string;
   }>;
 }
 export const onKeyDown = ({
   event,
+  language,
   setCapsLockOn,
   setShiftOn,
   specialKeyOnRef,
@@ -345,19 +462,22 @@ export const onKeyDown = ({
   }
 
   if (specialKeyOnRef) {
-    if (event.key === "'") {
+    if (event.key === "'" && ["Español", "Français"].includes(language)) {
       if (!specialKeyOnRef.current.apostropheOn) {
         specialKeyOnRef.current.apostropheOn = true;
         event.preventDefault();
       }
     }
-    if (event.key === '"') {
+    if (
+      event.key === '"' &&
+      ["Español", "Deutsch", "Français"].includes(language)
+    ) {
       if (!specialKeyOnRef.current.quotaionMarkOn) {
         specialKeyOnRef.current.quotaionMarkOn = true;
         event.preventDefault();
       }
     }
-    if (event.key === "~") {
+    if (event.key === "~" && language === "Español") {
       if (!specialKeyOnRef.current.tildeOn) {
         specialKeyOnRef.current.tildeOn = true;
         event.preventDefault();
@@ -365,9 +485,39 @@ export const onKeyDown = ({
     }
 
     //크롬에서 alt키 누를때마다 자꾸 설정창 focus되게 하는 거 막기
-    if (event.altKey === true) {
-      specialKeyOnRef.current.altOn = event.altKey;
+    if (event.altKey && ["Deutsch", "Français", "Español"].includes(language)) {
+      if (!specialKeyOnRef.current.altOn) {
+        specialKeyOnRef.current.altOn = event.altKey;
+      }
       event.preventDefault();
+    } else if (
+      language === "Français" &&
+      specialKeyOnRef.current.altOn &&
+      specialKeyOnRef.current.altBuffer === "" &&
+      ["a", "o", "A", "O"].includes(event.key)
+    ) {
+      specialKeyOnRef.current.altBuffer = event.key;
+      console.log("segundo:", event.key, specialKeyOnRef.current);
+      event.preventDefault();
+    }
+
+    if (event.key === "," && language === "Français") {
+      if (!specialKeyOnRef.current.commaOn) {
+        specialKeyOnRef.current.commaOn = true;
+        event.preventDefault();
+      }
+    }
+    if (event.key === "`" && language === "Français") {
+      if (!specialKeyOnRef.current.backtickOn) {
+        specialKeyOnRef.current.backtickOn = true;
+        event.preventDefault();
+      }
+    }
+    if (event.key === "^" && language === "Français") {
+      if (!specialKeyOnRef.current.caretOn) {
+        specialKeyOnRef.current.caretOn = true;
+        event.preventDefault();
+      }
     }
   }
 };

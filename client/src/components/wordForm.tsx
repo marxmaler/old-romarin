@@ -189,15 +189,15 @@ function WordForm() {
   const [lastInput, setLastInput] = useState("");
   const [capsLockOn, setCapsLockOn] = useState(false);
   const [shiftOn, setShiftOn] = useState(false);
-  // const [apostropheOn, setApostropheOn] = useState(false);
-  // const [quotaionMarkOn, setQuotaionMarkOn] = useState(false);
-  // const [tildeOn, setTildeOn] = useState(false);
-  // const [altOn, setAltOn] = useState(false);
   const specialKeyOnRef = useRef({
     apostropheOn: false,
     quotaionMarkOn: false,
     tildeOn: false,
     altOn: false,
+    commaOn: false,
+    backtickOn: false,
+    caretOn: false,
+    altBuffer: "",
   });
   const keyboardRef = useRef<HTMLDivElement>(null);
   const [hoverKeyboard, setHoverKeyboard] = useState(false);
@@ -260,14 +260,6 @@ function WordForm() {
         capsLockOn,
         shiftOn,
         specialKeyOnRef,
-        // apostropheOn,
-        // setApostropheOn,
-        // quotaionMarkOn,
-        // setQuotaionMarkOn,
-        // tildeOn,
-        // setTildeOn,
-        // altOn,
-        // setAltOn,
       });
     },
     onBlur: onSpellingInputBlur,
@@ -306,6 +298,7 @@ function WordForm() {
                   onKeyDown={(event) =>
                     onKeyDown({
                       event,
+                      language: languages[langNum],
                       setCapsLockOn,
                       setShiftOn,
                       specialKeyOnRef,
@@ -335,7 +328,17 @@ function WordForm() {
                     specialKeyOnRef={specialKeyOnRef}
                   />
                 ) : showKeyboard && langNum === 2 ? (
-                  <FrenchKeyboard />
+                  <FrenchKeyboard
+                    lastInput={lastInput}
+                    setLastInput={setLastInput}
+                    keyboardRef={keyboardRef}
+                    inputRef={spellingInputRef}
+                    shiftOn={shiftOn}
+                    setShiftOn={setShiftOn}
+                    capsLockOn={capsLockOn}
+                    setCapsLockOn={setCapsLockOn}
+                    specialKeyOnRef={specialKeyOnRef}
+                  />
                 ) : showKeyboard && langNum === 3 ? (
                   <GermanKeyboard
                     lastInput={lastInput}

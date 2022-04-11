@@ -125,6 +125,9 @@ interface IKeyboardProps {
     quotaionMarkOn: boolean;
     tildeOn: boolean;
     altOn: boolean;
+    commaOn: boolean;
+    backtickOn: boolean;
+    caretOn: boolean;
   }>;
 }
 
