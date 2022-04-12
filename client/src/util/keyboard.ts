@@ -538,6 +538,8 @@ export const onKeyDown = ({
         const latterPart = currentValue.slice(selectionStart);
         const newValue = [...formerPart, ...latterPart].join("");
         event.currentTarget.value = newValue;
+        event.currentTarget.selectionStart = selectionStart - 1;
+        event.currentTarget.selectionEnd = selectionStart - 1;
       }
       event.preventDefault();
     }
