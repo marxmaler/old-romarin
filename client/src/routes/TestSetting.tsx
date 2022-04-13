@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -43,14 +44,14 @@ const FormContainer = styled.div`
   }
 `;
 
-const Form = styled.form`
+const Form = styled(motion.form)`
   background-color: ${(props) => props.theme.periwinkleTint50};
   padding: 30px 50px;
   display: flex;
   flex-direction: column;
   min-width: max-content;
   min-height: max-content;
-  border: 1px solid ${(props) => props.theme.periwinkleTint90};
+  border: 1.5px solid ${(props) => props.theme.periwinkleShade50};
   border-radius: 20px;
   ul {
     li {
@@ -121,6 +122,21 @@ const ButtonContainer = styled.div`
   min-height: max-content;
 `;
 
+const settingFormVar = {
+  hidden: {
+    opacity: 0,
+    y: -30,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: 0.3,
+      duration: 0.7,
+    },
+  },
+};
+
 function TestSetting() {
   const {
     register,
@@ -161,7 +177,12 @@ function TestSetting() {
           langNum={langNum}
           setLangNum={setLangNum}
         />
-        <Form onSubmit={handleSubmit(onValid)}>
+        <Form
+          onSubmit={handleSubmit(onValid)}
+          variants={settingFormVar}
+          initial="hidden"
+          animate="show"
+        >
           <WordNum>단어 갯수 : {selectedWords.length}개</WordNum>
           <ul>
             <DarkBox>

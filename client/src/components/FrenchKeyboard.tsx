@@ -1,91 +1,12 @@
-import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import { IKeyboardProps } from "../interfaces";
+import {
+  Key,
+  keyBoardVar,
+  Row,
+  KeyboardWrapper,
+} from "../styles/keyboardStyle";
 import { onKeyClick } from "../util/keyboard";
-
-const keyPressAnimation = keyframes`
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(2px);
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-`;
-
-const Wrapper = styled(motion.div)`
-  position: absolute;
-  background-color: ${(props) => props.theme.periwinkleShade50};
-  border: 1px solid ${(props) => props.theme.periwinkleTint90};
-  color: ${(props) => props.theme.periwinkleTint90};
-  width: max-content;
-  padding: 10px;
-  border-radius: 10px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  z-index: 1;
-`;
-const Row = styled.div`
-  display: flex;
-  margin-bottom: 5px;
-  &:nth-child(2) {
-    /* padding-left: 29px; */
-  }
-  &:nth-child(3) {
-    /* padding-left: 38px; */
-  }
-  &:last-child {
-    /* padding-left: 55px; */
-  }
-`;
-const Key = styled.div`
-  width: 40px;
-  height: 40px;
-  padding: 10px;
-  border: 1px solid ${(props) => props.theme.periwinkleTint90};
-  border-radius: 5px;
-  margin-right: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  border-bottom: 3px ${(props) => props.theme.periwinkleTint70} solid;
-  transition: 0.1s all;
-  &:hover {
-    opacity: 0.7;
-    transform: translateY(2px);
-  }
-  &.pressed {
-    animation: ${keyPressAnimation} 0.1s ease-in-out;
-  }
-`;
-
-export const keyBoardVar = {
-  hidden: {
-    y: 0,
-    opacity: 0,
-  },
-  appear: {
-    y: 10,
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-    },
-  },
-  disappear: {
-    y: 0,
-    opacity: 0,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
 
 const titles = [
   ",(쉼표) + c",
@@ -125,27 +46,6 @@ const capTitles = [
   "alt + O + E",
 ];
 
-interface IKeyboardProps {
-  keyboardRef: React.RefObject<HTMLDivElement>;
-  inputRef: React.MutableRefObject<HTMLInputElement | null>;
-  lastInput: string;
-  setLastInput: React.Dispatch<React.SetStateAction<string>>;
-  shiftOn: boolean;
-  setShiftOn: React.Dispatch<React.SetStateAction<boolean>>;
-  capsLockOn: boolean;
-  setCapsLockOn: React.Dispatch<React.SetStateAction<boolean>>;
-  specialKeyOnRef: React.MutableRefObject<{
-    apostropheOn: boolean;
-    quotaionMarkOn: boolean;
-    tildeOn: boolean;
-    altOn: boolean;
-    commaOn: boolean;
-    backtickOn: boolean;
-    caretOn: boolean;
-    altBuffer: string;
-  }>;
-}
-
 function FrenchKeyboard({
   lastInput,
   setLastInput,
@@ -156,6 +56,7 @@ function FrenchKeyboard({
   capsLockOn,
   setCapsLockOn,
   specialKeyOnRef,
+  className,
 }: IKeyboardProps) {
   const [cap, setCap] = useState(
     (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn)
@@ -237,7 +138,8 @@ function FrenchKeyboard({
     setCap((!shiftOn && capsLockOn) || (shiftOn && !capsLockOn));
   }, [shiftOn, capsLockOn, setCap]);
   return (
-    <Wrapper
+    <KeyboardWrapper
+      className={className}
       ref={keyboardRef}
       variants={keyBoardVar}
       initial="hidden"
@@ -301,7 +203,7 @@ function FrenchKeyboard({
               </Key>
             ))}
       </Row>
-    </Wrapper>
+    </KeyboardWrapper>
   );
 }
 

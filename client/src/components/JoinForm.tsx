@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { loginState } from "../atoms";
 import { useEffect } from "react";
+import { motion } from "framer-motion";
 
 const FormContainer = styled.div`
   display: flex;
@@ -23,7 +24,7 @@ const FormContainer = styled.div`
   }
 `;
 
-const Form = styled.form`
+const Form = styled(motion.form)`
   background-color: ${(props) => props.theme.periwinkleTint50};
   padding: 30px 50px;
   display: flex;
@@ -113,6 +114,20 @@ const ConfirmStrong = styled.strong`
   margin-top: 10px;
 `;
 
+const joinFormVar = {
+  hidden: {
+    opacity: 0,
+    y: -50,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+    },
+  },
+};
+
 interface IForm {
   email: string;
   name: string;
@@ -181,7 +196,12 @@ function JoinForm() {
   return (
     <>
       <FormContainer>
-        <Form onSubmit={handleSubmit(onValid)}>
+        <Form
+          onSubmit={handleSubmit(onValid)}
+          variants={joinFormVar}
+          initial="hidden"
+          animate="show"
+        >
           <h3>가입</h3>
           <ul>
             <DarkBox>

@@ -11,6 +11,7 @@ export const rosemaryTheme: DefaultTheme = {
   periwinkleShade70: "rgba(47, 41, 76, 1)",
   periwinkleShade80: "rgba(31, 27, 51, 1)",
   periwinkleShade90: "rgba(16, 14, 25, 1)",
+  periwinkleShade90Faint: "rgba(16, 14, 25, 0.2)",
   periwinkleTint10: "rgba(166, 148, 255, 1)",
   periwinkleTint20: "rgba(176, 160, 255, 1)",
   periwinkleTint30: "rgba(186, 172, 255, 1)",

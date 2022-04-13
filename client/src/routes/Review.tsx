@@ -2,60 +2,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import styled from "styled-components";
 import { languageState, wordsSelector } from "../atoms";
 import HeaderMenu from "../components/HeaderMenu";
 import LanguageSetter from "../components/LanguageSetter";
 import Word from "../components/Word";
-
-const Container = styled(motion.div)`
-  background: linear-gradient(
-    to right bottom,
-    rgba(156, 136, 255, 1),
-    rgba(16, 14, 25, 1)
-  );
-  min-height: 100vh;
-  max-width: 100%;
-  color: rgba(255, 255, 255, 1);
-  padding: 50px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  ul {
-    width: max-content;
-  }
-`;
-
-const NoWords = styled.span`
-  display: block;
-  margin-bottom: 50px;
-  font-size: 20px;
-`;
-
-const wordListVar = {
-  hidden: {
-    y: -30,
-    opacity: 0,
-    transition: {
-      duration: 0.7,
-    },
-  },
-  show: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.7,
-      staggerChildren: 0.7,
-    },
-  },
-  hide: {
-    y: -30,
-    opacity: 0,
-    transition: {
-      duration: 0.7,
-    },
-  },
-};
+import { NoWords, ReviewContainer, wordListVar } from "../styles/routeStyle";
 
 function Review() {
   const [langNum, setLangNum] = useState(0);
@@ -65,7 +16,7 @@ function Review() {
   return (
     <>
       <HeaderMenu />
-      <Container>
+      <ReviewContainer>
         <LanguageSetter
           page={"review"}
           langNum={langNum}
@@ -89,7 +40,7 @@ function Review() {
         <Link to={"/"}>
           <button>뒤로 가기</button>
         </Link>
-      </Container>
+      </ReviewContainer>
     </>
   );
 }

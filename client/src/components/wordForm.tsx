@@ -1,147 +1,11 @@
-import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { languages } from "../util/language";
 import LanguageSetter from "./LanguageSetter";
-import RussianKeyboard from "./RussianKeyboard";
-import FrenchKeyboard from "./FrenchKeyboard";
-import { onInputChange, onKeyDown } from "../util/keyboard";
-import { AnimatePresence, motion } from "framer-motion";
-import GermanKeyboard from "./GermanKeyboard";
-import SpanishKeyboard from "./SpanishKeyboard";
-
-const FormContainer = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  min-height: 50vh;
-  h3 {
-    text-shadow: 1px 1px 1px rgba(189, 195, 199, 0.7);
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 23px;
-    font-weight: 700;
-    color: ${(props) => props.theme.periwinkleShade50};
-  }
-`;
-
-const Form = styled.form`
-  background-color: ${(props) => props.theme.periwinkleTint50};
-
-  color: white;
-  padding: 30px 50px;
-  display: flex;
-  flex-direction: column;
-  min-height: max-content;
-  max-width: 50vw;
-  border: 1.5px solid ${(props) => props.theme.periwinkleShade50};
-  border-radius: 20px;
-
-  ul {
-    li {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      margin-bottom: 0.5em;
-      &:last-child {
-        margin-bottom: 0;
-      }
-      label {
-        display: inline-block;
-        text-align: start;
-        strong {
-          font-size: 20px;
-          font-weight: 600;
-          display: block;
-        }
-        span {
-          display: block;
-          font-size: 12px;
-        }
-      }
-      input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 10px;
-        border: 0;
-        background-color: ${(props) => props.theme.periwinkleTint90};
-        color: ${(props) => props.theme.periwinkleShade50};
-        &::placeholder {
-          text-align: center;
-        }
-      }
-      textarea {
-        font-family: inherit;
-        width: 100%;
-        resize: none;
-        padding: 10px;
-        border-radius: 10px;
-        margin-top: 10px;
-        border: 0;
-        background-color: ${(props) => props.theme.periwinkleTint90};
-        color: ${(props) => props.theme.periwinkleShade50};
-        &::placeholder {
-          text-align: center;
-          transform: translate3d(0, 15px, 0);
-        }
-      }
-    }
-  }
-`;
-
-const DarkBox = styled.div`
-  background-color: ${(props) => props.theme.periwinkleShade30};
-  padding: 20px;
-  border-radius: 10px;
-  margin: 10px 0px;
-  color: ${(props) => props.theme.periwinkleTint90};
-  border: ${(props) => props.theme.periwinkleTint90} 1px solid;
-  &:first-child {
-    margin-top: -30px;
-  }
-  span {
-    margin-bottom: 10px;
-  }
-  strong {
-    margin-bottom: 10px;
-  }
-`;
-
-const TransparentBox = styled.div`
-  background-color: transparent;
-  padding: 20px;
-  border-radius: 10px;
-  color: ${(props) => props.theme.periwinkleShade50};
-  &:nth-child(1) {
-    padding-bottom: 0;
-  }
-  span {
-    margin-bottom: 10px;
-  }
-  strong {
-    margin-bottom: 10px;
-  }
-  input {
-    background-color: ${(props) => props.theme.periwinkleTint80} !important;
-  }
-`;
-
-const SpellingInput = styled.input`
-  font-size: 24px !important;
-  font-weight: 900 !important;
-  &::placeholder {
-    font-size: 14px;
-    font-weight: 100;
-    transform: translate3d(0, -4px, 0);
-  }
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  min-height: max-content;
-`;
+import InputWithKeyboard from "./InputWithKeyboard";
+import { ButtonContainer, Form, FormContainer } from "../styles/formStyle";
+import { basicShowVariants } from "../styles/motionVariants";
+import { DarkBox, TransparentBox } from "../styles/boxStyle";
 
 export interface IForm {
   spelling: string;
@@ -164,75 +28,14 @@ export type inputNames =
   | "syn"
   | "ant";
 
-const wordFormVar = {
-  hidden: {
-    opacity: 0,
-    y: -30,
-    transition: {
-      duration: 0.7,
-    },
-  },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.7,
-    },
-  },
-};
-
 function WordForm() {
   const { register, handleSubmit, setValue, setFocus } = useForm<IForm>();
   const [numWords, setNumWords] = useState(0);
   const [langNum, setLangNum] = useState(0);
-  const [showKeyboard, setShowKeyboard] = useState(false);
-  const [lastInput, setLastInput] = useState("");
-  const [capsLockOn, setCapsLockOn] = useState(false);
-  const [shiftOn, setShiftOn] = useState(false);
-  const specialKeyOnRef = useRef({
-    apostropheOn: false,
-    quotaionMarkOn: false,
-    tildeOn: false,
-    altOn: false,
-    commaOn: false,
-    backtickOn: false,
-    caretOn: false,
-    altBuffer: "",
-  });
-  const keyboardRef = useRef<HTMLDivElement>(null);
-  const [hoverKeyboard, setHoverKeyboard] = useState(false);
-  const [spellingInputBlur, setSpellingInputBlur] = useState(true);
-  const spellingInputRef = useRef<HTMLInputElement | null>(null);
-  const [backSpaceOn, setBackSpaceOn] = useState(false);
 
   useEffect(() => {
     setFocus("spelling");
   }, [setFocus]);
-
-  const onSpellingInputFocus = () => {
-    setSpellingInputBlur(false);
-    if ([1, 2, 3, 6].includes(langNum)) {
-      setShowKeyboard(true);
-    }
-  };
-  const onSpellingInputBlur = () => {
-    setSpellingInputBlur(true);
-    if (!hoverKeyboard) {
-      setShowKeyboard(false);
-    }
-  };
-
-  useEffect(() => {
-    keyboardRef.current?.addEventListener("mouseover", () => {
-      setHoverKeyboard(true);
-    });
-    keyboardRef.current?.addEventListener("mouseleave", () => {
-      setHoverKeyboard(false);
-      if (spellingInputBlur) {
-        setShowKeyboard(false);
-      }
-    });
-  }, [setHoverKeyboard, setShowKeyboard, spellingInputBlur, keyboardRef]);
 
   const onValid = (data: IForm) => {
     const today = new Date();
@@ -251,25 +54,13 @@ function WordForm() {
     setFocus("spelling");
   };
 
-  const { ref, ...registerRest } = register("spelling", {
-    required: true,
-    onChange: (event: React.FormEvent<HTMLInputElement>) => {
-      onInputChange({
-        event,
-        language: languages[langNum],
-        setLastInput,
-        capsLockOn,
-        shiftOn,
-        specialKeyOnRef,
-        backSpaceOn,
-        setBackSpaceOn,
-      });
-    },
-    onBlur: onSpellingInputBlur,
-  });
   return (
     <>
-      <FormContainer variants={wordFormVar} initial="hidden" animate="show">
+      <FormContainer
+        variants={basicShowVariants}
+        initial="hidden"
+        animate="show"
+      >
         <Form onSubmit={handleSubmit(onValid)}>
           <TransparentBox>
             <h3>새로 추가된 단어: {numWords}개</h3>
@@ -294,85 +85,14 @@ function WordForm() {
                     기억해두고 싶은 다른 철자법이 있다면 기억 단서란에 써주세요.
                   </span>
                 </label>
-                <SpellingInput
-                  {...registerRest}
+                <InputWithKeyboard
+                  register={register}
+                  language={languages[langNum]}
+                  inputName="spelling"
                   placeholder="required"
-                  onFocus={onSpellingInputFocus}
-                  onKeyDown={(event) =>
-                    onKeyDown({
-                      event,
-                      language: languages[langNum],
-                      setCapsLockOn,
-                      setShiftOn,
-                      specialKeyOnRef,
-                      setBackSpaceOn,
-                    })
-                  }
-                  onKeyUp={(event: React.KeyboardEvent) => {
-                    setShiftOn(event.getModifierState("Shift"));
-                  }}
-                  ref={(element) => {
-                    ref(element);
-                    spellingInputRef.current = element;
-                  }}
+                  isRequired={true}
                 />
               </li>
-
-              <AnimatePresence>
-                {showKeyboard && langNum === 1 ? (
-                  <SpanishKeyboard
-                    lastInput={lastInput}
-                    setLastInput={setLastInput}
-                    keyboardRef={keyboardRef}
-                    inputRef={spellingInputRef}
-                    shiftOn={shiftOn}
-                    setShiftOn={setShiftOn}
-                    capsLockOn={capsLockOn}
-                    setCapsLockOn={setCapsLockOn}
-                    specialKeyOnRef={specialKeyOnRef}
-                  />
-                ) : showKeyboard && langNum === 2 ? (
-                  <FrenchKeyboard
-                    lastInput={lastInput}
-                    setLastInput={setLastInput}
-                    keyboardRef={keyboardRef}
-                    inputRef={spellingInputRef}
-                    shiftOn={shiftOn}
-                    setShiftOn={setShiftOn}
-                    capsLockOn={capsLockOn}
-                    setCapsLockOn={setCapsLockOn}
-                    specialKeyOnRef={specialKeyOnRef}
-                  />
-                ) : showKeyboard && langNum === 3 ? (
-                  <GermanKeyboard
-                    lastInput={lastInput}
-                    setLastInput={setLastInput}
-                    keyboardRef={keyboardRef}
-                    inputRef={spellingInputRef}
-                    shiftOn={shiftOn}
-                    setShiftOn={setShiftOn}
-                    capsLockOn={capsLockOn}
-                    setCapsLockOn={setCapsLockOn}
-                    specialKeyOnRef={specialKeyOnRef}
-                  />
-                ) : (
-                  showKeyboard &&
-                  langNum === 6 && (
-                    <RussianKeyboard
-                      keyboardRef={keyboardRef}
-                      inputRef={spellingInputRef}
-                      lastInput={lastInput}
-                      setLastInput={setLastInput}
-                      shiftOn={shiftOn}
-                      setShiftOn={setShiftOn}
-                      capsLockOn={capsLockOn}
-                      setCapsLockOn={setCapsLockOn}
-                      backSpaceOn={backSpaceOn}
-                      setBackSpaceOn={setBackSpaceOn}
-                    />
-                  )
-                )}
-              </AnimatePresence>
 
               <li>
                 <label>
@@ -403,9 +123,12 @@ function WordForm() {
                   </span>
                   <span>(장기기억 촉진 점수 10점)</span>
                 </label>
-                <input
-                  {...register("collocation")}
+                <InputWithKeyboard
+                  register={register}
+                  language={languages[langNum]}
+                  inputName="collocation"
                   placeholder="optional(,로 구분)"
+                  isRequired={false}
                 />
               </li>
             </TransparentBox>
@@ -425,7 +148,7 @@ function WordForm() {
                 </label>
                 <input
                   {...register("association")}
-                  placeholder="optional"
+                  placeholder="optional(,로 구분)"
                 ></input>
               </li>
             </DarkBox>
@@ -446,9 +169,27 @@ function WordForm() {
                 </label>
                 <textarea
                   rows={3}
-                  {...register("ex")}
+                  // {...exRegisterRest}
                   placeholder="optional"
-                ></textarea>
+                  // onFocus={onInputFocus}
+                  // onKeyDown={(event) =>
+                  //   onKeyDown({
+                  //     event,
+                  //     language: languages[langNum],
+                  //     setCapsLockOn,
+                  //     setShiftOn,
+                  //     specialKeyOnRef,
+                  //     setBackSpaceOn,
+                  //   })
+                  // }
+                  // onKeyUp={(event: React.KeyboardEvent) => {
+                  //   setShiftOn(event.getModifierState("Shift"));
+                  // }}
+                  // ref={(element) => {
+                  //   exRegisterRef(element);
+                  //   exInputRef.current = element;
+                  // }}
+                />
               </li>
             </DarkBox>
             <TransparentBox>
@@ -457,20 +198,29 @@ function WordForm() {
                   <strong>유의어</strong>
                   <span>(장기기억 촉진 점수 10점)</span>
                 </label>
-                <input
-                  {...register("syn")}
+                <InputWithKeyboard
+                  register={register}
+                  language={languages[langNum]}
+                  inputName="syn"
                   placeholder="optional(,로 구분)"
-                ></input>
+                  isRequired={false}
+                  isUpper={true}
+                />
               </li>
+
               <li>
                 <label>
                   <strong>반의어</strong>
                   <span>(장기기억 촉진 점수 10점)</span>
                 </label>
-                <input
-                  {...register("ant")}
+                <InputWithKeyboard
+                  register={register}
+                  language={languages[langNum]}
+                  inputName="ant"
                   placeholder="optional(,로 구분)"
-                ></input>
+                  isRequired={false}
+                  isUpper={true}
+                />
               </li>
             </TransparentBox>
           </ul>

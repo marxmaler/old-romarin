@@ -12,6 +12,7 @@ declare module "styled-components" {
     periwinkleShade70: string;
     periwinkleShade80: string;
     periwinkleShade90: string;
+    periwinkleShade90Faint: string;
     periwinkleTint10: string;
     periwinkleTint20: string;
     periwinkleTint30: string;

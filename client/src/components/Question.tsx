@@ -1,14 +1,7 @@
-import { useRef, useState } from "react";
 import styled from "styled-components";
 import { IQuestionProp } from "../interfaces";
-import { onInputChange, onKeyDown } from "../util/keyboard";
-import {
-  getLanguageInKorean,
-  languages,
-  languagesInKo,
-} from "../util/language";
-import FrenchKeyboard from "./FrenchKeyboard";
-import RussianKeyboard from "./RussianKeyboard";
+import { getLanguageInKorean } from "../util/language";
+import InputWithKeyboard from "./InputWithKeyboard";
 
 const Li = styled.li`
   width: 60%;
@@ -94,48 +87,6 @@ const TransparentBox = styled.div`
 function Question({ word, register, errors }: IQuestionProp) {
   const languageInKo = getLanguageInKorean(word.language);
 
-  const [showKeyboard, setShowKeyboard] = useState(false);
-  const [lastInput, setLastInput] = useState("");
-  const [capsLockOn, setCapsLockOn] = useState(false);
-  const [shiftOn, setShiftOn] = useState(false);
-  const keyboardRef = useRef<HTMLDivElement>(null);
-  const specialKeyOnRef = useRef({
-    apostropheOn: false,
-    quotaionMarkOn: false,
-    tildeOn: false,
-    altOn: false,
-    commaOn: false,
-    backtickOn: false,
-    caretOn: false,
-    altBuffer: "",
-  });
-  const questionInputRef = useRef<HTMLInputElement | null>(null);
-  const [backSpaceOn, setBackSpaceOn] = useState(false);
-
-  const onQuestionInputFocus = () => {
-    if (["Español", "Français", "Deutsch", "Русский"].includes(word.language)) {
-      setShowKeyboard(true);
-    }
-  };
-  const onQuestionInputBlur = () => {
-    setShowKeyboard(false);
-  };
-
-  const { ref, ...registerRest } = register(`${word._id}`, {
-    required: "답안을 작성해주세요.",
-    onChange: (event: React.FormEvent<HTMLInputElement>) =>
-      onInputChange({
-        event,
-        language: languages[languagesInKo.indexOf(languageInKo)],
-        setLastInput,
-        capsLockOn,
-        shiftOn,
-        specialKeyOnRef,
-        backSpaceOn,
-        setBackSpaceOn,
-      }),
-    onBlur: onQuestionInputBlur,
-  });
   return (
     <>
       <Li>
@@ -147,60 +98,16 @@ function Question({ word, register, errors }: IQuestionProp) {
           </DarkBox>
         </h3>
         <TransparentBox>
-          <label htmlFor={String(word._id) + "_answer"}>
+          <label>
             <strong>답</strong>
-          </label>
-          <input
-            id={String(word._id) + "_answer"}
-            {...registerRest}
-            onFocus={onQuestionInputFocus}
-            onKeyDown={(event) =>
-              onKeyDown({
-                event,
-                language: word.language,
-                setCapsLockOn,
-                setShiftOn,
-                specialKeyOnRef,
-                setBackSpaceOn,
-              })
-            }
-            onKeyUp={(event: React.KeyboardEvent) => {
-              setShiftOn(event.getModifierState("Shift"));
-            }}
-            ref={(element) => {
-              ref(element);
-              questionInputRef.current = element;
-            }}
-          />
-          {showKeyboard && word.language === "Français" ? (
-            <FrenchKeyboard
-              lastInput={lastInput}
-              setLastInput={setLastInput}
-              keyboardRef={keyboardRef}
-              inputRef={questionInputRef}
-              shiftOn={shiftOn}
-              setShiftOn={setShiftOn}
-              capsLockOn={capsLockOn}
-              setCapsLockOn={setCapsLockOn}
-              specialKeyOnRef={specialKeyOnRef}
+            <InputWithKeyboard
+              register={register}
+              language={word.language}
+              inputName={`${word._id}`}
+              placeholder="required"
+              isRequired={true}
             />
-          ) : (
-            showKeyboard &&
-            word.language === "Русский" && (
-              <RussianKeyboard
-                keyboardRef={keyboardRef}
-                inputRef={questionInputRef}
-                lastInput={lastInput}
-                setLastInput={setLastInput}
-                shiftOn={shiftOn}
-                setShiftOn={setShiftOn}
-                capsLockOn={capsLockOn}
-                setCapsLockOn={setCapsLockOn}
-                backSpaceOn={backSpaceOn}
-                setBackSpaceOn={setBackSpaceOn}
-              />
-            )
-          )}
+          </label>
           <ErrorMessage>
             {errors[`${String(word._id)}`]
               ? errors[`${String(word._id)}`].message

@@ -1,129 +1,25 @@
-import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
-import styled, { keyframes } from "styled-components";
+import {
+  BackSlashKey,
+  BACKSPACEKey,
+  CAPSLOCKKey,
+  ENTERKey,
+  Key,
+  keyBoardVar,
+  RightSHIFTKey,
+  Row,
+  SHIFTKey,
+  TABKey,
+  KeyboardWrapper,
+} from "../styles/keyboardStyle";
 import { onKeyClick } from "../util/keyboard";
 
-const keyPressAnimation = keyframes`
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(2px);
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-`;
-
-const Wrapper = styled(motion.div)`
-  position: absolute;
-  background-color: ${(props) => props.theme.periwinkleShade50};
-  border: 1px solid ${(props) => props.theme.periwinkleTint90};
-  color: ${(props) => props.theme.periwinkleTint90};
-  width: max-content;
-  padding: 10px;
-  border-radius: 10px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  z-index: 1;
-`;
-const Row = styled.div`
-  display: flex;
-  margin-bottom: 5px;
-  &:nth-child(2) {
-    /* padding-left: 29px; */
-  }
-  &:nth-child(3) {
-    /* padding-left: 38px; */
-  }
-  &:last-child {
-    /* padding-left: 55px; */
-  }
-`;
-const Key = styled.div`
-  width: 40px;
-  height: 40px;
-  padding: 10px;
-  border: 1px solid ${(props) => props.theme.periwinkleTint90};
-  border-radius: 5px;
-  margin-right: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  border-bottom: 3px ${(props) => props.theme.periwinkleTint70} solid;
-  transition: 0.1s all;
-  &:hover {
-    opacity: 0.7;
-    transform: translateY(2px);
-  }
-  &.pressed {
-    animation: ${keyPressAnimation} 0.1s ease-in-out;
-  }
-`;
-
-const BACKSPACEKey = styled(Key)`
-  font-size: 30px;
-  width: 80px;
-`;
-
-const TABKey = styled(Key)`
-  font-size: 12px;
-  width: 65px;
-`;
-
-const BackSlashKey = styled(Key)`
-  width: 55px;
-`;
-
-const CAPSLOCKKey = styled(Key)`
-  font-size: 11px;
-  width: 75px;
-`;
-const SHIFTKey = styled(Key)`
-  font-size: 12px;
-  width: 100px;
-`;
-
-const RightSHIFTKey = styled(Key)`
-  font-size: 12px;
-  width: 110px;
-`;
-
-const ENTERKey = styled(Key)`
-  font-size: 12px;
-  width: 90px;
-`;
-
-export const keyBoardVar = {
-  hidden: {
-    y: 0,
-    opacity: 0,
-  },
-  appear: {
-    y: 10,
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-    },
-  },
-  disappear: {
-    y: 0,
-    opacity: 0,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
-
-interface IKeyboardProps {
+interface IRussianKeyboardProps {
   keyboardRef: React.RefObject<HTMLDivElement>;
-  inputRef: React.MutableRefObject<HTMLInputElement | null>;
+  inputRef: React.MutableRefObject<
+    HTMLInputElement | HTMLTextAreaElement | null
+  >;
   lastInput: string;
   setLastInput: React.Dispatch<React.SetStateAction<string>>;
   shiftOn: boolean;
@@ -132,6 +28,7 @@ interface IKeyboardProps {
   setCapsLockOn: React.Dispatch<React.SetStateAction<boolean>>;
   backSpaceOn: boolean;
   setBackSpaceOn: React.Dispatch<React.SetStateAction<boolean>>;
+  className?: string;
 }
 
 function RussianKeyboard({
@@ -145,7 +42,8 @@ function RussianKeyboard({
   setCapsLockOn,
   backSpaceOn,
   setBackSpaceOn,
-}: IKeyboardProps) {
+  className,
+}: IRussianKeyboardProps) {
   const [cap, setCap] = useState(
     (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn)
   );
@@ -195,7 +93,8 @@ function RussianKeyboard({
     setCap((!shiftOn && capsLockOn) || (shiftOn && !capsLockOn));
   }, [shiftOn, capsLockOn, setCap]);
   return (
-    <Wrapper
+    <KeyboardWrapper
+      className={className}
       ref={keyboardRef}
       variants={keyBoardVar}
       initial="hidden"
@@ -355,7 +254,7 @@ function RussianKeyboard({
           SHIFT
         </RightSHIFTKey>
       </Row>
-    </Wrapper>
+    </KeyboardWrapper>
   );
 }
 

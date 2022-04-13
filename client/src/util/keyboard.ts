@@ -347,7 +347,7 @@ export const convertKey = ({
 };
 
 interface IOnInputChangeProps {
-  event: React.FormEvent<HTMLInputElement>;
+  event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>;
   language: string;
   setLastInput: React.Dispatch<React.SetStateAction<string>>;
   capsLockOn: boolean;
@@ -412,7 +412,9 @@ export const onInputChange = ({
 
 export const onKeyClick = (
   event: React.MouseEvent<HTMLDivElement>,
-  inputRef: React.MutableRefObject<HTMLInputElement | null> | undefined
+  inputRef:
+    | React.MutableRefObject<HTMLInputElement | HTMLTextAreaElement | null>
+    | undefined
 ) => {
   const clickedKey = event.currentTarget.textContent;
   // console.log(inputRef?.current?.value);
@@ -443,7 +445,9 @@ export const onKeyClick = (
 
 interface IOnKeyDownProps {
   language: string;
-  event: React.KeyboardEvent<HTMLInputElement>;
+  event:
+    | React.KeyboardEvent<HTMLInputElement>
+    | React.KeyboardEvent<HTMLTextAreaElement>;
   setCapsLockOn?: React.Dispatch<React.SetStateAction<boolean>>;
   setShiftOn?: React.Dispatch<React.SetStateAction<boolean>>;
   specialKeyOnRef: React.MutableRefObject<{

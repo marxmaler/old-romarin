@@ -20,8 +20,9 @@ import LineAreaChart from "../components/LineAreaChart";
 import LineChart from "../components/LineChart";
 import { getLanguageWordsAndCntArr } from "../util/word";
 import HorizontalBarChart from "../components/HorizontalBarChart";
+import { motion } from "framer-motion";
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   background: linear-gradient(
     to right bottom,
     rgba(156, 136, 255, 1),
@@ -68,6 +69,21 @@ const LiContainer = styled.div`
   margin-bottom: -0.5em;
   padding: 0px 30px;
 `;
+
+const ulVar = {
+  hidden: {
+    opacity: 0,
+    y: -30,
+  },
+  show: (ulNum: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: 0.4 * (ulNum - 1),
+      duration: 0.7,
+    },
+  }),
+};
 
 function Statistics() {
   const [loginInfo, setLoginInfo] = useRecoilState(loginState);
@@ -150,7 +166,12 @@ function Statistics() {
       <HeaderMenu />
       {!(isLoadingUser && isLoadingWeeklyWords) && (
         <Container>
-          <ul>
+          <motion.ul
+            custom={1}
+            variants={ulVar}
+            initial="hidden"
+            animate="show"
+          >
             <h3>집계</h3>
             <LiContainer>
               <li>전체 : {totalNum}</li>
@@ -161,8 +182,13 @@ function Statistics() {
               ))}
             </LiContainer>
             <PieChart labels={languagesInKo} series={totals} />
-          </ul>
-          <ul>
+          </motion.ul>
+          <motion.ul
+            custom={2}
+            variants={ulVar}
+            initial="hidden"
+            animate="show"
+          >
             <h3>복습 현황</h3>
             <LiContainer>
               <li>
@@ -215,8 +241,13 @@ function Statistics() {
                   : [0]) ?? [0]
               }
             />
-          </ul>
-          <ul>
+          </motion.ul>
+          <motion.ul
+            custom={3}
+            variants={ulVar}
+            initial="hidden"
+            animate="show"
+          >
             <h3>주간 학습 추이</h3>
             <LiContainer>
               <li>지난 7일 간 학습한 단어 : {weeklyWordsCntTotal}개</li>
@@ -244,21 +275,8 @@ function Statistics() {
                   <select onChange={selectStatisticMenu}>
                     {["언어별 일일 평균", "언어별 1주 간 새로 추가된 단어"].map(
                       (menu, index) => (
-                        <option
-                          key={`rightLangOption_${index}`}
-                          value={
-                            [
-                              "언어별 일일 평균",
-                              "언어별 1주 간 새로 추가된 단어",
-                            ][index]
-                          }
-                        >
-                          {
-                            [
-                              "언어별 일일 평균",
-                              "언어별 1주 간 새로 추가된 단어",
-                            ][index]
-                          }
+                        <option key={`rightLangOption_${index}`} value={menu}>
+                          {menu}
                         </option>
                       )
                     )}
@@ -289,7 +307,7 @@ function Statistics() {
                 weeklyWordsCntAvg={weeklyWordsCntAvg}
               />
             )}
-          </ul>
+          </motion.ul>
         </Container>
       )}
     </>

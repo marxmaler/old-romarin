@@ -86,9 +86,6 @@ const contentSectionVar = {
   hidden: {
     opacity: 0,
     y: -30,
-    transition: {
-      duration: 0.7,
-    },
   },
   show: {
     opacity: 1,

@@ -157,3 +157,27 @@ export interface ILanguageWordsCnt {
   Ch: number[];
   Ru: number[];
 }
+
+export interface IKeyboardProps {
+  keyboardRef: React.RefObject<HTMLDivElement>;
+  inputRef: React.MutableRefObject<
+    HTMLInputElement | HTMLTextAreaElement | null
+  >;
+  lastInput: string;
+  setLastInput: React.Dispatch<React.SetStateAction<string>>;
+  shiftOn: boolean;
+  setShiftOn: React.Dispatch<React.SetStateAction<boolean>>;
+  capsLockOn: boolean;
+  setCapsLockOn: React.Dispatch<React.SetStateAction<boolean>>;
+  specialKeyOnRef: React.MutableRefObject<{
+    apostropheOn: boolean;
+    quotaionMarkOn: boolean;
+    tildeOn: boolean;
+    altOn: boolean;
+    commaOn: boolean;
+    backtickOn: boolean;
+    caretOn: boolean;
+    altBuffer: string;
+  }>;
+  className?: string;
+}

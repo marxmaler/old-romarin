@@ -1,15 +1,8 @@
 import { ApexOptions } from "apexcharts";
 import ReactApexChart from "react-apexcharts";
 import { useRecoilValue } from "recoil";
-import styled from "styled-components";
 import { weeklyWordsCntState } from "../atoms";
-
-const ChartContainer = styled.div`
-  border: 0.5px rgba(0, 0, 0, 0.2) solid;
-  border-radius: 20px;
-  margin-top: 20px;
-  padding-top: 20px;
-`;
+import { ChartContainer } from "../styles/chartStyle";
 
 interface ILineChartProp {
   labels: string[];
