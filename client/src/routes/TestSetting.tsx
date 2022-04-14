@@ -35,6 +35,7 @@ function TestSetting() {
   Modal.setAppElement("#root");
 
   useEffect(() => {
+    console.log(selectedWords);
     setValue("numQ", selectedWords.length);
   }, [setValue, selectedWords]);
 
@@ -112,12 +113,13 @@ function TestSetting() {
           >
             <ModalText>시험 전에 단어를 복습하시겠습니까?</ModalText>
             <ModalButtonContainer>
-              <button>
-                <Link to={"/words/test/review"}>예</Link>
-              </button>
-              <button>
-                <Link to={"/words/test"}>아니오</Link>
-              </button>
+              <Link to={"/words/test/review"}>
+                <button>예 </button>
+              </Link>
+
+              <Link to={"/words/test"}>
+                <button>아니오</button>
+              </Link>
             </ModalButtonContainer>
           </Modal>
         )}

@@ -112,6 +112,62 @@ export const testSettingState = atom<ITestSetting>({
   effects_UNSTABLE: [persistAtom],
 });
 
+export const enTestWordSelector = selector({
+  key: "enTestWordSelector",
+  get: ({ get }) => {
+    const { selectedWords } = get(testSettingState);
+    return selectedWords.filter((word) => word.language === "English");
+  },
+});
+
+export const esTestWordSelector = selector({
+  key: "esTestWordSelector",
+  get: ({ get }) => {
+    const { selectedWords } = get(testSettingState);
+    return selectedWords.filter((word) => word.language === "Español");
+  },
+});
+
+export const frTestWordSelector = selector({
+  key: "frTestWordSelector",
+  get: ({ get }) => {
+    const { selectedWords } = get(testSettingState);
+    return selectedWords.filter((word) => word.language === "Français");
+  },
+});
+
+export const deTestWordSelector = selector({
+  key: "deTestWordSelector",
+  get: ({ get }) => {
+    const { selectedWords } = get(testSettingState);
+    return selectedWords.filter((word) => word.language === "Deutsch");
+  },
+});
+
+export const jpTestWordSelector = selector({
+  key: "jpTestWordSelector",
+  get: ({ get }) => {
+    const { selectedWords } = get(testSettingState);
+    return selectedWords.filter((word) => word.language === "日本語");
+  },
+});
+
+export const chTestWordSelector = selector({
+  key: "chTestWordSelector",
+  get: ({ get }) => {
+    const { selectedWords } = get(testSettingState);
+    return selectedWords.filter((word) => word.language === "中文");
+  },
+});
+
+export const ruTestWordSelector = selector({
+  key: "ruTestWordSelector",
+  get: ({ get }) => {
+    const { selectedWords } = get(testSettingState);
+    return selectedWords.filter((word) => word.language === "Русский");
+  },
+});
+
 export const testResultsState = atom<ITestResult[]>({
   key: "testResults",
   default: [],
