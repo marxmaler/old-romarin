@@ -40,14 +40,14 @@ function TestSetting() {
 
   const onValid = ({ numQ }: ITestSettingFormProps) => {
     //numQ 갯수만큼 random index 뽑아서 단어 섞기
-    const reselectedWords: IWord[] = [];
-    while (reselectedWords.length < numQ) {
-      const randomIndex = Math.floor(Math.random() * selectedWords.length);
-      const reselectedWord = selectedWords[randomIndex];
-      !reselectedWords.includes(reselectedWord) &&
-        reselectedWords.push(reselectedWord);
+    const shuffledArr: IWord[] = [];
+    const indexArr = [...Array(selectedWords.length).keys()];
+    while (shuffledArr.length < numQ) {
+      const randomIndex = Math.floor(Math.random() * indexArr.length);
+      shuffledArr.push(selectedWords[indexArr[randomIndex]]);
+      indexArr.splice(randomIndex, 1);
     }
-    setTestSetting({ numQ, selectedWords: reselectedWords });
+    setTestSetting({ numQ, selectedWords: shuffledArr });
   };
 
   return (
