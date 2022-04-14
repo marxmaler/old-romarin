@@ -6,6 +6,7 @@ import InputWithKeyboard from "./InputWithKeyboard";
 import { ButtonContainer, Form, FormContainer } from "../styles/formStyle";
 import { basicShowVariants } from "../styles/motionVariants";
 import { DarkBox, TransparentBox } from "../styles/boxStyle";
+import TextareaWithKeyboard from "./TextareaWithKeyboard";
 
 export interface IForm {
   spelling: string;
@@ -167,28 +168,12 @@ function WordForm() {
                   </span>
                   <span>(장기기억 촉진 점수 20점)</span>
                 </label>
-                <textarea
-                  rows={3}
-                  // {...exRegisterRest}
-                  placeholder="optional"
-                  // onFocus={onInputFocus}
-                  // onKeyDown={(event) =>
-                  //   onKeyDown({
-                  //     event,
-                  //     language: languages[langNum],
-                  //     setCapsLockOn,
-                  //     setShiftOn,
-                  //     specialKeyOnRef,
-                  //     setBackSpaceOn,
-                  //   })
-                  // }
-                  // onKeyUp={(event: React.KeyboardEvent) => {
-                  //   setShiftOn(event.getModifierState("Shift"));
-                  // }}
-                  // ref={(element) => {
-                  //   exRegisterRef(element);
-                  //   exInputRef.current = element;
-                  // }}
+                <TextareaWithKeyboard
+                  register={register}
+                  language={languages[langNum]}
+                  inputName="ex"
+                  isRequired={false}
+                  placeholder={"optional"}
                 />
               </li>
             </DarkBox>

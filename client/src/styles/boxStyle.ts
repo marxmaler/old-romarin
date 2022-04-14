@@ -36,3 +36,14 @@ export const TransparentBox = styled.div`
     background-color: ${(props) => props.theme.periwinkleTint80} !important;
   }
 `;
+
+export const TestSettingDarkBox = styled(DarkBox)`
+  label {
+    strong {
+      margin-bottom: 10px;
+      font-size: 20px;
+      font-weight: 600;
+      display: block;
+    }
+  }
+`;

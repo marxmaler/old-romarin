@@ -24,33 +24,19 @@ export const ReviewContainer = styled(Container)`
   }
 `;
 
-export const NoWords = styled.span`
-  display: block;
-  margin-bottom: 50px;
-  font-size: 20px;
-`;
+export const SearchContainer = styled(Container)`
+  background: linear-gradient(
+    to right bottom,
+    rgba(156, 136, 255, 1),
+    rgba(62, 54, 102, 1)
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-export const wordListVar = {
-  hidden: {
-    y: -30,
-    opacity: 0,
-    transition: {
-      duration: 0.7,
-    },
-  },
-  show: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.7,
-      staggerChildren: 0.7,
-    },
-  },
-  hide: {
-    y: -30,
-    opacity: 0,
-    transition: {
-      duration: 0.7,
-    },
-  },
-};
+  h3:first-child {
+    font-size: 23px;
+    font-weight: 700;
+    margin-bottom: 30px;
+  }
+`;

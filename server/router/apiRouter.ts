@@ -30,7 +30,7 @@ apiRouter
 apiRouter.route("/words/weekly/:date").all(mustLogin).get(getWeeklyWords);
 apiRouter.route("/words/:userId/:date").all(mustLogin).get(getWords);
 apiRouter
-  .route("/words/:userId/:queryBasis/:query")
+  .route("/words/:userId/:langNum/:queryBasis/:query")
   .all(mustLogin)
   .get(getMatchedWords);
 

@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 
-import { getEightDaysAgo, getRegRev, getZeroTime } from "../functions/time";
+import { getEightDaysAgo, getRegRev, getZeroTime } from "../util/time";
 import {
   getLtmsPoint,
   getNthRev,
   getlangFomLanguage,
   stringToArray,
-} from "../functions/word";
+  languages,
+} from "../util/word";
 import { ITestResult } from "../interfaces/interfaces";
 import User from "../models/User";
 import Word from "../models/Word";
@@ -32,18 +33,23 @@ export const getWords = async (req: Request, res: Response) => {
 };
 
 export const getMatchedWords = async (req: Request, res: Response) => {
-  const { userId, query, queryBasis } = req.params;
+  const { userId, langNum, query, queryBasis } = req.params;
 
-  const words = userId
-    ? await Word.find({
+  const language =
+    Number(langNum) === 0 ? null : languages[Number(langNum) - 1];
+
+  const filter = language
+    ? {
         user: userId,
-        $or: [
-          {
-            [queryBasis]: { $regex: query },
-          },
-        ],
-      })
-    : [];
+        language,
+        [queryBasis]: { $regex: query },
+      }
+    : {
+        user: userId,
+        [queryBasis]: { $regex: query },
+      };
+
+  const words = userId ? await Word.find(filter) : [];
   return res.status(200).send({ words });
 };
 

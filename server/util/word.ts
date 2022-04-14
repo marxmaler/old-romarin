@@ -1,5 +1,15 @@
 import { IGetLtmsPointProps } from "../interfaces/interfaces";
 
+export const languages = [
+  "English",
+  "Español",
+  "Français",
+  "Deutsch",
+  "日本語",
+  "中文",
+  "Русский",
+];
+
 export const stringToArray = (stringData: string) => {
   const array =
     stringData !== ""

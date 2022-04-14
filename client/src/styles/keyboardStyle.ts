@@ -32,10 +32,12 @@ export const KeyboardWrapper = styled(motion.div)`
     bottom: 10vh;
   }
 `;
+
 export const Row = styled.div`
   display: flex;
   margin-bottom: 5px;
 `;
+
 export const Key = styled.div`
   width: 40px;
   height: 40px;

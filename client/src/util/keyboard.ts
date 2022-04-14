@@ -389,6 +389,8 @@ export const onInputChange = ({
     specialKeyOnRef,
   });
 
+  console.log(convertedKey);
+
   if (backSpaceOn) {
     setBackSpaceOn(false);
     setLastInput("backSpace");

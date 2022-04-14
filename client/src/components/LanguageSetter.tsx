@@ -2,51 +2,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useMemo } from "react";
 import { useRecoilState } from "recoil";
-import styled from "styled-components";
 import { languageState } from "../atoms";
+import { Lang } from "../styles/languageSetterStyle";
+import { LangSwitchVar } from "../styles/motionVariants";
 import { languages } from "../util/language";
-
-const Lang = styled.div<{ page: string }>`
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  position: relative;
-  svg {
-    width: 1em;
-    cursor: pointer;
-    path {
-      fill: ${(props) =>
-        props.page === "addWords"
-          ? props.theme.periwinkleShade50
-          : props.theme.periwinkleTint90};
-    }
-  }
-  h3 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 23px;
-    width: 7em;
-    font-weight: 700;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
-    color: ${(props) => props.theme.periwinkleTint90};
-  }
-`;
-
-export const LangSwitchVar = {
-  fadeIn: (direction: number) => ({
-    x: 25 * -direction,
-    opacity: 0,
-  }),
-  fadeOut: (direction: number) => ({
-    x: 25 * direction,
-    opacity: 0,
-  }),
-  stay: {
-    x: 0,
-    opacity: 1,
-  },
-};
 
 interface IProp {
   page: string;
@@ -58,7 +17,7 @@ function LanguageSetter({ page, langNum, setLangNum }: IProp) {
   const [direction, setDirection] = useState(1);
   const languageOptions = useMemo(
     () =>
-      ["review", "testSetting"].includes(page)
+      ["review", "testSetting", "search"].includes(page)
         ? ["All", ...languages]
         : languages,
     [page]

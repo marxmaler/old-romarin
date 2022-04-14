@@ -1,6 +1,6 @@
 import WordForm from "../components/WordForm";
 import HeaderMenu from "../components/HeaderMenu";
-import { Container } from "../styles/routeStyle";
+import { Container } from "../styles/containerStyle";
 
 function AddWords() {
   return (

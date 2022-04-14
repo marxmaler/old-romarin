@@ -4,7 +4,8 @@ import { getLanguageInKorean } from "../util/language";
 import InputWithKeyboard from "./InputWithKeyboard";
 
 const Li = styled.li`
-  width: 60%;
+  width: 100%;
+  max-width: 50vw;
   background-color: ${(props) => props.theme.periwinkleTint50};
   border-radius: 10px;
   padding: 20px 30px;
@@ -34,7 +35,7 @@ const Li = styled.li`
   }
   input {
     margin-top: 10px;
-    width: 80%;
+    width: 100%;
     border-radius: 10px;
     padding: 10px;
     border: 0;

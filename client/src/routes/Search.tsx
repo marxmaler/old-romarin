@@ -6,27 +6,13 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { loginState } from "../atoms";
 import HeaderMenu from "../components/HeaderMenu";
+import LanguageSetter from "../components/LanguageSetter";
 import Word from "../components/Word";
 import { IWord } from "../interfaces";
+import { SearchContainer } from "../styles/containerStyle";
+import { SearchNoWords } from "../styles/formStyle";
+import { wordListVar } from "../styles/motionVariants";
 import { koPropToEnProp } from "../util/word";
-
-const Container = styled(motion.div)`
-  background: linear-gradient(
-    to right bottom,
-    rgba(156, 136, 255, 1),
-    rgba(62, 54, 102, 1)
-  );
-  min-height: 85vh;
-  max-width: 100%;
-  color: rgba(255, 255, 255, 1);
-  padding: 50px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  ul {
-    width: max-content;
-  }
-`;
 
 const Form = styled.form`
   span {
@@ -81,33 +67,6 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const Input = styled(motion.input)``;
-
-const wordListVar = {
-  hidden: {
-    y: -30,
-    opacity: 0,
-    transition: {
-      duration: 0.7,
-    },
-  },
-  show: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.7,
-      staggerChildren: 0.7,
-    },
-  },
-  hide: {
-    y: -30,
-    opacity: 0,
-    transition: {
-      duration: 0.7,
-    },
-  },
-};
-
 interface IForm {
   query: string;
   queryBasis: string;
@@ -122,6 +81,7 @@ function Search() {
     formState: { isSubmitSuccessful },
     setFocus,
   } = useForm<IForm>();
+  const [langNum, setLangNum] = useState(0);
 
   useEffect(() => {
     setTimeout(() => {
@@ -131,7 +91,9 @@ function Search() {
 
   const onValid = async ({ query, queryBasis }: IForm) => {
     const { words: matchedWords } = await (
-      await fetch(`/api/words/${String(user?._id)}/${queryBasis}/${query}`)
+      await fetch(
+        `/api/words/${String(user?._id)}/${langNum}/${queryBasis}/${query}`
+      )
     ).json();
 
     setWords(() => matchedWords);
@@ -141,7 +103,13 @@ function Search() {
   return (
     <>
       <HeaderMenu />
-      <Container>
+      <SearchContainer>
+        <h3>검색 언어</h3>
+        <LanguageSetter
+          page="search"
+          langNum={langNum}
+          setLangNum={setLangNum}
+        />
         <Form onSubmit={handleSubmit(onValid)}>
           <span>
             검색 기준 :{" "}
@@ -160,7 +128,7 @@ function Search() {
           </span>
           <span>
             <strong>검색어</strong>
-            <Input
+            <motion.input
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 0.7 }}
@@ -179,8 +147,13 @@ function Search() {
             animate="show"
             exit="hide"
           >
-            {isSubmitSuccessful &&
-              words.map((word) => <Word key={String(word._id)} word={word} />)}
+            {isSubmitSuccessful && words.length > 0
+              ? words.map((word) => <Word key={String(word._id)} word={word} />)
+              : isSubmitSuccessful && (
+                  <SearchNoWords>
+                    검색 조건에 맞는 단어가 없습니다.
+                  </SearchNoWords>
+                )}
           </motion.ul>
         </AnimatePresence>
         {isSubmitSuccessful && (
@@ -190,7 +163,7 @@ function Search() {
             </Link>
           </ButtonContainer>
         )}
-      </Container>
+      </SearchContainer>
     </>
   );
 }

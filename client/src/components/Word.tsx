@@ -121,7 +121,7 @@ const Word = ({ word }: IWordProps) => {
                 language={wordState.language}
                 inputName="collocation"
                 placeholder="optional(,로 구분)"
-                isRequired={true}
+                isRequired={false}
                 defaultValue={stringifiedCol}
               />
             </span>
@@ -155,7 +155,7 @@ const Word = ({ word }: IWordProps) => {
                 language={wordState.language}
                 inputName="syn"
                 placeholder="optional(,로 구분)"
-                isRequired={true}
+                isRequired={false}
                 defaultValue={stringifiedSyn}
                 isUpper={true}
               />
@@ -167,7 +167,7 @@ const Word = ({ word }: IWordProps) => {
                 language={wordState.language}
                 inputName="ant"
                 placeholder="optional(,로 구분)"
-                isRequired={true}
+                isRequired={false}
                 defaultValue={stringifiedAnt}
                 isUpper={true}
               />

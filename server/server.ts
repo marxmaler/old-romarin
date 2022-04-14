@@ -8,11 +8,13 @@ import MongoStore from "connect-mongo";
 import morgan from "morgan";
 import path from "path";
 import apiRouter from "./router/apiRouter";
+import helmet from "helmet";
 
 const app = express();
 const buildAddress = path.join(__dirname, "..", "client/build/");
 
 //전역 middleware 선언부
+app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
