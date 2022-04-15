@@ -373,8 +373,6 @@ export const onInputChange = ({
   capsLockOn,
   shiftOn,
   specialKeyOnRef,
-  backSpaceOn,
-  setBackSpaceOn,
 }: IOnInputChangeProps) => {
   const cap = (!shiftOn && capsLockOn) || (shiftOn && !capsLockOn);
   let input = event.currentTarget.selectionStart
@@ -389,27 +387,19 @@ export const onInputChange = ({
     specialKeyOnRef,
   });
 
-  console.log(convertedKey);
-
-  if (backSpaceOn) {
-    setBackSpaceOn(false);
-    setLastInput("backSpace");
-  } else {
-    if (
-      event.currentTarget.value.length > 1 &&
-      event.currentTarget.selectionStart
-    ) {
-      // console.log(convertedResult);
-      const stringArray = [...event.currentTarget.value];
-      stringArray[event.currentTarget.selectionStart - 1] = convertedKey;
-      event.currentTarget.value = stringArray.join("");
-    } else if (convertedKey && input !== "") {
-      event.currentTarget.value = convertedKey;
-    }
-    event.currentTarget.selectionStart = Number(selectStart);
-    event.currentTarget.selectionEnd = Number(selectStart);
-    setLastInput(convertedKey);
+  if (
+    event.currentTarget.value.length > 0 &&
+    event.currentTarget.selectionStart
+  ) {
+    const stringArray = [...event.currentTarget.value];
+    stringArray[event.currentTarget.selectionStart - 1] = convertedKey;
+    event.currentTarget.value = stringArray.join("");
+  } else if (convertedKey && input !== "") {
+    event.currentTarget.value = convertedKey;
   }
+  event.currentTarget.selectionStart = Number(selectStart);
+  event.currentTarget.selectionEnd = Number(selectStart);
+  setLastInput(convertedKey);
 };
 
 export const onKeyClick = (

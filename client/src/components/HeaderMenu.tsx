@@ -80,7 +80,7 @@ const HeaderContainer = styled.header`
           width: 100%;
           height: 0.08em;
           background-color: ${(props) => props.theme.periwinkleTint90};
-          transition: opacity 300ms, transform 300ms;
+          transition: opacity 500ms, transform 500ms;
           opacity: 1;
           transform: translate3d(-100%, 0, 0);
         }

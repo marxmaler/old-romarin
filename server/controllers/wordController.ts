@@ -135,7 +135,6 @@ export const postWord = async (req: Request, res: Response) => {
 export const patchGradedWords = async (req: Request, res: Response) => {
   const testResults: ITestResult[] = req.body;
 
-  // console.log("testResults:", testResults);
   for (let i = 0; i < testResults.length; i++) {
     const { wordId, wrong } = testResults[i];
     const word = await Word.findById(wordId);
@@ -149,12 +148,14 @@ export const patchGradedWords = async (req: Request, res: Response) => {
         //이미 틀린 적 있는 단어일 때
         word.wrong = wrong;
       } else {
+        console.log(`${word.spelling}의 regRev:${word.regRev}`);
         word.regRev?.splice(0, 1);
+        console.log(`${word.spelling}의 regRev:${word.regRev}`);
         const nthRev = getNthRev(word.regRev);
         console.log("nthRev:", nthRev);
         const statLang = getlangFomLanguage(word.language);
         const user = await User.findById(word.user);
-        console.log("조작 전:", user?.stat);
+        console.log("조작 전:", user?.stat[statLang]);
         if (user) {
           if (
             nthRev === "twice" ||
@@ -168,15 +169,13 @@ export const patchGradedWords = async (req: Request, res: Response) => {
               : nthRev === "fourTimes"
               ? (user.stat[statLang].threeTimes -= 1)
               : null;
-            console.log("user.stat[statLang]", user.stat[statLang]);
           }
           if (nthRev !== "never") {
             user.stat[statLang][nthRev] += 1;
             user.save();
           }
         }
-
-        console.log("user:", user);
+        console.log("조작 후:", user?.stat[statLang]);
       }
     }
     word?.save();

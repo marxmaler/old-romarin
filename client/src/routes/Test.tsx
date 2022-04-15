@@ -86,6 +86,7 @@ function Test() {
   const [testResults, setTestResults] = useRecoilState(testResultsState);
   const tempTestResults: ITestResult[] = [];
   const onValid = (data: IForm) => {
+    console.log("onValidData:", data);
     const wordIds = Object.keys(data);
     wordIds.forEach((id) => {
       const word = selectedWords

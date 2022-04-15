@@ -205,11 +205,7 @@ function Question({ word, register, errors }: IQuestionProp) {
                     id={`question_${word._id}_option_${shuffledWord._id}_${index}`}
                     type={"radio"}
                     value={shuffledWord.spelling}
-                    name={`${word._id}`}
-                    // {...register(`${word._id}`, {
-                    //   required: true,
-                    //   value: shuffledWord.spelling,
-                    // })}
+                    {...register(`${word._id}`, {})}
                   />
                   <label
                     htmlFor={`question_${word._id}_option_${shuffledWord._id}_${index}`}
