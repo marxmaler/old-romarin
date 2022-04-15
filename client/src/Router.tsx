@@ -12,6 +12,7 @@ import TestResult from "./routes/TestResult";
 import Search from "./routes/Search";
 import Statistics from "./routes/Statistics";
 import ReviewBeforeTest from "./routes/ReviewBeforeTest";
+import GitLoginCallback from "./routes/GitLoginCallback";
 
 function Router() {
   const login = useRecoilValue(loginState);
@@ -22,6 +23,10 @@ function Router() {
         <Route path="/" element={login.loggedIn ? <Home /> : <Login />} />
         <Route path="/join" element={!login.loggedIn && <Join />} />
         <Route path="/login" element={!login.loggedIn && <Login />} />
+        <Route
+          path="/login/github/callback"
+          element={!login.loggedIn && <GitLoginCallback />}
+        />
         <Route
           path="/words"
           element={login.loggedIn ? <AddWords /> : <Login />}

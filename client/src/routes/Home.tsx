@@ -13,6 +13,7 @@ import {
   wordsState,
 } from "../atoms";
 import { useEffect } from "react";
+import { basicShowVariants } from "../styles/motionVariants";
 
 const Container = styled.div`
   background: linear-gradient(
@@ -82,20 +83,6 @@ const Noti = styled.h3`
   border-top-left-radius: 30px;
 `;
 
-const contentSectionVar = {
-  hidden: {
-    opacity: 0,
-    y: -30,
-  },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.7,
-    },
-  },
-};
-
 function Home() {
   const { user } = useRecoilValue(loginState);
   const { isLoading, data, isError } = useQuery("fetchWords", () =>
@@ -140,7 +127,7 @@ function Home() {
       <HeaderMenu />
       <Container>
         <ContentSection
-          variants={contentSectionVar}
+          variants={basicShowVariants}
           initial="hidden"
           animate="show"
         >

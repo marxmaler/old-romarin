@@ -47,3 +47,7 @@ export const TestSettingDarkBox = styled(DarkBox)`
     }
   }
 `;
+
+export const OauthDarkBox = styled(DarkBox)`
+  width: 50%;
+`;

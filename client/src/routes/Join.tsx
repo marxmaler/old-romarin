@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import HeaderMenu from "../components/HeaderMenu";
 import JoinForm from "../components/JoinForm";
+import OauthBox from "../components/OauthBox";
 
 const Container = styled(motion.div)`
   background: linear-gradient(
@@ -22,6 +23,7 @@ function Join() {
       <HeaderMenu />
       <Container>
         <JoinForm></JoinForm>
+        <OauthBox></OauthBox>
       </Container>
     </>
   );

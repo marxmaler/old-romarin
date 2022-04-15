@@ -4,6 +4,8 @@ import {
   postLogin,
   getLogout,
   getUser,
+  getGithubLogin,
+  postGithubAuthLogin,
 } from "../controllers/userController";
 import {
   postWord,
@@ -18,6 +20,12 @@ import { mustLogin, mustNotLogin } from "../middlewares";
 const apiRouter = express.Router();
 
 apiRouter.route("/users/login").all(mustNotLogin).post(postLogin);
+apiRouter
+  .route("/users/login/github")
+  .all(mustNotLogin)
+  .get(getGithubLogin)
+  .post(postGithubAuthLogin);
+
 apiRouter.route("/users/logout").all(mustLogin).get(getLogout);
 apiRouter.route("/users/join").all(mustNotLogin).post(postJoin);
 apiRouter.route("/users/:userId").all(mustLogin).get(getUser);

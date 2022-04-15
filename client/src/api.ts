@@ -15,3 +15,13 @@ export const fetchWeeklyWords = async () => {
   const today = yyyymmdd(new Date());
   return await (await fetch(`/api/words/weekly/${today}`)).json();
 };
+
+export const fetchGithubCode = async (code: string) => {
+  return await (
+    await fetch(`/api/users/login/github/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    })
+  ).json();
+};
